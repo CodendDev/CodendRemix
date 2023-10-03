@@ -1,0 +1,90 @@
+version: "3.8"
+services:
+  nginx:
+    container_name: ui_codend_nginx
+    image: nginx:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://backend:5000/",
+          "||",
+          "curl -f http://fusionauth:9011/api/status"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "8080:80"
+    volumes:
+      - "./nginx:/etc/nginx:ro"
+    networks:
+      - codend_backend
+
+  backend:
+    container_name: ui_codend_backend
+    image: codend.azurecr.io/codend/backend:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - "ConnectionStrings:PostgresDatabase=Host=postgres; Database=codendDatabase; Username=${POSTGRES_USER}; Password=${POSTGRES_PASSWORD}"
+      - "Fusionauth:ApiKey=${FUSIONAUTH_API_KEY}"
+      - "Fusionauth:ApiUrl=http://fusionauth:9011/"
+      - "Fusionauth:Issuer=${FUSIONAUTH_ISSUER}"
+      - "Fusionauth:ApplicationId=${FUSIONAUTH_APPLICATION_ID}"
+      - "Fusionauth:SigningKey=${FUSIONAUTH_SIGNING_KEY}"
+      - "Fusionauth:TenantId=${FUSIONAUTH_TENANT_ID}"
+      - "ASPNETCORE_URLS=http://+:5000"
+    networks:
+      - codend_database
+      - codend_backend
+
+  postgres:
+    container_name: ui_codend_postgres
+    image: postgres:latest
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      PGDATA: /var/lib/postgresql/data/
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - codend_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/lib/postgresql/data
+
+  fusionauth:
+    container_name: ui_codend_fusionauth
+    image: fusionauth/fusionauth-app:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/fusionauth
+      DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
+      DATABASE_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      FUSIONAUTH_APP_MEMORY: ${FUSIONAUTH_APP_MEMORY}
+      FUSIONAUTH_APP_RUNTIME_MODE: development
+      FUSIONAUTH_APP_URL: http://fusionauth:9011
+      SEARCH_TYPE: database
+      FUSIONAUTH_APP_KICKSTART_FILE: ${FUSIONAUTH_APP_KICKSTART_FILE}
+    networks:
+      - codend_database
+    volumes:
+      - /usr/local/fusionauth/config
+      - ./kickstart:/usr/local/fusionauth/kickstart
+
+networks:
+  codend_database:
+  codend_backend:
