@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import { useState } from "react";
+import { Button } from "@nextui-org/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -9,17 +10,17 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const [dark, setDark] = useState<"dark" | "">();
+  const [dark, setDark] = useState<"dark" | "">("dark");
 
   return (
     <div className={dark}>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <button
+      <Button
         className="bg-white dark:bg-gray-800"
         onClick={() => setDark((prev) => (prev === "" ? "dark" : ""))}
       >
         button
-      </button>
+      </Button>
     </div>
   );
 }
