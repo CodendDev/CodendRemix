@@ -1,4 +1,6 @@
-import {EstimatedTime} from "~/api/types/commonEntitiesTypes";
+//
+// Base entities
+//
 
 /**
  * Represents project entity.
@@ -81,4 +83,77 @@ export interface UserDetails{
     lastName: string;
     email: string;
     imageUrl: string;
+}
+
+//
+// Board entities
+//
+
+/**
+ * Represents board entity.
+ */
+export interface Board{
+    Tasks: BoardProjectTask[];
+    Stories: BoardStory[];
+    Epics: BoardEpic[];
+}
+
+/**
+ * Represents boardEpic entity.
+ */
+export interface BoardEpic{
+    id: string;
+    name: string;
+    statusId: string;
+}
+
+/**
+ * Represents boardStory entity.
+ */
+export interface BoardStory{
+    id: string;
+    name: string;
+    epicId?: string;
+    statusId: string;
+}
+
+/**
+ * Represents boardProjectTask entity.
+ */
+export interface BoardProjectTask{
+    id: string;
+    taskType: string;
+    name: string;
+    priority: string;
+    statusId: string;
+    storyId?: string;
+    assigneeId?: string;
+}
+
+//
+// Common entities
+//
+
+/**
+ * Represents estimated time object.
+ */
+export  interface  EstimatedTime{
+    minutes: number;
+    hours: number;
+    days: number;
+}
+
+/**
+ * Represents api error response object.
+ */
+export interface ApiErrorResponse{
+    errorCode: string;
+    message: string;
+}
+
+/**
+ * Represents api errors response object.
+ */
+export interface ApiErrorsResponse{
+    errors: ApiErrorResponse[];
 }
