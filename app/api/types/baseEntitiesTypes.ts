@@ -38,9 +38,9 @@ export interface Story {
  */
 export interface BaseProjectTask {
   id: string;
-  taskType: string;
+  taskType: TaskType;
   name: string;
-  priority: string;
+  priority: Priority;
   statusId: string;
   description?: string;
   dueDate?: string;
@@ -55,9 +55,9 @@ export interface BaseProjectTask {
  */
 export interface BugfixProjectTask {
   id: string;
-  taskType: string;
+  taskType: TaskType;
   name: string;
-  priority: string;
+  priority: Priority;
   statusId: string;
   description?: string;
   dueDate?: string;
@@ -122,9 +122,9 @@ export interface BoardStory {
  */
 export interface BoardProjectTask {
   id: string;
-  taskType: string;
+  taskType: TaskType;
   name: string;
-  priority: string;
+  priority: Priority;
   statusId: string;
   storyId?: string;
   assigneeId?: string;
@@ -157,3 +157,17 @@ export interface ApiErrorResponse {
 export interface ApiErrorsResponse {
   errors: ApiErrorResponse[];
 }
+
+//
+// Const types
+//
+
+/**
+ * Represents TaskType.
+ */
+export type TaskType = "Base" | "Bugfix";
+
+/**
+ * Represents Priority.
+ */
+export type Priority = "VeryHigh" | "High" | "Medium" | "Low" | "VeryLow";
