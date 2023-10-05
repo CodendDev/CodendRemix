@@ -6,22 +6,38 @@ export interface ApiErrorResponse {
   message: string;
 }
 
-export class Errors {
-  static LoginErrors = class {
-    static InvalidEmailOrPassword = "Login.InvalidEmailOrPassword";
-  };
-}
+export type ErrorCode = string;
+export const Errors = {
+  LoginErrors: {
+    InvalidEmailOrPassword: "Login.InvalidEmailOrPassword",
+  },
+  RegisterErrors: {
+    Email: {
+      EmailAlreadyExists: "Register.EmailAlreadyExists",
+      EmailAddressNotValid: "Validation.EmailAddress.NotValid",
+    },
+    Password: {
+      PasswordTooShort: "Validation.Password.TooShort",
+      PasswordNotContainLowercaseLetter:
+        "Validation.Password.NotContainLowercaseLetter",
+      PasswordNotContainUppercaseLetter:
+        "Validation.Password.NotContainUppercaseLetter",
+      PasswordNotContainDigit: "Validation.Password.NotContainDigit",
+      PasswordNotContainCustomChar: "Validation.Password.NotContainCustomChar",
+    },
+  },
+};
 
 declare global {
   interface Array<T extends ApiErrorResponse> {
-    hasError(code: string): boolean;
+    hasError(code: ErrorCode): boolean;
   }
 }
 
 if (!Array.prototype.hasError) {
   Array.prototype.hasError = function <T extends ApiErrorResponse>(
     this: Array<T>,
-    code: string
+    code: ErrorCode
   ) {
     return this.filter((e) => e.errorCode === code).length > 0;
   };

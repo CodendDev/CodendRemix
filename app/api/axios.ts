@@ -1,5 +1,6 @@
 import type { AxiosInstance } from "axios";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
+import type { ApiErrorResponse } from "~/api/types/apiErrorsTypes";
 
 export function getAxiosInstance(token?: string): AxiosInstance {
   const url = process.env.API_SERVER;
@@ -21,4 +22,30 @@ export function getAxiosInstance(token?: string): AxiosInstance {
       "Content-Type": "application/json",
     },
   });
+}
+
+/**
+ * Checks if given error is axios error. If error contains API errors returns then.
+ *
+ * @param err any error
+ *
+ * @return object with list of API errors or undefined if there are no API errors
+ */
+export function getApiErrorsFromError(
+  err: unknown
+): { errors: ApiErrorResponse[] } | undefined {
+  if (!isAxiosError(err)) {
+    return undefined;
+  }
+
+  if (err.response === undefined) {
+    return undefined;
+  }
+
+  const apiErrors = err.response.data.errors;
+  if (apiErrors === undefined) {
+    return undefined;
+  }
+
+  return { errors: err.response.data.errors as ApiErrorResponse[] };
 }

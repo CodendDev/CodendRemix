@@ -9,3 +9,12 @@ export interface LoginResponse {
   accessToken?: string;
   errors?: ApiErrorResponse[];
 }
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface RegisterResponse extends LoginResponse {}
