@@ -1,4 +1,4 @@
-import { getAxiosInstance } from "~/api/axios";
+import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 import type {
   LoginResponse,
   LoginRequest,
@@ -11,8 +11,13 @@ export async function login(
 
   try {
     const response = await axios.post("/api/login", request);
-    return response.data as LoginResponse;
+    return { accessToken: response.data };
   } catch (err) {
-    return undefined;
+    const errors = getApiErrorsFromError(err);
+    if (errors === undefined) {
+      return undefined;
+    }
+
+    return { errors };
   }
 }
