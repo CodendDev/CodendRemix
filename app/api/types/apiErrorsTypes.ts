@@ -6,8 +6,8 @@ export interface ApiErrorResponse {
   message: string;
 }
 
-export type ErrorCode = string;
-export const Errors = {
+export type ApiErrorCode = string;
+export const ApiErrors = {
   LoginErrors: {
     InvalidEmailOrPassword: "Login.InvalidEmailOrPassword",
   },
@@ -29,15 +29,22 @@ export const Errors = {
 };
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Array<T extends ApiErrorResponse> {
-    hasError(code: ErrorCode): boolean;
+    /**
+     * Checks whether array contains given {@link ApiErrorCode}.
+     *
+     * @param code error code
+     */
+    hasError(code: ApiErrorCode): boolean;
   }
 }
 
 if (!Array.prototype.hasError) {
+  // eslint-disable-next-line no-extend-native
   Array.prototype.hasError = function <T extends ApiErrorResponse>(
     this: Array<T>,
-    code: ErrorCode
+    code: ApiErrorCode
   ) {
     return this.filter((e) => e.errorCode === code).length > 0;
   };
