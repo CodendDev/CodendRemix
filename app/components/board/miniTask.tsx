@@ -1,7 +1,8 @@
 import { Priority, TaskType } from "~/api/types/baseEntitiesTypes";
 import { Card } from "@nextui-org/card";
-import { Avatar, Spacer } from "@nextui-org/react";
+import { Avatar, Spacer, Button } from "@nextui-org/react";
 import { MoreHoriz } from "@mui/icons-material";
+import React from "react";
 
 type MiniTaskProps = {
   name: string;
@@ -18,18 +19,30 @@ export function MiniTask({
   taskType,
   avatarUrl,
 }: MiniTaskProps) {
+  const typeToColorGradient: Record<MiniTaskType, string> = {
+    Base: "",
+    Bugfix: "",
+    Story: "bg-gradient-to-r from-green-100",
+    Epic: "bg-gradient-to-r from-purple-100",
+  };
+
   const type = taskType !== "Base" && taskType;
   const prio = priority !== null && priority;
+  const gradientColor = typeToColorGradient[taskType];
 
   return (
     <Card>
-      <div className="flex justify-between py-3 px-5">
+      <div className={`flex justify-between py-3 px-5 ${gradientColor}`}>
         <div>
           <div className="flex">
             {type && <MiniTaskType type={taskType} />}
             {prio && (
               <>
-                {type && <Spacer x={2} />}
+                {type && (
+                  <>
+                    <Spacer x={2} />
+                  </>
+                )}
                 <MiniTaskPriority priority={priority} />
               </>
             )}
@@ -41,7 +54,9 @@ export function MiniTask({
             <Avatar src={avatarUrl} />
           </div>
           <div className="flex justify-center">
-            <MoreHoriz></MoreHoriz>
+            <Button isIconOnly radius="full" size="sm" variant="light">
+              <MoreHoriz />
+            </Button>
           </div>
         </div>
       </div>
@@ -62,9 +77,9 @@ function MiniTaskType({ type }: { type: MiniTaskType }) {
   const colorClass = taskTypeToColorClass[type];
 
   return (
-    <>
-      <div className={`${colorClass} font-semibold`}>{type}</div>
-    </>
+    <div className={`uppercase ${colorClass} font-semibold underline`}>
+      {type}
+    </div>
   );
 }
 
@@ -79,5 +94,9 @@ function MiniTaskPriority({ priority }: { priority: Priority }) {
 
   const colorClass = priorityToColorClass[priority];
 
-  return <div className={`${colorClass} font-semibold`}>{priority}</div>;
+  return (
+    <div className={`${colorClass} font-semibold`}>
+      {priority.replace(/Very/, "Very ")}
+    </div>
+  );
 }
