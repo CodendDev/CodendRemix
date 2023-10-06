@@ -2,6 +2,8 @@
 // Base entities
 //
 
+import type { WithErrorsResponse } from "~/api/types/authorizationTypes";
+
 /**
  * Represents project entity.
  */
@@ -156,3 +158,24 @@ export type TaskType = "Base" | "Bugfix";
  * Represents Priority.
  */
 export type Priority = "VeryHigh" | "High" | "Medium" | "Low" | "VeryLow";
+
+export interface PagedRequest {
+  pageIndex: number;
+  pageSize: number;
+  search?: string;
+  sortColumn?: string;
+  sortOrder?: string;
+}
+
+export interface PagedResponseData<T> {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  hasNextPage: boolean;
+  hasePreviousPage: boolean;
+  items: T[];
+}
+
+export interface PagedResponse<T> extends WithErrorsResponse {
+  data?: PagedResponseData<T>;
+}
