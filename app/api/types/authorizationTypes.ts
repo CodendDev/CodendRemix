@@ -1,5 +1,9 @@
 import type { ApiErrorResponse } from "~/api/types/apiErrorsTypes";
 
+export interface WithTokenRequest {
+  token: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
