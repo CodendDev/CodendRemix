@@ -4,14 +4,17 @@ export interface WithTokenRequest {
   token: string;
 }
 
+export interface WithErrorsResponse {
+  errors?: ApiErrorResponse[];
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
 }
 
-export interface LoginResponse {
+export interface LoginResponse extends WithErrorsResponse {
   accessToken?: string;
-  errors?: ApiErrorResponse[];
 }
 
 export interface RegisterRequest {
