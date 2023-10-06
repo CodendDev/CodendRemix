@@ -1,7 +1,7 @@
 import { Priority, TaskType } from "~/api/types/baseEntitiesTypes";
 import { Card } from "@nextui-org/card";
 import { Avatar, Spacer, Button } from "@nextui-org/react";
-import { MoreHoriz } from "@mui/icons-material";
+import { MdMoreHoriz } from "react-icons/md/index.js";
 import React from "react";
 
 type MiniTaskProps = {
@@ -38,11 +38,7 @@ export function MiniTask({
             {type && <MiniTaskType type={taskType} />}
             {prio && (
               <>
-                {type && (
-                  <>
-                    <Spacer x={2} />
-                  </>
-                )}
+                {type && <Spacer x={2} />}
                 <MiniTaskPriority priority={priority} />
               </>
             )}
@@ -55,7 +51,7 @@ export function MiniTask({
           </div>
           <div className="flex justify-center">
             <Button isIconOnly radius="full" size="sm" variant="light">
-              <MoreHoriz />
+              <MdMoreHoriz />
             </Button>
           </div>
         </div>
@@ -76,11 +72,7 @@ function MiniTaskType({ type }: { type: MiniTaskType }) {
 
   const colorClass = taskTypeToColorClass[type];
 
-  return (
-    <div className={`uppercase ${colorClass} font-semibold underline`}>
-      {type}
-    </div>
-  );
+  return <div className={`${colorClass} font-semibold underline`}>{type}</div>;
 }
 
 function MiniTaskPriority({ priority }: { priority: Priority }) {
