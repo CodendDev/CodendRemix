@@ -10,3 +10,7 @@ export interface ProjectBoardResponse {
 }
 
 export interface PagedProjectRequest extends WithTokenRequest, PagedRequest {}
+
+export interface ProjectRequest extends WithTokenRequest {
+  projectId: string;
+}

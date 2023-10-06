@@ -2,6 +2,7 @@ import type {
   PagedProjectRequest,
   ProjectBoardRequest,
   ProjectBoardResponse,
+  ProjectRequest,
 } from "~/api/types/projectTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 import type { PagedResponse, Project } from "~/api/types/baseEntitiesTypes";
@@ -41,5 +42,19 @@ export async function getPagedProjects({
     return { data: response.data };
   } catch (err) {
     return getApiErrorsFromError(err);
+  }
+}
+
+export async function getProject({
+  projectId,
+  token,
+}: ProjectRequest): Promise<Project | undefined> {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(`api/projects/${projectId}`);
+    return response.data;
+  } catch (err) {
+    return undefined;
   }
 }
