@@ -132,6 +132,17 @@ export interface BoardProjectTask {
   assigneeId?: string;
 }
 
+/**
+ * Represents boardMiniTask entity.
+ */
+export interface BoardMiniTask {
+  id: string;
+  taskType: TaskType;
+  name: string;
+  priority?: Priority;
+  avatarUrl?: string;
+}
+
 //
 // Common entities
 //
@@ -152,7 +163,7 @@ export interface EstimatedTime {
 /**
  * Represents TaskType.
  */
-export type TaskType = "Base" | "Bugfix";
+export type TaskType = "Base" | "Bugfix" | "Story" | "Epic";
 
 /**
  * Represents Priority.
