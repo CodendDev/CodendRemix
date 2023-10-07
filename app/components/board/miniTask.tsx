@@ -57,7 +57,7 @@ export function MiniTask({
           )}
           <div className="flex justify-center">
             <Button isIconOnly radius="full" size="sm" variant="light">
-              <MdMoreHoriz />
+              <MdMoreHoriz className="text-lg" />
             </Button>
           </div>
         </div>
