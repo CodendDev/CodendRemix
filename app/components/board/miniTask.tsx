@@ -1,25 +1,23 @@
-import { Priority, TaskType } from "~/api/types/baseEntitiesTypes";
+import {
+  BoardMiniTask,
+  Priority,
+  TaskType,
+} from "~/api/types/baseEntitiesTypes";
 import { Card } from "@nextui-org/card";
 import { Avatar, Spacer, Button } from "@nextui-org/react";
 import { MdMoreHoriz } from "react-icons/md/index.js";
 import React from "react";
 
-type MiniTaskProps = {
-  name: string;
-  priority?: Priority;
-  taskType: MiniTaskType;
-  avatarUrl: string;
-};
-
-type MiniTaskType = TaskType | "Story" | "Epic";
+type MiniTaskProps = BoardMiniTask;
 
 export function MiniTask({
+  id,
   name,
   priority,
   taskType,
   avatarUrl,
 }: MiniTaskProps) {
-  const typeToColorGradient: Record<MiniTaskType, string> = {
+  const typeToColorGradient: Record<TaskType, string> = {
     Base: "",
     Bugfix: "",
     Story: "bg-gradient-to-r from-green-100",
@@ -27,16 +25,20 @@ export function MiniTask({
   };
 
   const type = taskType !== "Base" && taskType;
-  const prio = priority !== null && priority;
   const gradientColor = typeToColorGradient[taskType];
 
+  const miniTaskHover: string =
+    "transition ease-in-out delay-50 hover:-translate-y-1 duration-150";
+  const miniTaskActive: string =
+    "focus:outline focus:outline-sky-500 focus:outline-offset-0 focus:outline-1";
+
   return (
-    <Card>
+    <Card className={`${miniTaskHover} ${miniTaskActive} shadow-md`}>
       <div className={`flex justify-between py-3 px-5 ${gradientColor}`}>
         <div>
           <div className="flex">
             {type && <MiniTaskType type={taskType} />}
-            {prio && (
+            {priority && (
               <>
                 {type && <Spacer x={2} />}
                 <MiniTaskPriority priority={priority} />
@@ -46,9 +48,13 @@ export function MiniTask({
           <div>{name}</div>
         </div>
         <div className="flex flex-col justify-center items-center gap-1">
-          <div className="flex justify-center ">
-            <Avatar src={avatarUrl} />
-          </div>
+          {avatarUrl && (
+            <>
+              <div className="flex justify-center ">
+                <Avatar src={avatarUrl} />
+              </div>
+            </>
+          )}
           <div className="flex justify-center">
             <Button isIconOnly radius="full" size="sm" variant="light">
               <MdMoreHoriz />
@@ -62,8 +68,8 @@ export function MiniTask({
 
 export default MiniTask;
 
-function MiniTaskType({ type }: { type: MiniTaskType }) {
-  const taskTypeToColorClass: Record<MiniTaskType, string> = {
+function MiniTaskType({ type }: { type: TaskType }) {
+  const taskTypeToColorClass: Record<TaskType, string> = {
     Base: "",
     Bugfix: "text-amber-500",
     Story: "text-green-500",
