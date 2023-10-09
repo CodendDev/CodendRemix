@@ -23,7 +23,6 @@ export function ProjectNavigationActionsList({ action }: { action: string }) {
         <ListboxItem
           key={name.toLowerCase()}
           onClick={async () => navigate(redirectUrl)}
-          aria-label={name}
           startContent={icon}
         >
           {name}

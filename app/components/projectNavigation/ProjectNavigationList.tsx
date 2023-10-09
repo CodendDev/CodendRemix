@@ -2,6 +2,7 @@ import type { Project } from "~/api/types/baseEntitiesTypes";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import React, { useState } from "react";
 import { useNavigate } from "@remix-run/react";
+import { AiOutlineFileSearch } from "react-icons/ai/index.js";
 
 type ProjectNavigationListProps = {
   projects: Project[];
@@ -9,9 +10,18 @@ type ProjectNavigationListProps = {
 };
 
 export function ProjectNavigationList(props: ProjectNavigationListProps) {
+  const title = (
+    <div className="flex flex-row">
+      <div className="flex items-center justify-center">
+        <AiOutlineFileSearch />
+      </div>
+      Projects
+    </div>
+  );
+
   return (
     <Accordion defaultExpandedKeys={["Projects"]} className="text-center">
-      <AccordionItem key="Projects" aria-label="Projects" title="Projects">
+      <AccordionItem key="Projects" aria-label="Projects" title={title}>
         <ProjectList {...props} />
       </AccordionItem>
     </Accordion>
