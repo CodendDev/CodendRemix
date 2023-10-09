@@ -9,21 +9,20 @@ import {
   FaClipboardList,
 } from "~/components/projectNavigation/icons";
 
-export function ProjectNavigationActionsList() {
+export function ProjectNavigationActionsList({ action }: { action: string }) {
   const navigate = useNavigate();
 
   return (
     <Listbox
       label="Project actions"
       selectionMode="single"
+      defaultSelectedKeys={[action]}
       disallowEmptySelection
     >
       {actions().map(({ name, redirectUrl, icon }, index) => (
         <ListboxItem
-          key={name}
-          onClick={async () => {
-            navigate(redirectUrl);
-          }}
+          key={name.toLowerCase()}
+          onClick={async () => navigate(redirectUrl)}
           aria-label={name}
           startContent={icon}
         >
