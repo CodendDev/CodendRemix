@@ -1,30 +1,29 @@
 import type { LoginRequest } from "~/api/types/authorizationTypes";
-import { createCookie, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { login } from "~/api/methods/user";
-import SETTINGS from "~/actions/settings";
+import { createUserTokenCookie } from "~/actions/cookies/tokenCookie";
+import type { ApiErrorResponse } from "~/api/types/apiErrorsTypes";
 
 export type handleLoginRequest = LoginRequest & {
   remember: boolean;
+  errorHandler: (errors: ApiErrorResponse[]) => void;
 };
 
 export const handleLogin = async ({
   email,
   password,
   remember,
+  errorHandler,
 }: handleLoginRequest) => {
   const loginResponse = await login({ email, password });
 
   if (loginResponse === undefined || loginResponse.errors !== undefined) {
-    return false;
+    return errorHandler(loginResponse?.errors ?? []);
   }
 
   const accessToken = loginResponse.accessToken!;
 
-  const tokenCookie = createCookie("user-token", {
-    maxAge: remember
-      ? SETTINGS.LOGIN_TOKEN_REMEMBER_LIFE_DURATION
-      : SETTINGS.LOGIN_TOKEN_LIFE_DURATION,
-  });
+  const tokenCookie = createUserTokenCookie(remember);
 
   return redirect("/", {
     headers: {
