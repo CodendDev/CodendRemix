@@ -4,21 +4,30 @@ import { Tabs, Tab } from "@nextui-org/react";
 export default function User() {
   const navigate = useNavigate();
   const location = useLocation().pathname.replace("/user/", "");
-
-  return (
-    <>
-      <Tabs
-        aria-label="options"
-        selectedKey={location}
-        onSelectionChange={(key) => navigate(`/user/${key}`)}
+  if (location === "login" || location === "register") {
+    return (
+      <div
+        className="flex align-middle flex-col justify-center"
+        style={{ height: "100dvh" }}
       >
-        <Tab key="login" title="Login">
+        <div className="">
+          <Tabs
+            size="lg"
+            aria-label="options"
+            selectedKey={location}
+            onSelectionChange={(key) => navigate(`/user/${key}`)}
+            className="flex justify-center mt-5"
+          >
+            <Tab key="login" title="Login" />
+            <Tab key="register" title="Sign up" />
+          </Tabs>
+        </div>
+        <div className="flex justify-center mt-5">
           <Outlet />
-        </Tab>
-        <Tab key="register" title="Sign up">
-          <Outlet />
-        </Tab>
-      </Tabs>
-    </>
-  );
+        </div>
+      </div>
+    );
+  }
+
+  return <Outlet />;
 }

@@ -10,7 +10,7 @@ export default function Login() {
   };
 
   return (
-    <form className="max-w-xl grow">
+    <form className="max-w-lg grow px-5">
       <Input size="lg" type="email" label="Email" />
       <Spacer y={5} />
       <Input size="lg" type="password" label="Password" />
