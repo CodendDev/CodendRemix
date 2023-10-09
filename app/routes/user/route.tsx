@@ -3,7 +3,7 @@ import { Tabs, Tab } from "@nextui-org/react";
 
 export default function User() {
   const navigate = useNavigate();
-  const location = useLocation().pathname.replace("/user/", "");
+  const location = useLocation().pathname.replace("/user/", "").toLowerCase();
   if (location === "login" || location === "register") {
     return (
       <div
