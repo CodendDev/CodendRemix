@@ -4,18 +4,18 @@ import ProjectNavigationActionsList from "~/components/projectNavigation/Project
 
 type ProjectNavigationBarProps = {
   projects: Project[];
-  selected?: Project;
+  selectedProjectId?: string;
 };
 
 export function ProjectNavigationBar({
   projects,
-  selected,
+  selectedProjectId,
 }: ProjectNavigationBarProps) {
   return (
-    <>
-      <ProjectNavigationList {...{ projects, selected }} />
-      {selected && <ProjectNavigationActionsList />}
-    </>
+    <div className="flex flex-col">
+      <ProjectNavigationList {...{ projects, selectedProjectId }} />
+      {selectedProjectId && <ProjectNavigationActionsList />}
+    </div>
   );
 }
 
