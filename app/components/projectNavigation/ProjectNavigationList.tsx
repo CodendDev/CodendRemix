@@ -2,12 +2,12 @@ import type { Project } from "~/api/types/baseEntitiesTypes";
 
 type ProjectNavigationListProps = {
   projects: Project[];
-  selected?: Project;
+  selectedProjectId?: string;
 };
 
 export function ProjectNavigationList({
-  selected,
   projects,
+  selectedProjectId,
 }: ProjectNavigationListProps) {
   return <>{JSON.stringify(projects)}</>;
 }
