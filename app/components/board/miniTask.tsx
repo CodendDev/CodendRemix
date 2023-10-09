@@ -1,14 +1,47 @@
-import {
-  BoardMiniTask,
-  Priority,
-  TaskType,
-} from "~/api/types/baseEntitiesTypes";
+import { Priority, TaskType } from "~/api/types/baseEntitiesTypes";
 import { Card } from "@nextui-org/card";
-import { Avatar, Spacer, Button } from "@nextui-org/react";
+import {
+  Avatar,
+  Spacer,
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+} from "@nextui-org/react";
 import { MdMoreHoriz } from "react-icons/md/index.js";
-import React from "react";
+import React, { useContext } from "react";
+import { SelectedMiniTaskContext } from "~/components/board/boardContainer";
 
-type MiniTaskProps = BoardMiniTask;
+export type MiniTaskProps = {
+  id: string;
+  taskType: TaskType;
+  name: string;
+  priority?: Priority;
+  relatedTaskId?: string;
+  avatarUrl?: string;
+};
+
+const typeToGradientColor: Record<TaskType, string> = {
+  Base: "",
+  Bugfix: "",
+  Story: "bg-gradient-to-r from-green-100",
+  Epic: "bg-gradient-to-r from-purple-200",
+};
+
+const relatedTypeToGradientColor: Record<TaskType, string> = {
+  Base: "bg-gradient-to-l via-transparent from-green-100",
+  Bugfix: "bg-gradient-to-l via-transparent from-green-100",
+  Story: "bg-gradient-to-l via-transparent from-purple-200 to-green-100",
+  Epic: "",
+};
+
+const typeToOutlineColor: Record<TaskType, string> = {
+  Base: "outline-sky-500",
+  Bugfix: "outline-amber-500",
+  Story: "outline-green-500",
+  Epic: "outline-purple-500",
+};
 
 export function MiniTask({
   id,
@@ -16,25 +49,33 @@ export function MiniTask({
   priority,
   taskType,
   avatarUrl,
+  relatedTaskId,
 }: MiniTaskProps) {
-  const typeToColorGradient: Record<TaskType, string> = {
-    Base: "",
-    Bugfix: "",
-    Story: "bg-gradient-to-r from-green-100",
-    Epic: "bg-gradient-to-r from-purple-100",
+  const { selectedMiniTaskId, setSelectedMiniTaskId } = useContext(
+    SelectedMiniTaskContext
+  );
+  const handleClick = () => {
+    setSelectedMiniTaskId(id);
   };
 
   const type = taskType !== "Base" && taskType;
-  const gradientColor = typeToColorGradient[taskType];
+  const gradientColor =
+    relatedTaskId !== null && relatedTaskId === selectedMiniTaskId
+      ? relatedTypeToGradientColor[taskType]
+      : typeToGradientColor[taskType];
 
-  const miniTaskHover: string =
-    "transition ease-in-out delay-50 hover:-translate-y-1 duration-150";
-  const miniTaskActive: string =
-    "focus:outline focus:outline-sky-500 focus:outline-offset-0 focus:outline-1";
+  const miniTaskSelected: string =
+    selectedMiniTaskId === id
+      ? `outline ${typeToOutlineColor[taskType]} outline-offset-0 outline-1`
+      : "";
 
   return (
-    <Card className={`${miniTaskHover} ${miniTaskActive} shadow-md`}>
-      <div className={`flex justify-between py-3 px-5 ${gradientColor}`}>
+    <Card
+      className={`shadow-md hover:shadow-lg text-start ${miniTaskSelected}`}
+      isPressable={true}
+      onPress={handleClick}
+    >
+      <div className={`flex justify-between py-3 px-5 w-full ${gradientColor}`}>
         <div>
           <div className="flex">
             {type && <MiniTaskType type={taskType} />}
@@ -56,9 +97,7 @@ export function MiniTask({
             </>
           )}
           <div className="flex justify-center">
-            <Button isIconOnly radius="full" size="sm" variant="light">
-              <MdMoreHoriz className="text-lg" />
-            </Button>
+            <MiniTaskMoreDropdown />
           </div>
         </div>
       </div>
@@ -96,5 +135,24 @@ function MiniTaskPriority({ priority }: { priority: Priority }) {
     <div className={`${colorClass} font-semibold`}>
       {priority.replace(/Very/, "Very ")}
     </div>
+  );
+}
+
+function MiniTaskMoreDropdown() {
+  return (
+    <Dropdown className="min-w-fit">
+      <DropdownTrigger>
+        <Button isIconOnly radius="full" size="sm" variant="light">
+          <MdMoreHoriz className="text-lg" />
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu>
+        <DropdownItem key="assignToMe">Assign to me</DropdownItem>
+        <DropdownItem key="edit">Edit</DropdownItem>
+        <DropdownItem key="delete" className="text-danger" color="danger">
+          Delete
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
   );
 }
