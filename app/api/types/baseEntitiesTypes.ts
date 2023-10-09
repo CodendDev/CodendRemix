@@ -95,9 +95,9 @@ export interface UserDetails {
  * Represents board entity.
  */
 export interface Board {
-  Tasks: BoardProjectTask[];
-  Stories: BoardStory[];
-  Epics: BoardEpic[];
+  tasks: BoardProjectTask[];
+  stories: BoardStory[];
+  epics: BoardEpic[];
 }
 
 /**
@@ -130,17 +130,6 @@ export interface BoardProjectTask {
   statusId: string;
   storyId?: string;
   assigneeId?: string;
-}
-
-/**
- * Represents boardMiniTask entity.
- */
-export interface BoardMiniTask {
-  id: string;
-  taskType: TaskType;
-  name: string;
-  priority?: Priority;
-  avatarUrl?: string;
 }
 
 //
