@@ -1,41 +1,36 @@
-import type { Project } from "~/api/types/baseEntitiesTypes";
+import type { PagedResponse, Project } from "~/api/types/baseEntitiesTypes";
 import ProjectNavigationList from "~/components/projectNavigation/ProjectNavigationList";
 import ProjectNavigationActionsList from "~/components/projectNavigation/ProjectNavigationActionsList";
-import { useLocation } from "@remix-run/react";
-import React from "react";
-import { Divider } from "@nextui-org/react";
+import { Await, useLocation } from "@remix-run/react";
+import React, { Suspense } from "react";
 
 type ProjectNavigationBarProps = {
-  projects: Project[];
-  selectedProjectId?: string;
+  projectsPromise: Promise<PagedResponse<Project>>;
 };
 
 export function ProjectNavigationBar({
-  projects,
-  selectedProjectId,
+  projectsPromise,
 }: ProjectNavigationBarProps) {
-  const action = useLocation().pathname.replace(
-    `/project/${selectedProjectId}/`,
-    ""
-  );
-
-  const project = projects.find((p) => p.id === selectedProjectId);
+  const projectId = useLocation()
+    .pathname.toLowerCase()
+    .replace("/project/", "")
+    .slice(0, 36);
 
   return (
     <div className="flex flex-col">
-      <ProjectNavigationList {...{ projects, selectedProjectId }} />
-      {project && <ProjectNameDivider {...project} />}
-      {selectedProjectId && <ProjectNavigationActionsList action={action} />}
-    </div>
-  );
-}
-
-function ProjectNameDivider({ name }: { name: string }) {
-  return (
-    <div className="p-2">
-      <Divider orientation="horizontal" />
-      <div className="w-full text-center">{name}</div>
-      <Divider orientation="horizontal" />
+      <Suspense fallback={<>Loading</>}>
+        <Await resolve={projectsPromise} errorElement={<>Error</>}>
+          {(projects) => (
+            <>
+              <ProjectNavigationList
+                projects={projects.data!.items}
+                selectedProjectId={projectId}
+              />
+              <ProjectNavigationActionsList projectId={projectId} />
+            </>
+          )}
+        </Await>
+      </Suspense>
     </div>
   );
 }
