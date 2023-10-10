@@ -1,8 +1,9 @@
 import type { Project } from "~/api/types/baseEntitiesTypes";
 import { Accordion, AccordionItem } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "@remix-run/react";
 import { AiOutlineFileSearch } from "react-icons/ai/index.js";
+import { ProjectNavigationBarContext } from "~/components/projectNavigation/ProjectNavigationBar";
 
 type ProjectNavigationListProps = {
   projects: Project[];
@@ -67,12 +68,14 @@ function ProjectListItem({
   setSelect: () => void;
 }) {
   const navigate = useNavigate();
+  const nameContext = useContext(ProjectNavigationBarContext);
 
   return (
     <div
       onClick={() => {
         navigate(`/project/${id}`);
         setSelect();
+        nameContext.setProjectName(name);
       }}
       className={`cursor-pointer p-2 text-center hover:bg-gray-100 
       ${
