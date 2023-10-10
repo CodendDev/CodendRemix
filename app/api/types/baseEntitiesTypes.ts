@@ -95,9 +95,9 @@ export interface UserDetails {
  * Represents board entity.
  */
 export interface Board {
-  Tasks: BoardProjectTask[];
-  Stories: BoardStory[];
-  Epics: BoardEpic[];
+  tasks: BoardProjectTask[];
+  stories: BoardStory[];
+  epics: BoardEpic[];
 }
 
 /**
@@ -152,7 +152,7 @@ export interface EstimatedTime {
 /**
  * Represents TaskType.
  */
-export type TaskType = "Base" | "Bugfix";
+export type TaskType = "Base" | "Bugfix" | "Story" | "Epic";
 
 /**
  * Represents Priority.
