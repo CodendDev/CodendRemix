@@ -9,7 +9,10 @@ type ProjectNavigationListProps = {
   selectedProjectId?: string;
 };
 
-export function ProjectNavigationList(props: ProjectNavigationListProps) {
+export function ProjectNavigationList({
+  projects,
+  selectedProjectId,
+}: ProjectNavigationListProps) {
   const title = (
     <div className="flex flex-row">
       <div className="flex items-center justify-center">
@@ -22,7 +25,10 @@ export function ProjectNavigationList(props: ProjectNavigationListProps) {
   return (
     <Accordion defaultExpandedKeys={["Projects"]} className="text-center">
       <AccordionItem key="Projects" aria-label="Projects" title={title}>
-        <ProjectList {...props} />
+        <ProjectList
+          projects={projects}
+          selectedProjectId={selectedProjectId}
+        />
       </AccordionItem>
     </Accordion>
   );
@@ -38,12 +44,13 @@ function ProjectList({
 
   return (
     <div className="flex flex-col">
-      {projects.map((project, i) => (
+      {projects.map(({ id, name }, i) => (
         <ProjectListItem
           key={i}
-          {...project}
-          selected={project.id == selected}
-          setSelect={() => setSelected(project.id)}
+          id={id}
+          name={name}
+          selected={id == selected}
+          setSelect={() => setSelected(id)}
         />
       ))}
     </div>

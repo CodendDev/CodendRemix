@@ -9,20 +9,19 @@ import {
   FaClipboardList,
 } from "~/components/projectNavigation/icons";
 
-export function ProjectNavigationActionsList({ action }: { action: string }) {
+export function ProjectNavigationActionsList({
+  projectId,
+}: {
+  projectId: string;
+}) {
   const navigate = useNavigate();
 
   return (
-    <Listbox
-      label="Project actions"
-      selectionMode="single"
-      defaultSelectedKeys={[action]}
-      disallowEmptySelection
-    >
+    <Listbox label="Project actions">
       {actions().map(({ name, redirectUrl, icon }, index) => (
         <ListboxItem
           key={name.toLowerCase()}
-          onClick={async () => navigate(redirectUrl)}
+          onClick={async () => navigate(`/project/${projectId}/${redirectUrl}`)}
           startContent={icon}
         >
           {name}
