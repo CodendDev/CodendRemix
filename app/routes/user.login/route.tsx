@@ -65,7 +65,7 @@ export default function Login() {
         isRequired={true}
         errorMessage={error && "Invalid email or password"}
       />
-      <div className="flex align-middle justify-between my-5">
+      <div className="my-5 flex justify-between align-middle">
         <Checkbox
           size="lg"
           name="remember"

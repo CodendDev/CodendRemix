@@ -22,9 +22,9 @@ export function StatusContainer({
   tasks,
 }: BoardStatusContainerProps) {
   return (
-    <div className="flex flex-col h-full w-full min-w-[300px]">
+    <div className="flex h-full w-full min-w-[300px] flex-col">
       <StatusContainerHeader name={name} />
-      <Card className="flex flex-col h-full bg-gray-100 py-6 px-4 gap-4 shadow-none">
+      <Card className="flex h-full flex-col gap-4 bg-gray-100 px-4 py-6 shadow-none">
         {tasks.map((task) => (
           <MiniTask {...task} key={task.id} />
         ))}
