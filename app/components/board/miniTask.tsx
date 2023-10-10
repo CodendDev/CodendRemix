@@ -71,11 +71,11 @@ export function MiniTask({
 
   return (
     <Card
-      className={`shadow-md hover:shadow-lg text-start ${miniTaskSelected}`}
+      className={`text-start shadow-md hover:shadow-lg ${miniTaskSelected}`}
       isPressable={true}
       onPress={handleClick}
     >
-      <div className={`flex justify-between py-3 px-5 w-full ${gradientColor}`}>
+      <div className={`flex w-full justify-between px-5 py-3 ${gradientColor}`}>
         <div>
           <div className="flex">
             {type && <MiniTaskType type={taskType} />}
@@ -88,7 +88,7 @@ export function MiniTask({
           </div>
           <div>{name}</div>
         </div>
-        <div className="flex flex-col justify-center items-center gap-1">
+        <div className="flex flex-col items-center justify-center gap-1">
           {avatarUrl && (
             <>
               <div className="flex justify-center ">

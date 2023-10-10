@@ -7,7 +7,7 @@ export default function User() {
   if (location === "login" || location === "register") {
     return (
       <div
-        className="flex align-middle flex-col justify-center"
+        className="flex flex-col justify-center align-middle"
         style={{ height: "100dvh" }}
       >
         <div className="">
@@ -16,13 +16,13 @@ export default function User() {
             aria-label="options"
             selectedKey={location}
             onSelectionChange={(key) => navigate(`/user/${key}`)}
-            className="flex justify-center mt-5"
+            className="mt-5 flex justify-center"
           >
             <Tab key="login" title="Login" />
             <Tab key="register" title="Sign up" />
           </Tabs>
         </div>
-        <div className="flex justify-center mt-5">
+        <div className="mt-5 flex justify-center">
           <Outlet />
         </div>
       </div>
