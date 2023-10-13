@@ -17,6 +17,8 @@ export const ApiErrors = {
       EmailAddressNotValid: "Validation.EmailAddress.NotValid",
     },
     Password: {
+      PasswordsDoesntMatch: "UI.Password.PasswordsDoesntMatch",
+      PasswordDoesntMatchRules: "UI.Password.PasswordDoesntMatchRules",
       PasswordTooShort: "Validation.Password.TooShort",
       PasswordNotContainLowercaseLetter:
         "Validation.Password.NotContainLowercaseLetter",
@@ -36,7 +38,7 @@ declare global {
      *
      * @param code error code
      */
-    hasError(code: ApiErrorCode): boolean;
+    hasError(code: ApiErrorCode | string): boolean;
   }
 }
 
@@ -44,8 +46,11 @@ if (!Array.prototype.hasError) {
   // eslint-disable-next-line no-extend-native
   Array.prototype.hasError = function <T extends ApiErrorResponse>(
     this: Array<T>,
-    code: ApiErrorCode
+    code: ApiErrorCode | string
   ) {
-    return this.filter((e) => e.errorCode === code).length > 0;
+    return (
+      this.filter((e) => e.errorCode === code || e.toString() === code).length >
+      0
+    );
   };
 }
