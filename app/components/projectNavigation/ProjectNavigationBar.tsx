@@ -1,42 +1,96 @@
-import type { Project } from "~/api/types/baseEntitiesTypes";
-import ProjectNavigationList from "~/components/projectNavigation/ProjectNavigationList";
-import ProjectNavigationActionsList from "~/components/projectNavigation/ProjectNavigationActionsList";
-import { useLocation } from "@remix-run/react";
-import React from "react";
-import { Divider } from "@nextui-org/react";
+import type { PagedResponse, Project } from "~/api/types/baseEntitiesTypes";
+import ProjectNavigationList, {
+  LoadingProjectNavigationList,
+} from "~/components/projectNavigation/ProjectNavigationList";
+import ProjectNavigationActionsList, {
+  LoadingProjectNavigationActionsList,
+} from "~/components/projectNavigation/ProjectNavigationActionsList";
+import { Await, useLocation } from "@remix-run/react";
+import React, { Suspense, useState } from "react";
+import ProjectNameDivider, {
+  LoadingProjectNameDivider,
+} from "~/components/projectNavigation/ProjectNameDivider";
 
 type ProjectNavigationBarProps = {
-  projects: Project[];
-  selectedProjectId?: string;
+  projectsPromise: Promise<PagedResponse<Project>>;
 };
 
-export function ProjectNavigationBar({
-  projects,
-  selectedProjectId,
-}: ProjectNavigationBarProps) {
-  const action = useLocation().pathname.replace(
-    `/project/${selectedProjectId}/`,
-    ""
-  );
+export const ProjectNavigationBarContext = React.createContext<{
+  setProjectName: (name: string) => void;
+}>({
+  setProjectName: () => {},
+});
 
-  const project = projects.find((p) => p.id === selectedProjectId);
+export function ProjectNavigationBar({
+  projectsPromise,
+}: ProjectNavigationBarProps) {
+  const projectId = useLocation()
+    .pathname.toLowerCase()
+    .replace("/project/", "")
+    .slice(0, 36);
 
   return (
     <div className="flex flex-col">
-      <ProjectNavigationList {...{ projects, selectedProjectId }} />
-      {project && <ProjectNameDivider {...project} />}
-      {selectedProjectId && <ProjectNavigationActionsList action={action} />}
+      <Suspense fallback={<LoadingProjectNavigationBar />}>
+        <Await
+          resolve={projectsPromise}
+          errorElement={<ErrorProjectNavigationBar />}
+        >
+          {(projects) => (
+            <AwaitedProjectNavigationBar
+              projects={projects.data!.items}
+              projectId={projectId}
+            />
+          )}
+        </Await>
+      </Suspense>
     </div>
   );
 }
 
-function ProjectNameDivider({ name }: { name: string }) {
+function ErrorProjectNavigationBar() {
   return (
-    <div className="p-2">
-      <Divider orientation="horizontal" />
-      <div className="w-full text-center">{name}</div>
-      <Divider orientation="horizontal" />
-    </div>
+    <>
+      <LoadingProjectNavigationList error />
+      <LoadingProjectNameDivider />
+      <LoadingProjectNavigationActionsList />
+    </>
+  );
+}
+
+function LoadingProjectNavigationBar() {
+  return (
+    <>
+      <LoadingProjectNavigationList />
+      <LoadingProjectNameDivider />
+      <LoadingProjectNavigationActionsList />
+    </>
+  );
+}
+
+function AwaitedProjectNavigationBar({
+  projectId,
+  projects,
+}: {
+  projectId: string;
+  projects: Project[];
+}) {
+  const project = projects.find((p) => p.id === projectId);
+  const [name, setName] = useState<string | undefined>(project?.name);
+
+  return (
+    <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
+      <ProjectNavigationList
+        projects={projects}
+        selectedProjectId={projectId}
+      />
+      {name && (
+        <>
+          <ProjectNameDivider name={name} />
+          <ProjectNavigationActionsList projectId={projectId} />{" "}
+        </>
+      )}
+    </ProjectNavigationBarContext.Provider>
   );
 }
 

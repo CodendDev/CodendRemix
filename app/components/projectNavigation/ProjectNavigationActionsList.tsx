@@ -1,5 +1,5 @@
 import React from "react";
-import { Listbox, ListboxItem } from "@nextui-org/react";
+import { Listbox, ListboxItem, Skeleton } from "@nextui-org/react";
 import { useNavigate } from "@remix-run/react";
 import {
   FiUsers,
@@ -9,20 +9,19 @@ import {
   FaClipboardList,
 } from "~/components/projectNavigation/icons";
 
-export function ProjectNavigationActionsList({ action }: { action: string }) {
+export function ProjectNavigationActionsList({
+  projectId,
+}: {
+  projectId: string;
+}) {
   const navigate = useNavigate();
 
   return (
-    <Listbox
-      label="Project actions"
-      selectionMode="single"
-      defaultSelectedKeys={[action]}
-      disallowEmptySelection
-    >
+    <Listbox label="Project actions">
       {actions().map(({ name, redirectUrl, icon }, index) => (
         <ListboxItem
           key={name.toLowerCase()}
-          onClick={async () => navigate(redirectUrl)}
+          onClick={async () => navigate(`/project/${projectId}/${redirectUrl}`)}
           startContent={icon}
         >
           {name}
@@ -30,6 +29,14 @@ export function ProjectNavigationActionsList({ action }: { action: string }) {
       ))}
     </Listbox>
   );
+}
+
+export function LoadingProjectNavigationActionsList() {
+  return [...Array(5)].map((e, i) => (
+    <Skeleton key={i} className="m-2 w-2/4 rounded-lg">
+      <div className="h-6 w-0.5"></div>
+    </Skeleton>
+  ));
 }
 
 function actions(): {
