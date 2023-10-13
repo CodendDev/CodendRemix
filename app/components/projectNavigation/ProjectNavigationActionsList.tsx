@@ -1,5 +1,5 @@
 import React from "react";
-import { Listbox, ListboxItem } from "@nextui-org/react";
+import { Listbox, ListboxItem, Skeleton } from "@nextui-org/react";
 import { useNavigate } from "@remix-run/react";
 import {
   FiUsers,
@@ -29,6 +29,14 @@ export function ProjectNavigationActionsList({
       ))}
     </Listbox>
   );
+}
+
+export function LoadingProjectNavigationActionsList() {
+  return [...Array(5)].map((e, i) => (
+    <Skeleton key={i} className="m-2 w-2/4 rounded-lg">
+      <div className="h-6 w-0.5"></div>
+    </Skeleton>
+  ));
 }
 
 function actions(): {

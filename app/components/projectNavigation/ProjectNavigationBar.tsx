@@ -1,9 +1,15 @@
 import type { PagedResponse, Project } from "~/api/types/baseEntitiesTypes";
-import ProjectNavigationList from "~/components/projectNavigation/ProjectNavigationList";
-import ProjectNavigationActionsList from "~/components/projectNavigation/ProjectNavigationActionsList";
+import ProjectNavigationList, {
+  LoadingProjectNavigationList,
+} from "~/components/projectNavigation/ProjectNavigationList";
+import ProjectNavigationActionsList, {
+  LoadingProjectNavigationActionsList,
+} from "~/components/projectNavigation/ProjectNavigationActionsList";
 import { Await, useLocation } from "@remix-run/react";
 import React, { Suspense, useState } from "react";
-import ProjectNameDivider from "~/components/projectNavigation/ProjectNameDivider";
+import ProjectNameDivider, {
+  LoadingProjectNameDivider,
+} from "~/components/projectNavigation/ProjectNameDivider";
 
 type ProjectNavigationBarProps = {
   projectsPromise: Promise<PagedResponse<Project>>;
@@ -25,7 +31,7 @@ export function ProjectNavigationBar({
 
   return (
     <div className="flex flex-col">
-      <Suspense fallback={<>Loading</>}>
+      <Suspense fallback={<LoadingProjectNavigationBar />}>
         <Await resolve={projectsPromise} errorElement={<>Error</>}>
           {(projects) => (
             <AwaitedProjectNavigationBar
@@ -36,6 +42,16 @@ export function ProjectNavigationBar({
         </Await>
       </Suspense>
     </div>
+  );
+}
+
+function LoadingProjectNavigationBar() {
+  return (
+    <>
+      <LoadingProjectNavigationList />
+      <LoadingProjectNameDivider />
+      <LoadingProjectNavigationActionsList />
+    </>
   );
 }
 

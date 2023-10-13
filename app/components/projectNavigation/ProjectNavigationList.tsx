@@ -1,5 +1,5 @@
 import type { Project } from "~/api/types/baseEntitiesTypes";
-import { Accordion, AccordionItem } from "@nextui-org/react";
+import { Accordion, AccordionItem, Skeleton } from "@nextui-org/react";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "@remix-run/react";
 import { AiOutlineFileSearch } from "react-icons/ai/index.js";
@@ -14,24 +14,48 @@ export function ProjectNavigationList({
   projects,
   selectedProjectId,
 }: ProjectNavigationListProps) {
-  const title = (
-    <div className="flex flex-row">
-      <div className="flex items-center justify-center">
-        <AiOutlineFileSearch />
-      </div>
-      Projects
-    </div>
-  );
-
   return (
     <Accordion defaultExpandedKeys={["Projects"]} className="text-center">
-      <AccordionItem key="Projects" aria-label="Projects" title={title}>
+      <AccordionItem
+        key="Projects"
+        aria-label="Projects"
+        title={<ProjectNavigationListTitle />}
+      >
         <ProjectList
           projects={projects}
           selectedProjectId={selectedProjectId}
         />
       </AccordionItem>
     </Accordion>
+  );
+}
+
+export function LoadingProjectNavigationList() {
+  return (
+    <Accordion defaultExpandedKeys={["Projects"]} className="text-center">
+      <AccordionItem
+        key="Projects"
+        aria-label="Projects"
+        title={<ProjectNavigationListTitle />}
+      >
+        {[...Array(4)].map((e, i) => (
+          <Skeleton key={i} className="m-3 rounded-lg">
+            <div className="h-7 w-4/5 rounded-lg bg-default-200"></div>
+          </Skeleton>
+        ))}
+      </AccordionItem>
+    </Accordion>
+  );
+}
+
+function ProjectNavigationListTitle() {
+  return (
+    <div className="flex flex-row">
+      <div className="flex items-center justify-center">
+        <AiOutlineFileSearch />
+      </div>
+      Projects
+    </div>
   );
 }
 
