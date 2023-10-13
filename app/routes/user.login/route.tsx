@@ -42,8 +42,6 @@ export default function Login() {
     ApiErrors.LoginErrors.InvalidEmailOrPassword
   );
 
-  console.log(error);
-
   const [checked, setChecked] = useState<boolean>(false);
   return (
     <form className="max-w-lg grow px-5" method="post">
