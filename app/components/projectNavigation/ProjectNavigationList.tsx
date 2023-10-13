@@ -30,7 +30,7 @@ export function ProjectNavigationList({
   );
 }
 
-export function LoadingProjectNavigationList() {
+export function LoadingProjectNavigationList({ error }: { error?: boolean }) {
   return (
     <Accordion defaultExpandedKeys={["Projects"]} className="text-center">
       <AccordionItem
@@ -39,8 +39,12 @@ export function LoadingProjectNavigationList() {
         title={<ProjectNavigationListTitle />}
       >
         {[...Array(4)].map((e, i) => (
-          <Skeleton key={i} className="m-3 rounded-lg">
-            <div className="h-7 w-4/5 rounded-lg bg-default-200"></div>
+          <Skeleton key={i} className="m-3 w-4/5 rounded-lg" isLoaded={error}>
+            <div
+              className={`h-7 rounded-lg bg-default-200 ${
+                error && "bg-gradient-to-r from-red-500"
+              }`}
+            ></div>
           </Skeleton>
         ))}
       </AccordionItem>
