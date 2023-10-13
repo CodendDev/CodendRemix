@@ -32,7 +32,10 @@ export function ProjectNavigationBar({
   return (
     <div className="flex flex-col">
       <Suspense fallback={<LoadingProjectNavigationBar />}>
-        <Await resolve={projectsPromise} errorElement={<>Error</>}>
+        <Await
+          resolve={projectsPromise}
+          errorElement={<ErrorProjectNavigationBar />}
+        >
           {(projects) => (
             <AwaitedProjectNavigationBar
               projects={projects.data!.items}
@@ -42,6 +45,16 @@ export function ProjectNavigationBar({
         </Await>
       </Suspense>
     </div>
+  );
+}
+
+function ErrorProjectNavigationBar() {
+  return (
+    <>
+      <LoadingProjectNavigationList error />
+      <LoadingProjectNameDivider />
+      <LoadingProjectNavigationActionsList />
+    </>
   );
 }
 
