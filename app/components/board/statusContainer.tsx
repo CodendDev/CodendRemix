@@ -8,7 +8,8 @@ import {
 } from "@nextui-org/react";
 import { MdMoreHoriz, MdAddCircleOutline } from "react-icons/md/index.js";
 import React from "react";
-import MiniTask, { MiniTaskProps } from "~/components/board/miniTask";
+import type { MiniTaskProps } from "~/components/board/miniTask";
+import MiniTask from "~/components/board/miniTask";
 
 type BoardStatusContainerProps = {
   name: string;
@@ -51,7 +52,7 @@ function StatusContainerHeader({ name }: { name: string }) {
               <MdMoreHoriz className={iconsStyle} />
             </Button>
           </DropdownTrigger>
-          <DropdownMenu>
+          <DropdownMenu aria-label="More">
             <DropdownItem key="edit">Edit name</DropdownItem>
             <DropdownItem key="delete" className="text-danger" color="danger">
               Delete

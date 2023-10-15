@@ -1,12 +1,11 @@
-import React, {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useState,
-} from "react";
-import { MiniTaskProps } from "~/components/board/miniTask";
-import { boardData, statusesData } from "~/components/board/tempData";
+import type { Dispatch, SetStateAction } from "react";
+import React, { createContext, Suspense, useState } from "react";
+import type { MiniTaskProps } from "~/components/board/miniTask";
 import StatusContainer from "~/components/board/statusContainer";
+import type { Board, ProjectTaskStatus } from "~/api/types/baseEntitiesTypes";
+import { Await } from "@remix-run/react";
+import type { ProjectBoardResponse } from "~/api/types/projectTypes";
+import type { ProjectTaskStatusesResponse } from "~/api/types/projectTaskStatusesTypes";
 
 interface SelectedMiniTaskContextType {
   selectedMiniTaskId: string | null;
@@ -19,14 +18,55 @@ export const SelectedMiniTaskContext =
     setSelectedMiniTaskId: () => {},
   });
 
-export function BoardContainer() {
+type BoardContainerProps = {
+  boardPromise: Promise<ProjectBoardResponse>;
+  statusesPromise: Promise<ProjectTaskStatusesResponse>;
+};
+
+export function BoardContainer({
+  boardPromise,
+  statusesPromise,
+}: BoardContainerProps) {
   const [selectedMiniTaskId, setSelectedMiniTaskId] = useState<string | null>(
     null
   );
 
-  const statuses = statusesData;
-  const board = boardData;
+  return (
+    <div className="flex h-full gap-6 p-4">
+      <SelectedMiniTaskContext.Provider
+        value={{ selectedMiniTaskId, setSelectedMiniTaskId }}
+      >
+        <Suspense>
+          <Await resolve={statusesPromise}>
+            {(statusesResponse) => (
+              <Suspense>
+                <Await resolve={boardPromise}>
+                  {(boardResponse) => (
+                    <AwaitedBoardContainer
+                      statuses={statusesResponse.projectTaskStatuses}
+                      board={boardResponse.board}
+                    />
+                  )}
+                </Await>
+              </Suspense>
+            )}
+          </Await>
+        </Suspense>
+      </SelectedMiniTaskContext.Provider>
+    </div>
+  );
+}
 
+export default BoardContainer;
+
+function AwaitedBoardContainer({
+  statuses,
+  board,
+}: {
+  statuses: ProjectTaskStatus[];
+  board: Board;
+}) {
+  /* Probably will be replaced, when backend endpoint will be improved. */
   const tasksForStatus = (statusId: string): MiniTaskProps[] => {
     let tasks = board.tasks.filter((task) => task.statusId === statusId);
     let epics = board.epics.filter((story) => story.statusId === statusId);
@@ -48,21 +88,15 @@ export function BoardContainer() {
   };
 
   return (
-    <div className="flex h-full p-4 gap-6">
-      <SelectedMiniTaskContext.Provider
-        value={{ selectedMiniTaskId, setSelectedMiniTaskId }}
-      >
-        {statuses.map((status) => (
-          <StatusContainer
-            key={status.id}
-            statusId={status.id}
-            name={status.name}
-            tasks={tasksForStatus(status.id)}
-          />
-        ))}
-      </SelectedMiniTaskContext.Provider>
-    </div>
+    <>
+      {statuses.map((status) => (
+        <StatusContainer
+          key={status.id}
+          statusId={status.id}
+          name={status.name}
+          tasks={tasksForStatus(status.id)}
+        />
+      ))}
+    </>
   );
 }
-
-export default BoardContainer;
