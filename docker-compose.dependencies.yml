@@ -12,7 +12,7 @@ services:
           "CMD-SHELL",
           "curl -f http://backend:5000/",
           "||",
-          "curl -f http://fusionauth:9011/api/status"
+          "curl -f http://fusionauth:9011/api/status",
         ]
       interval: 5s
       timeout: 5s
@@ -26,7 +26,7 @@ services:
 
   backend:
     container_name: ui_codend_backend
-    image: codend.azurecr.io/codend/backend:latest
+    image: codend/backend
     depends_on:
       postgres:
         condition: service_healthy
@@ -47,7 +47,7 @@ services:
     container_name: ui_codend_postgres
     image: postgres:latest
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -60,7 +60,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - /var/lib/postgresql/data
+      - ui_codend_postgres_data:/var/lib/postgresql/data
 
   fusionauth:
     container_name: ui_codend_fusionauth
@@ -82,9 +82,13 @@ services:
     networks:
       - codend_database
     volumes:
-      - /usr/local/fusionauth/config
+      - ui_codend_fusionauth_config:/usr/local/fusionauth/config
       - ./kickstart:/usr/local/fusionauth/kickstart
 
 networks:
   codend_database:
   codend_backend:
+
+volumes:
+  ui_codend_postgres_data:
+  ui_codend_fusionauth_config:
