@@ -1,13 +1,13 @@
-import { Priority, TaskType } from "~/api/types/baseEntitiesTypes";
+import type { Priority, TaskType } from "~/api/types/baseEntitiesTypes";
 import { Card } from "@nextui-org/card";
 import {
   Avatar,
   Spacer,
-  Button,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Link,
 } from "@nextui-org/react";
 import { MdMoreHoriz } from "react-icons/md/index.js";
 import React, { useContext } from "react";
@@ -124,7 +124,7 @@ function MiniTaskPriority({ priority }: { priority: Priority }) {
   const priorityToColorClass: Record<Priority, string> = {
     VeryHigh: "text-red-500",
     High: "text-orange-500",
-    Medium: "text-yellow-500",
+    Normal: "text-yellow-500",
     Low: "text-emerald-500",
     VeryLow: "text-teal-500",
   };
@@ -142,11 +142,11 @@ function MiniTaskMoreDropdown() {
   return (
     <Dropdown className="min-w-fit">
       <DropdownTrigger>
-        <Button isIconOnly radius="full" size="sm" variant="light">
+        <Link isBlock>
           <MdMoreHoriz className="text-lg" />
-        </Button>
+        </Link>
       </DropdownTrigger>
-      <DropdownMenu>
+      <DropdownMenu aria-label="More">
         <DropdownItem key="assignToMe">Assign to me</DropdownItem>
         <DropdownItem key="edit">Edit</DropdownItem>
         <DropdownItem key="delete" className="text-danger" color="danger">
