@@ -1,7 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
 import React, { createContext, Suspense, useState } from "react";
-import type { MiniTaskProps } from "~/components/board/miniTask";
-import StatusContainer from "~/components/board/statusContainer";
+import type { MiniTaskProps } from "~/components/board/ProjectBoardTask";
+import ProjectTaskStatusContainer, {
+  ProjectTaskStatusContainerLoading,
+} from "~/components/board/ProjectTaskStatusContainer";
 import type { Board, ProjectTaskStatus } from "~/api/types/baseEntitiesTypes";
 import { Await } from "@remix-run/react";
 import type { ProjectBoardResponse } from "~/api/types/projectTypes";
@@ -23,7 +25,7 @@ type BoardContainerProps = {
   statusesPromise: Promise<ProjectTaskStatusesResponse>;
 };
 
-export function BoardContainer({
+export function ProjectBoard({
   boardPromise,
   statusesPromise,
 }: BoardContainerProps) {
@@ -36,10 +38,16 @@ export function BoardContainer({
       <SelectedMiniTaskContext.Provider
         value={{ selectedMiniTaskId, setSelectedMiniTaskId }}
       >
-        <Suspense>
+        <Suspense fallback={<ProjectBoardLoading />}>
           <Await resolve={statusesPromise}>
             {(statusesResponse) => (
-              <Suspense>
+              <Suspense
+                fallback={
+                  <ProjectBoardLoading
+                    statuses={statusesResponse.projectTaskStatuses}
+                  />
+                }
+              >
                 <Await resolve={boardPromise}>
                   {(boardResponse) => (
                     <AwaitedBoardContainer
@@ -57,7 +65,23 @@ export function BoardContainer({
   );
 }
 
-export default BoardContainer;
+export default ProjectBoard;
+
+function ProjectBoardLoading({ statuses }: { statuses?: ProjectTaskStatus[] }) {
+  return statuses ? (
+    <>
+      {statuses.map((status) => (
+        <ProjectTaskStatusContainerLoading key={status.id} name={status.name} />
+      ))}
+    </>
+  ) : (
+    <>
+      <ProjectTaskStatusContainerLoading />
+      <ProjectTaskStatusContainerLoading />
+      <ProjectTaskStatusContainerLoading />
+    </>
+  );
+}
 
 function AwaitedBoardContainer({
   statuses,
@@ -68,29 +92,31 @@ function AwaitedBoardContainer({
 }) {
   /* Probably will be replaced, when backend endpoint will be improved. */
   const tasksForStatus = (statusId: string): MiniTaskProps[] => {
-    let tasks = board.tasks.filter((task) => task.statusId === statusId);
-    let epics = board.epics.filter((story) => story.statusId === statusId);
-    let stories = board.stories.filter((epics) => epics.statusId === statusId);
+    const tasks = board.tasks.filter((task) => task.statusId === statusId);
+    const epics = board.epics.filter((story) => story.statusId === statusId);
+    const stories = board.stories.filter(
+      (epics) => epics.statusId === statusId
+    );
     return tasks
-      .map((task): MiniTaskProps => {
-        return { ...task, relatedTaskId: task.storyId };
-      })
+      .map((task): MiniTaskProps => ({ ...task, relatedTaskId: task.storyId }))
       .concat(
-        epics.map((epic): MiniTaskProps => {
-          return { ...epic, taskType: "Epic" };
-        })
+        epics.map((epic): MiniTaskProps => ({ ...epic, taskType: "Epic" }))
       )
       .concat(
-        stories.map((story): MiniTaskProps => {
-          return { ...story, taskType: "Story", relatedTaskId: story.epicId };
-        })
+        stories.map(
+          (story): MiniTaskProps => ({
+            ...story,
+            taskType: "Story",
+            relatedTaskId: story.epicId,
+          })
+        )
       );
   };
 
   return (
     <>
       {statuses.map((status) => (
-        <StatusContainer
+        <ProjectTaskStatusContainer
           key={status.id}
           statusId={status.id}
           name={status.name}
