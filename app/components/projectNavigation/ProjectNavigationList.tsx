@@ -19,6 +19,7 @@ export function ProjectNavigationList({
       <AccordionItem
         key="Projects"
         aria-label="Projects"
+        className="min-w-[200px]"
         title={<ProjectNavigationListTitle />}
       >
         <ProjectList
@@ -72,7 +73,7 @@ function ProjectList({
   );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex min-w-full flex-col">
       {projects.map(({ id, name }, i) => (
         <ProjectListItem
           key={i}
