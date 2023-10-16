@@ -12,9 +12,12 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div>
-      <Link to="/user">
-        <Button>User account</Button>
-      </Link>
+      <Button as={Link} to="/user">
+        User account
+      </Button>
+      <Button as={Link} to="/project">
+        Project
+      </Button>
     </div>
   );
 }
