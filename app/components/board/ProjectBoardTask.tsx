@@ -8,10 +8,11 @@ import {
   DropdownMenu,
   DropdownItem,
   Link,
+  Skeleton,
 } from "@nextui-org/react";
 import { MdMoreHoriz } from "react-icons/md/index.js";
 import React, { useContext } from "react";
-import { SelectedMiniTaskContext } from "~/components/board/boardContainer";
+import { SelectedMiniTaskContext } from "~/components/board/ProjectBoard";
 
 export type MiniTaskProps = {
   id: string;
@@ -43,7 +44,7 @@ const typeToOutlineColor: Record<TaskType, string> = {
   Epic: "outline-purple-500",
 };
 
-export function MiniTask({
+export function ProjectBoardTask({
   id,
   name,
   priority,
@@ -105,7 +106,11 @@ export function MiniTask({
   );
 }
 
-export default MiniTask;
+export default ProjectBoardTask;
+
+export function ProjectBoardTaskLoading() {
+  return <Skeleton className="h-16 rounded-lg" />;
+}
 
 function MiniTaskType({ type }: { type: TaskType }) {
   const taskTypeToColorClass: Record<TaskType, string> = {
