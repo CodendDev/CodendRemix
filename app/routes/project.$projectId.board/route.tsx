@@ -24,7 +24,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return defer({ boardPromise, statusesPromise });
 };
 
-export default function Projects() {
+export default function BoardPage() {
   const { boardPromise, statusesPromise } = useLoaderData() as any;
 
   return (

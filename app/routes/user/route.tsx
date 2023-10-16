@@ -1,5 +1,20 @@
 import { Outlet, useLocation, useNavigate } from "@remix-run/react";
-import { Tabs, Tab } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
+import getToken from "~/actions/getToken";
+import type { ActionFunctionArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+
+export const loader = async ({ request }: ActionFunctionArgs) => {
+  const token = await getToken(request);
+
+  // redirect to login page if user is not logged in
+  const userRegex = new RegExp("^\\/user\\/?$");
+  if (!token && userRegex.test(new URL(request.url).pathname)) {
+    return redirect("/user/login");
+  }
+
+  return null;
+};
 
 export default function User() {
   const navigate = useNavigate();
