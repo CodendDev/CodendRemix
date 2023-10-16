@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import BoardContainer from "~/components/board/boardContainer";
+import ProjectBoard from "~/components/board/ProjectBoard";
 import getToken from "~/actions/getToken";
 import { getBoard } from "~/api/methods/project";
 import { defer, redirect } from "@remix-run/node";
@@ -25,14 +25,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 };
 
 export default function BoardPage() {
-  const { boardPromise, statusesPromise } = useLoaderData() as any;
+  const loaderData = useLoaderData<typeof loader>();
+  // @ts-ignore
+  const { boardPromise, statusesPromise } = loaderData;
 
   return (
-    <div>
-      <BoardContainer
-        boardPromise={boardPromise}
-        statusesPromise={statusesPromise}
-      ></BoardContainer>
-    </div>
+    <ProjectBoard
+      boardPromise={boardPromise}
+      statusesPromise={statusesPromise}
+    />
   );
 }
