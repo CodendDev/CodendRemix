@@ -5,6 +5,8 @@ import getToken from "~/actions/getToken";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { defer, redirect } from "@remix-run/node";
 import { getPagedProjects } from "~/api/methods/project";
+import { RxRows } from "react-icons/rx/index.js";
+import { AiOutlineClose } from "react-icons/ai/index.js";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -22,13 +24,26 @@ export default function ProjectPage() {
   // @ts-ignore
   const { projects } = loaderData;
 
+  const [isMenuOpen, setIsMenuOpen] = React.useState(true);
+
   return (
-    <div className="flex flex-row">
-      <div className="w-[200px] min-w-[140px]">
-        <ProjectNavigationBar projectsPromise={projects} />
+    <div className="flex flex-col">
+      <div>
+        <div className="p-3" onClick={() => setIsMenuOpen((prev) => !prev)}>
+          {isMenuOpen ? <AiOutlineClose /> : <RxRows />}
+        </div>
       </div>
-      <div className="flex-grow">
-        <Outlet />
+      <div className="flex flex-row">
+        <div
+          className={`duration-300 ${
+            isMenuOpen ? "w-[250px]" : "w-0 overflow-hidden"
+          }`}
+        >
+          <ProjectNavigationBar projectsPromise={projects} />
+        </div>
+        <div className="flex-grow">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
