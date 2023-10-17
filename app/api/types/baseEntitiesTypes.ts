@@ -157,7 +157,7 @@ export type TaskType = "Base" | "Bugfix" | "Story" | "Epic";
 /**
  * Represents Priority.
  */
-export type Priority = "VeryHigh" | "High" | "Medium" | "Low" | "VeryLow";
+export type Priority = "VeryHigh" | "High" | "Normal" | "Low" | "VeryLow";
 
 export interface PagedRequest {
   pageIndex: number;
