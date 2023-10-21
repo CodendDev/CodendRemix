@@ -14,3 +14,12 @@ COPY . ./
 
 EXPOSE 3000
 ENTRYPOINT [ "npm", "run", "dev" ]
+
+FROM dependencies AS build
+
+ENTRYPOINT [ "npm", "run", "build" ]
+
+FROM dependencies AS production
+
+EXPOSE 3000
+ENTRYPOINT ["npm", "start"]
