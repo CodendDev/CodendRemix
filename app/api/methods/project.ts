@@ -1,11 +1,13 @@
 import type {
   PagedProjectRequest,
+  ProjectBacklogRequest,
   ProjectBoardRequest,
   ProjectBoardResponse,
   ProjectRequest,
 } from "~/api/types/projectTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 import type {
+  BacklogType,
   PagedResponse,
   Project,
   Sprint,
@@ -77,6 +79,20 @@ export async function getActiveSprints({
     const response = await axios.get(
       `/api/projects/${projectId}/sprints/active`
     );
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getBacklog({
+  projectId,
+  token,
+}: ProjectBacklogRequest): Promise<BacklogType | undefined> {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(`/api/projects/${projectId}/backlog`);
     return response.data;
   } catch (err) {
     return undefined;
