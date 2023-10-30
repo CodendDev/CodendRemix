@@ -1,8 +1,4 @@
-import type {
-  BacklogType,
-  Board,
-  PagedRequest,
-} from "~/api/types/baseEntitiesTypes";
+import type { Board, PagedRequest } from "~/api/types/baseEntitiesTypes";
 import type { WithTokenRequest } from "~/api/types/authorizationTypes";
 
 export interface ProjectBoardRequest extends WithTokenRequest {
