@@ -121,6 +121,25 @@ export interface Sprint {
   goal?: string;
 }
 
+/**
+ * Represents backlogTask entity.
+ */
+export interface BacklogTaskType {
+  id: string;
+  name: string;
+  taskType: TaskType;
+  statusName: string;
+  assigneeAvatar?: string;
+  createdOn: Date;
+}
+
+/**
+ * Represents backlog entity.
+ */
+export interface BacklogType {
+  tasks: BacklogTaskType[];
+}
+
 //
 // Common entities
 //
