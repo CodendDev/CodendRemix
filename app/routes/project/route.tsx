@@ -27,16 +27,25 @@ export default function ProjectPage() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(true);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex h-full flex-col">
       <div>
-        <div className="p-3" onClick={() => setIsMenuOpen((prev) => !prev)}>
-          {isMenuOpen ? <AiOutlineClose /> : <RxRows />}
+        <div
+          className="bg-sky-950 p-3 shadow-sm shadow-sky-950"
+          onClick={() => setIsMenuOpen((prev) => !prev)}
+        >
+          {isMenuOpen ? (
+            <AiOutlineClose className="text-gray-300" />
+          ) : (
+            <RxRows className="text-gray-300" />
+          )}
         </div>
       </div>
-      <div className="flex flex-row">
+      <div className="flex h-full flex-row">
         <div
           className={`duration-300 ${
-            isMenuOpen ? "w-[250px]" : "w-0 overflow-hidden"
+            isMenuOpen
+              ? "w-[250px] min-w-[250px] border-r-1 border-sky-700"
+              : "w-0 overflow-hidden"
           }`}
         >
           <ProjectNavigationBar projectsPromise={projects} />
