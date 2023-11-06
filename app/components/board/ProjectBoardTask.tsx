@@ -1,5 +1,8 @@
-import type { Priority, TaskType } from "~/api/types/baseEntitiesTypes";
-import { Card } from "@nextui-org/card";
+import type {
+  BoardTask,
+  Priority,
+  TaskType,
+} from "~/api/types/baseEntitiesTypes";
 import {
   Avatar,
   Spacer,
@@ -7,7 +10,6 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  Link,
   Skeleton,
   Button,
 } from "@nextui-org/react";
@@ -18,16 +20,6 @@ import {
   SelectedProjectBoardTaskContext,
 } from "~/components/board/ProjectBoard";
 import { useDrag } from "react-dnd";
-
-export type ProjectBoardTaskProps = {
-  id: string;
-  taskType: TaskType;
-  statusId: string;
-  name: string;
-  priority?: Priority;
-  relatedTaskId?: string;
-  avatarUrl?: string;
-};
 
 const typeToGradientColor: Record<TaskType, string> = {
   Base: "",
@@ -56,15 +48,23 @@ export function ProjectBoardTask({
   statusId,
   priority,
   taskType,
-  avatarUrl,
+  assigneeAvatar,
   relatedTaskId,
-}: ProjectBoardTaskProps) {
+}: BoardTask) {
   const { selectedProjectBoardTaskId, setSelectedProjectBoardTaskId } =
     useContext(SelectedProjectBoardTaskContext);
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: DragItemTypes.Task,
-    item: { id, name, statusId, priority, taskType, avatarUrl, relatedTaskId },
+    item: {
+      id,
+      name,
+      statusId,
+      priority,
+      taskType,
+      assigneeAvatar,
+      relatedTaskId,
+    },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
       didDrop: monitor.didDrop(),
@@ -98,26 +98,26 @@ export function ProjectBoardTask({
       >
         <div>
           <div className="flex">
-            {type && <MiniTaskType type={taskType} />}
+            {type && <ProjectBoardTaskType type={taskType} />}
             {priority && (
               <>
                 {type && <Spacer x={2} />}
-                <MiniTaskPriority priority={priority} />
+                <ProjectBoardTaskPriority priority={priority} />
               </>
             )}
           </div>
           <div>{name}</div>
         </div>
-        <div className="flex flex-col items-center justify-center gap-1">
-          {avatarUrl && (
+        <div className="flex min-w-unit-10 flex-col items-center justify-center gap-1">
+          {assigneeAvatar && (
             <>
               <div className="flex justify-center ">
-                <Avatar src={avatarUrl} />
+                <Avatar src={assigneeAvatar} />
               </div>
             </>
           )}
           <div className="flex justify-center">
-            <MiniTaskMoreDropdown />
+            <ProjectBoardTaskDropdown />
           </div>
         </div>
       </div>
@@ -127,11 +127,19 @@ export function ProjectBoardTask({
 
 export default ProjectBoardTask;
 
-export function ProjectBoardTaskLoading() {
-  return <Skeleton className="h-16 rounded-lg" />;
+export function ProjectBoardTaskLoading({
+  isLoaded = false,
+}: {
+  isLoaded?: boolean;
+}) {
+  return (
+    <Skeleton className="h-16 rounded-lg" isLoaded={isLoaded}>
+      <div className="h-16 rounded-lg bg-gray-300"></div>
+    </Skeleton>
+  );
 }
 
-function MiniTaskType({ type }: { type: TaskType }) {
+function ProjectBoardTaskType({ type }: { type: TaskType }) {
   const taskTypeToColorClass: Record<TaskType, string> = {
     Base: "",
     Bugfix: "text-amber-500",
@@ -144,7 +152,7 @@ function MiniTaskType({ type }: { type: TaskType }) {
   return <div className={`${colorClass} font-semibold underline`}>{type}</div>;
 }
 
-function MiniTaskPriority({ priority }: { priority: Priority }) {
+function ProjectBoardTaskPriority({ priority }: { priority: Priority }) {
   const priorityToColorClass: Record<Priority, string> = {
     VeryHigh: "text-red-500",
     High: "text-orange-500",
@@ -162,7 +170,7 @@ function MiniTaskPriority({ priority }: { priority: Priority }) {
   );
 }
 
-function MiniTaskMoreDropdown() {
+function ProjectBoardTaskDropdown() {
   const iconsStyle: string = "text-sky-500 text-xl";
 
   return (

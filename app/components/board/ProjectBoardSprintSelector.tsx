@@ -73,6 +73,7 @@ function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
     selectedValues[Symbol.iterator]().next().done === true;
 
   // @ts-ignore
+  // noinspection RequiredAttributes
   return (
     <>
       <div className="ml-5 flex flex-col p-4">
