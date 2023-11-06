@@ -1,11 +1,9 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import ProjectBoard from "~/components/board/ProjectBoard";
 import getToken from "~/actions/getToken";
-import { getBoard } from "~/api/methods/project";
 import { defer, redirect } from "@remix-run/node";
-import { getProjectTaskStatuses } from "~/api/methods/projectTaskStauses";
-import { DndProviderWrapper } from "~/components/utils/DndProviderWrapper";
-import { useLoaderData, useRouteError } from "@remix-run/react";
+import { Outlet, useLoaderData, useRouteError } from "@remix-run/react";
+import ProjectBoardSprintSelector from "~/components/board/ProjectBoardSprintSelector";
+import { getActiveSprints } from "~/api/methods/project";
 import NotFoundError from "~/components/errors/NotFoundError";
 import CustomError from "~/components/errors/CustomError";
 import React from "react";
@@ -15,17 +13,13 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   if (token === undefined) {
     redirect("/user/login");
   }
-  const boardPromise = getBoard({
+
+  const sprintsPromise = getActiveSprints({
     projectId: params.projectId!,
     token: token!,
   });
 
-  const statusesPromise = getProjectTaskStatuses({
-    projectId: params.projectId!,
-    token: token!,
-  });
-
-  return defer({ boardPromise, statusesPromise });
+  return defer({ sprintsPromise });
 };
 
 export function ErrorBoundary() {
@@ -36,15 +30,14 @@ export function ErrorBoundary() {
 
 export default function BoardPage() {
   const loaderData = useLoaderData<typeof loader>();
+
   // @ts-ignore
-  const { boardPromise, statusesPromise } = loaderData;
+  const { sprintsPromise } = loaderData;
 
   return (
-    <DndProviderWrapper>
-      <ProjectBoard
-        boardPromise={boardPromise}
-        statusesPromise={statusesPromise}
-      />
-    </DndProviderWrapper>
+    <div className="flex h-full flex-col">
+      <ProjectBoardSprintSelector sprintsPromise={sprintsPromise} />
+      <Outlet />
+    </div>
   );
 }
