@@ -75,6 +75,7 @@ export interface BugfixProjectTask {
 export interface ProjectTaskStatus {
   id: string;
   name: string;
+  position: string;
 }
 
 /**
@@ -95,41 +96,29 @@ export interface UserDetails {
  * Represents board entity.
  */
 export interface Board {
-  tasks: BoardProjectTask[];
-  stories: BoardStory[];
-  epics: BoardEpic[];
-}
-
-/**
- * Represents boardEpic entity.
- */
-export interface BoardEpic {
-  id: string;
-  name: string;
-  statusId: string;
-}
-
-/**
- * Represents boardStory entity.
- */
-export interface BoardStory {
-  id: string;
-  name: string;
-  epicId?: string;
-  statusId: string;
+  tasks: BoardTask[];
 }
 
 /**
  * Represents boardProjectTask entity.
  */
-export interface BoardProjectTask {
+export interface BoardTask {
   id: string;
   taskType: TaskType;
   name: string;
-  priority: Priority;
   statusId: string;
-  storyId?: string;
-  assigneeId?: string;
+  relatedTaskId: string;
+  priority: Priority;
+  assigneeAvatar: string;
+  position: string;
+}
+
+export interface Sprint {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  goal?: string;
 }
 
 //
