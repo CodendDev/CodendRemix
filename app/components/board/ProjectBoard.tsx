@@ -8,9 +8,12 @@ import type {
   BoardTask,
   ProjectTaskStatus,
 } from "~/api/types/baseEntitiesTypes";
-import { Await } from "@remix-run/react";
+import { Await, useLocation } from "@remix-run/react";
 import type { ProjectBoardResponse } from "~/api/types/projectTypes";
 import type { ProjectTaskStatusesResponse } from "~/api/types/projectTaskStatusesTypes";
+import { Button, Tooltip, useDisclosure } from "@nextui-org/react";
+import { AiOutlinePlus } from "react-icons/ai/index.js";
+import { EditStatusModal } from "~/components/projectTaskStatus/EditStatusModal";
 
 export const DragItemTypes = {
   Task: "TASK",
@@ -109,13 +112,20 @@ function AwaitedBoardContainer({
   statuses: ProjectTaskStatus[];
   board: Board;
 }) {
+  const location = useLocation();
+  const createStatusModal = useDisclosure();
+  const projectId = location.pathname
+    .toLowerCase()
+    .replace("/project/", "")
+    .slice(0, 36);
+
   const tasksForStatus = (statusId: string): BoardTask[] => {
     const tasks = board.tasks.filter((task) => task.statusId === statusId);
     return tasks.sort();
   };
 
   return (
-    <div className="flex h-full w-full grow gap-6 p-4">
+    <div className="flex max-h-full w-full gap-6 overflow-x-auto scroll-smooth p-4">
       {statuses
         .sort((a, b) => a.position!.localeCompare(b.position!))
         .map((status) => (
@@ -127,6 +137,24 @@ function AwaitedBoardContainer({
             tasks={tasksForStatus(status.id)}
           />
         ))}
+      <div className="p-1">
+        <Tooltip content="Add new status" placement="top" closeDelay={50}>
+          <Button
+            isIconOnly
+            radius="full"
+            size="sm"
+            variant="light"
+            onPress={createStatusModal.onOpen}
+          >
+            <AiOutlinePlus className="text-2xl text-gray-700" />
+          </Button>
+        </Tooltip>
+      </div>
+      <EditStatusModal
+        projectId={projectId}
+        isOpen={createStatusModal.isOpen}
+        onOpenChange={createStatusModal.onOpenChange}
+      />
     </div>
   );
 }
