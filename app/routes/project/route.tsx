@@ -30,7 +30,7 @@ export default function ProjectPage() {
     <div className="flex h-full flex-col">
       <div>
         <div
-          className="bg-sky-950 p-3 shadow-sm shadow-sky-950"
+          className="bg-emerald-800 p-3 shadow-sm shadow-emerald-700"
           onClick={() => setIsMenuOpen((prev) => !prev)}
         >
           {isMenuOpen ? (
@@ -42,15 +42,13 @@ export default function ProjectPage() {
       </div>
       <div className="flex h-full flex-row">
         <div
-          className={`duration-300 ${
-            isMenuOpen
-              ? "w-[250px] min-w-[250px] border-r-1 border-sky-700"
-              : "w-0 overflow-hidden"
+          className={`flex flex-shrink-0 flex-grow-0 basis-56 border-r-1 border-emerald-700 transition-[margin] duration-300 ease-in-out ${
+            isMenuOpen ? "" : "-ml-56 overflow-hidden"
           }`}
         >
           <ProjectNavigationBar projectsPromise={projects} />
         </div>
-        <div className="flex-grow">
+        <div className="flex h-full w-full min-w-0 flex-shrink flex-grow">
           <Outlet />
         </div>
       </div>

@@ -35,7 +35,7 @@ export default function BoardPage() {
   const { sprintsPromise } = loaderData;
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full w-full flex-col">
       <ProjectBoardSprintSelector sprintsPromise={sprintsPromise} />
       <Outlet />
     </div>
