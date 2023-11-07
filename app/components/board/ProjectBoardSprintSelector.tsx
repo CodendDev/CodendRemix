@@ -1,8 +1,16 @@
 import React, { Suspense, useEffect, useState } from "react";
 import type { Sprint } from "~/api/types/baseEntitiesTypes";
 import { Await, useLocation, useNavigate } from "@remix-run/react";
-import { Select, Selection, SelectItem, Skeleton } from "@nextui-org/react";
+import {
+  Button,
+  Link,
+  Select,
+  Selection,
+  SelectItem,
+  Skeleton,
+} from "@nextui-org/react";
 import { ProjectBoardLoading } from "~/components/board/ProjectBoard";
+import { GiSprint } from "~/components/projectNavigation/icons";
 
 type ProjectBoardSprintSelectorProps = {
   sprintsPromise: Promise<Sprint[]>;
@@ -76,7 +84,7 @@ function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
   // noinspection RequiredAttributes
   return (
     <>
-      <div className="ml-5 flex flex-col p-4">
+      <div className="ml-5 flex flex-row items-center justify-start gap-10 p-4">
         <Select
           items={sprints}
           size="lg"
@@ -92,6 +100,22 @@ function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
             </SelectItem>
           )}
         </Select>
+        {noSprintSelected && (
+          <div className="flex flex-row gap-3">
+            <span className="flex items-center text-lg text-gray-700">
+              No existing active sprints? Add new or start one now!
+            </span>
+            <Button
+              href={`/project/${projectId}/sprints`}
+              as={Link}
+              size="lg"
+              anchorIcon={<GiSprint />}
+              showAnchorIcon={true}
+            >
+              New sprint
+            </Button>
+          </div>
+        )}
       </div>
       {noSprintSelected && (
         <div>
