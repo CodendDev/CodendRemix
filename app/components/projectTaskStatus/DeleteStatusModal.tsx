@@ -8,7 +8,6 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 import { useFetcher } from "@remix-run/react";
-import EditStatusModal from "~/components/projectTaskStatus/EditStatusModal";
 
 export function DeleteStatusModal({
   projectId,

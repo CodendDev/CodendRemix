@@ -33,10 +33,7 @@ export async function createProjectTaskStatus({
   const axios = getAxiosInstance(token);
 
   try {
-    const response = await axios.post(
-      `/api/projects/${projectId}/task-statuses`,
-      request
-    );
+    await axios.post(`/api/projects/${projectId}/task-statuses`, request);
     return;
   } catch (err) {
     return getApiErrorsFromError(err);
@@ -51,9 +48,7 @@ export async function deleteProjectTaskStatus({
   const axios = getAxiosInstance(token);
 
   try {
-    const response = await axios.delete(
-      `/api/projects/${projectId}/task-statuses/${statusId}`
-    );
+    await axios.delete(`/api/projects/${projectId}/task-statuses/${statusId}`);
     return;
   } catch (err) {
     return getApiErrorsFromError(err);
@@ -69,7 +64,7 @@ export async function updateProjectTaskStatus({
   const axios = getAxiosInstance(token);
 
   try {
-    const response = await axios.put(
+    await axios.put(
       `/api/projects/${projectId}/task-statuses/${statusId}`,
       request
     );
