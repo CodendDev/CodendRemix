@@ -25,9 +25,10 @@ export function EditStatusModal({
 }) {
   const fetcher = useFetcher();
   const [value, setValue] = useState(statusName ? statusName : "Status Name");
-  const isInvalid = useMemo(() => {
-    return value.trim() === "" || value.length <= 0;
-  }, [value]);
+  const isInvalid = useMemo(
+    () => value.trim() === "" || value.length <= 0,
+    [value]
+  );
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>

@@ -45,10 +45,7 @@ export function ProjectBoard({
 
   return (
     <SelectedProjectBoardTaskContext.Provider
-      value={{
-        selectedProjectBoardTaskId: selectedProjectBoardTaskId,
-        setSelectedProjectBoardTaskId: setSelectedProjectBoardTaskId,
-      }}
+      value={{ selectedProjectBoardTaskId, setSelectedProjectBoardTaskId }}
     >
       <Suspense fallback={<ProjectBoardLoading />}>
         <Await resolve={statusesPromise}>
@@ -119,10 +116,10 @@ function AwaitedBoardContainer({
     .replace("/project/", "")
     .slice(0, 36);
 
-  const tasksForStatus = (statusId: string): BoardTask[] => {
-    const tasks = board.tasks.filter((task) => task.statusId === statusId);
-    return tasks.sort();
-  };
+  const tasksForStatus = (statusId: string): BoardTask[] =>
+    board.tasks
+      .filter((task) => task.statusId === statusId)
+      .sort((a, b) => a.position!.localeCompare(b.position!));
 
   return (
     <div className="flex max-h-full w-full gap-6 overflow-x-auto scroll-smooth p-4">
