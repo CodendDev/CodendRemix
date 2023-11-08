@@ -4,6 +4,7 @@ import getToken from "~/actions/getToken";
 import { getBoard } from "~/api/methods/project";
 import { defer, redirect } from "@remix-run/node";
 import { getProjectTaskStatuses } from "~/api/methods/projectTaskStauses";
+import { DndProviderWrapper } from "~/components/utils/DndProviderWrapper";
 import { useLoaderData, useRouteError } from "@remix-run/react";
 import NotFoundError from "~/components/errors/NotFoundError";
 import CustomError from "~/components/errors/CustomError";
@@ -39,9 +40,11 @@ export default function BoardPage() {
   const { boardPromise, statusesPromise } = loaderData;
 
   return (
-    <ProjectBoard
-      boardPromise={boardPromise}
-      statusesPromise={statusesPromise}
-    />
+    <DndProviderWrapper>
+      <ProjectBoard
+        boardPromise={boardPromise}
+        statusesPromise={statusesPromise}
+      />
+    </DndProviderWrapper>
   );
 }
