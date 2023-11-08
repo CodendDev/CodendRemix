@@ -9,14 +9,20 @@ import {
   DropdownItem,
   Link,
   Skeleton,
+  Button,
 } from "@nextui-org/react";
 import { MdMoreHoriz } from "react-icons/md/index.js";
 import React, { useContext } from "react";
-import { SelectedMiniTaskContext } from "~/components/board/ProjectBoard";
+import {
+  DragItemTypes,
+  SelectedProjectBoardTaskContext,
+} from "~/components/board/ProjectBoard";
+import { useDrag } from "react-dnd";
 
-export type MiniTaskProps = {
+export type ProjectBoardTaskProps = {
   id: string;
   taskType: TaskType;
+  statusId: string;
   name: string;
   priority?: Priority;
   relatedTaskId?: string;
@@ -47,36 +53,49 @@ const typeToOutlineColor: Record<TaskType, string> = {
 export function ProjectBoardTask({
   id,
   name,
+  statusId,
   priority,
   taskType,
   avatarUrl,
   relatedTaskId,
-}: MiniTaskProps) {
-  const { selectedMiniTaskId, setSelectedMiniTaskId } = useContext(
-    SelectedMiniTaskContext
-  );
-  const handleClick = () => {
-    setSelectedMiniTaskId(id);
-  };
+}: ProjectBoardTaskProps) {
+  const { selectedProjectBoardTaskId, setSelectedProjectBoardTaskId } =
+    useContext(SelectedProjectBoardTaskContext);
 
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: DragItemTypes.Task,
+    item: { id, name, statusId, priority, taskType, avatarUrl, relatedTaskId },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+      didDrop: monitor.didDrop(),
+    }),
+  }));
+
+  const handleClick = () => {
+    setSelectedProjectBoardTaskId(id);
+  };
   const type = taskType !== "Base" && taskType;
+
   const gradientColor =
-    relatedTaskId !== null && relatedTaskId === selectedMiniTaskId
+    relatedTaskId !== null && relatedTaskId === selectedProjectBoardTaskId
       ? relatedTypeToGradientColor[taskType]
       : typeToGradientColor[taskType];
 
   const miniTaskSelected: string =
-    selectedMiniTaskId === id
-      ? `outline ${typeToOutlineColor[taskType]} outline-offset-0 outline-1`
+    selectedProjectBoardTaskId === id
+      ? `outline ${typeToOutlineColor[taskType]} -outline-offset-1 outline-1`
       : "";
 
   return (
-    <Card
-      className={`text-start shadow-md hover:shadow-lg ${miniTaskSelected}`}
-      isPressable={true}
-      onPress={handleClick}
+    <div
+      ref={drag}
+      className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg 
+        ${!isDragging && miniTaskSelected} ${isDragging && "hidden"}`}
+      onClick={handleClick}
     >
-      <div className={`flex w-full justify-between px-5 py-3 ${gradientColor}`}>
+      <div
+        className={`flex w-full justify-between rounded-lg px-5 py-3 ${gradientColor}`}
+      >
         <div>
           <div className="flex">
             {type && <MiniTaskType type={taskType} />}
@@ -102,7 +121,7 @@ export function ProjectBoardTask({
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -144,12 +163,14 @@ function MiniTaskPriority({ priority }: { priority: Priority }) {
 }
 
 function MiniTaskMoreDropdown() {
+  const iconsStyle: string = "text-sky-500 text-xl";
+
   return (
     <Dropdown className="min-w-fit">
       <DropdownTrigger>
-        <Link isBlock>
-          <MdMoreHoriz className="text-lg" />
-        </Link>
+        <Button variant="light" radius="full" size="sm" isIconOnly>
+          <MdMoreHoriz className={iconsStyle} />
+        </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="More">
         <DropdownItem key="assignToMe">Assign to me</DropdownItem>

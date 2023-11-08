@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import React, { createContext, Suspense, useState } from "react";
-import type { MiniTaskProps } from "~/components/board/ProjectBoardTask";
+import type { ProjectBoardTaskProps } from "~/components/board/ProjectBoardTask";
 import ProjectTaskStatusContainer, {
   ProjectTaskStatusContainerLoading,
 } from "~/components/board/ProjectTaskStatusContainer";
@@ -9,18 +9,22 @@ import { Await } from "@remix-run/react";
 import type { ProjectBoardResponse } from "~/api/types/projectTypes";
 import type { ProjectTaskStatusesResponse } from "~/api/types/projectTaskStatusesTypes";
 
-interface SelectedMiniTaskContextType {
-  selectedMiniTaskId: string | null;
-  setSelectedMiniTaskId: Dispatch<SetStateAction<string | null>>;
+export const DragItemTypes = {
+  Task: "TASK",
+};
+
+interface SelectedProjectBoardTaskContextType {
+  selectedProjectBoardTaskId: string | null;
+  setSelectedProjectBoardTaskId: Dispatch<SetStateAction<string | null>>;
 }
 
-export const SelectedMiniTaskContext =
-  createContext<SelectedMiniTaskContextType>({
-    selectedMiniTaskId: null,
-    setSelectedMiniTaskId: () => {},
+export const SelectedProjectBoardTaskContext =
+  createContext<SelectedProjectBoardTaskContextType>({
+    selectedProjectBoardTaskId: null,
+    setSelectedProjectBoardTaskId: () => {},
   });
 
-type BoardContainerProps = {
+type ProjectBoardProps = {
   boardPromise: Promise<ProjectBoardResponse>;
   statusesPromise: Promise<ProjectTaskStatusesResponse>;
 };
@@ -28,15 +32,18 @@ type BoardContainerProps = {
 export function ProjectBoard({
   boardPromise,
   statusesPromise,
-}: BoardContainerProps) {
-  const [selectedMiniTaskId, setSelectedMiniTaskId] = useState<string | null>(
-    null
-  );
+}: ProjectBoardProps) {
+  const [selectedProjectBoardTaskId, setSelectedProjectBoardTaskId] = useState<
+    string | null
+  >(null);
 
   return (
     <div className="flex h-full gap-6 p-4">
-      <SelectedMiniTaskContext.Provider
-        value={{ selectedMiniTaskId, setSelectedMiniTaskId }}
+      <SelectedProjectBoardTaskContext.Provider
+        value={{
+          selectedProjectBoardTaskId: selectedProjectBoardTaskId,
+          setSelectedProjectBoardTaskId: setSelectedProjectBoardTaskId,
+        }}
       >
         <Suspense fallback={<ProjectBoardLoading />}>
           <Await resolve={statusesPromise}>
@@ -60,7 +67,7 @@ export function ProjectBoard({
             )}
           </Await>
         </Suspense>
-      </SelectedMiniTaskContext.Provider>
+      </SelectedProjectBoardTaskContext.Provider>
     </div>
   );
 }
@@ -91,20 +98,27 @@ function AwaitedBoardContainer({
   board: Board;
 }) {
   /* Probably will be replaced, when backend endpoint will be improved. */
-  const tasksForStatus = (statusId: string): MiniTaskProps[] => {
+  const tasksForStatus = (statusId: string): ProjectBoardTaskProps[] => {
     const tasks = board.tasks.filter((task) => task.statusId === statusId);
     const epics = board.epics.filter((story) => story.statusId === statusId);
     const stories = board.stories.filter(
       (epics) => epics.statusId === statusId
     );
     return tasks
-      .map((task): MiniTaskProps => ({ ...task, relatedTaskId: task.storyId }))
+      .map(
+        (task): ProjectBoardTaskProps => ({
+          ...task,
+          relatedTaskId: task.storyId,
+        })
+      )
       .concat(
-        epics.map((epic): MiniTaskProps => ({ ...epic, taskType: "Epic" }))
+        epics.map(
+          (epic): ProjectBoardTaskProps => ({ ...epic, taskType: "Epic" })
+        )
       )
       .concat(
         stories.map(
-          (story): MiniTaskProps => ({
+          (story): ProjectBoardTaskProps => ({
             ...story,
             taskType: "Story",
             relatedTaskId: story.epicId,

@@ -9,15 +9,17 @@ import {
 } from "@nextui-org/react";
 import { MdMoreHoriz, MdAddCircleOutline } from "react-icons/md/index.js";
 import React from "react";
-import type { MiniTaskProps } from "~/components/board/ProjectBoardTask";
+import type { ProjectBoardTaskProps } from "~/components/board/ProjectBoardTask";
 import ProjectBoardTask, {
   ProjectBoardTaskLoading,
 } from "~/components/board/ProjectBoardTask";
+import { useDrop } from "react-dnd";
+import { DragItemTypes } from "~/components/board/ProjectBoard";
 
 type BoardStatusContainerProps = {
   name: string;
   statusId: string;
-  tasks: MiniTaskProps[];
+  tasks: ProjectBoardTaskProps[];
 };
 
 export function ProjectTaskStatusContainer({
@@ -25,6 +27,17 @@ export function ProjectTaskStatusContainer({
   statusId,
   tasks,
 }: BoardStatusContainerProps) {
+  const [{ isOver }, drop] = useDrop(
+    () => ({
+      accept: DragItemTypes.Task,
+      drop: () => {},
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+      }),
+    }),
+    [tasks]
+  );
+
   return (
     <div className="flex h-full w-full min-w-[300px] flex-col">
       <StatusContainerHeader name={name} />
