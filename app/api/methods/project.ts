@@ -5,16 +5,24 @@ import type {
   ProjectRequest,
 } from "~/api/types/projectTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
-import type { PagedResponse, Project } from "~/api/types/baseEntitiesTypes";
+import type {
+  PagedResponse,
+  Project,
+  Sprint,
+} from "~/api/types/baseEntitiesTypes";
+import { ProjectActiveSprintsRequest } from "~/api/types/projectTypes";
 
 export async function getBoard({
   projectId,
+  sprintId,
   token,
 }: ProjectBoardRequest): Promise<ProjectBoardResponse | undefined> {
   const axios = getAxiosInstance(token);
 
   try {
-    const response = await axios.get(`/api/projects/${projectId}/board`);
+    const response = await axios.get(
+      `/api/projects/${projectId}/board/${sprintId}`
+    );
     return { board: response.data };
   } catch (err) {
     return undefined;
@@ -53,6 +61,22 @@ export async function getProject({
 
   try {
     const response = await axios.get(`api/projects/${projectId}`);
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getActiveSprints({
+  projectId,
+  token,
+}: ProjectActiveSprintsRequest): Promise<Sprint[] | undefined> {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(
+      `/api/projects/${projectId}/sprints/active`
+    );
     return response.data;
   } catch (err) {
     return undefined;
