@@ -7,6 +7,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Skeleton,
 } from "@nextui-org/react";
 import { MdMoreHoriz } from "react-icons/md/index.js";
 import {
@@ -66,6 +67,10 @@ export function BacklogTask({
 }
 
 export default BacklogTask;
+
+export function BacklogTaskLoading() {
+  return <Skeleton className="h-10 p-1 first:rounded-t-lg last:rounded-b-lg" />;
+}
 
 function BacklogTaskMoreDropdown() {
   const iconsStyle: string = "text-sky-500 text-xl";
