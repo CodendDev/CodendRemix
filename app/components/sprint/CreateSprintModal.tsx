@@ -83,10 +83,20 @@ export function CreateSprintModal({
               <input name="ProjectId" hidden value={projectId} />
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
+              <Button
+                size="lg"
+                color="danger"
+                variant="light"
+                onPress={onClose}
+              >
                 Close
               </Button>
-              <Button color="primary" type="submit" onClick={onSubmit}>
+              <Button
+                size="lg"
+                color="primary"
+                type="submit"
+                onClick={onSubmit}
+              >
                 Create
               </Button>
             </ModalFooter>

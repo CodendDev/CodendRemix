@@ -27,7 +27,7 @@ export async function createSprint(request: CreateSprintRequest) {
     const response = await axios.post(`/api/projects/${projectId}/sprints`, {
       name,
       startDate: `${startDate}T00:01:00.000Z`,
-      endDate: `${endDate}T00:00:00.000Z`,
+      endDate: `${endDate}T23:59:00.000Z`,
       goal: goal.length === 0 ? null : goal,
     });
     return response.data;
