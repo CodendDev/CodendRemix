@@ -50,7 +50,7 @@ export function BacklogTask({
         </div>
         <div className="truncate">{name}</div>
       </div>
-      <div className="flex w-52 flex-row justify-around">
+      <div className="flex w-52 flex-row items-center justify-around">
         <div className="wh w-24 truncate text-start italic text-gray-600">
           {statusName}
         </div>
