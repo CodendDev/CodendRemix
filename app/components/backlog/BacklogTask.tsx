@@ -12,7 +12,7 @@ import { MdMoreHoriz } from "react-icons/md/index.js";
 import {
   taskTypeToColorClass,
   typeToOutlineColor,
-} from "~/components/utils/TaskTypeToColor";
+} from "~/components/utils/TypeToColor";
 
 type backlogTaskProps = Omit<BacklogTaskType, "createdOn"> & {
   selectedBacklogTaskId: string | null;

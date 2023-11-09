@@ -16,11 +16,12 @@ import {
 import { MdMoreHoriz } from "react-icons/md/index.js";
 import React, { useContext } from "react";
 import {
+  priorityToColorClass,
   relatedTypeToGradientColor,
   taskTypeToColorClass,
   typeToGradientColor,
   typeToOutlineColor,
-} from "~/components/utils/TaskTypeToColor";
+} from "~/components/utils/TypeToColor";
 import {
   DragItemTypes,
   SelectedProjectBoardTaskContext,
@@ -130,14 +131,6 @@ function ProjectBoardTaskType({ type }: { type: TaskType }) {
 }
 
 function ProjectBoardTaskPriority({ priority }: { priority: Priority }) {
-  const priorityToColorClass: Record<Priority, string> = {
-    VeryHigh: "text-red-500",
-    High: "text-orange-500",
-    Normal: "text-yellow-500",
-    Low: "text-emerald-500",
-    VeryLow: "text-teal-500",
-  };
-
   const colorClass = priorityToColorClass[priority];
 
   return (

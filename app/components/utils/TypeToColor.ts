@@ -1,4 +1,4 @@
-import { TaskType } from "~/api/types/baseEntitiesTypes";
+import { Priority, TaskType } from "~/api/types/baseEntitiesTypes";
 
 export const typeToGradientColor: Record<TaskType, string> = {
   Base: "",
@@ -26,4 +26,12 @@ export const taskTypeToColorClass: Record<TaskType, string> = {
   Bugfix: "text-amber-500",
   Story: "text-green-500",
   Epic: "text-purple-500",
+};
+
+export const priorityToColorClass: Record<Priority, string> = {
+  VeryHigh: "text-red-500",
+  High: "text-orange-500",
+  Normal: "text-yellow-500",
+  Low: "text-emerald-500",
+  VeryLow: "text-teal-500",
 };
