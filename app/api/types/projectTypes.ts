@@ -16,6 +16,10 @@ export interface ProjectRequest extends WithTokenRequest {
   projectId: string;
 }
 
+export interface ProjectBacklogRequest extends WithTokenRequest {
+  projectId: string;
+}
+
 export interface ProjectActiveSprintsRequest extends WithTokenRequest {
   projectId: string;
 }

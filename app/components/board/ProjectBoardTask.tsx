@@ -16,31 +16,17 @@ import {
 import { MdMoreHoriz } from "react-icons/md/index.js";
 import React, { useContext } from "react";
 import {
+  priorityToColorClass,
+  relatedTypeToGradientColor,
+  taskTypeToColorClass,
+  typeToGradientColor,
+  typeToOutlineColor,
+} from "~/components/utils/TypeToColor";
+import {
   DragItemTypes,
   SelectedProjectBoardTaskContext,
 } from "~/components/board/ProjectBoard";
 import { useDrag } from "react-dnd";
-
-const typeToGradientColor: Record<TaskType, string> = {
-  Base: "",
-  Bugfix: "",
-  Story: "bg-gradient-to-r from-green-100",
-  Epic: "bg-gradient-to-r from-purple-200",
-};
-
-const relatedTypeToGradientColor: Record<TaskType, string> = {
-  Base: "bg-gradient-to-l via-transparent from-green-100",
-  Bugfix: "bg-gradient-to-l via-transparent from-green-100",
-  Story: "bg-gradient-to-l via-transparent from-purple-200 to-green-100",
-  Epic: "",
-};
-
-const typeToOutlineColor: Record<TaskType, string> = {
-  Base: "outline-sky-500",
-  Bugfix: "outline-amber-500",
-  Story: "outline-green-500",
-  Epic: "outline-purple-500",
-};
 
 export function ProjectBoardTask({
   id,
@@ -140,27 +126,11 @@ export function ProjectBoardTaskLoading({
 }
 
 function ProjectBoardTaskType({ type }: { type: TaskType }) {
-  const taskTypeToColorClass: Record<TaskType, string> = {
-    Base: "",
-    Bugfix: "text-amber-500",
-    Story: "text-green-500",
-    Epic: "text-purple-500",
-  };
-
   const colorClass = taskTypeToColorClass[type];
-
   return <div className={`${colorClass} font-semibold underline`}>{type}</div>;
 }
 
 function ProjectBoardTaskPriority({ priority }: { priority: Priority }) {
-  const priorityToColorClass: Record<Priority, string> = {
-    VeryHigh: "text-red-500",
-    High: "text-orange-500",
-    Normal: "text-yellow-500",
-    Low: "text-emerald-500",
-    VeryLow: "text-teal-500",
-  };
-
   const colorClass = priorityToColorClass[priority];
 
   return (
