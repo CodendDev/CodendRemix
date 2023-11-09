@@ -36,12 +36,16 @@ export default function App() {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1"
+        />
+        <title>Codend</title>
         <Meta />
         <Links />
       </head>
-      <body>
-        <NextUIProvider>
+      <body className="h-screen max-h-screen w-screen max-w-[100vw] overflow-y-auto overflow-x-hidden">
+        <NextUIProvider className="h-screen">
           <Outlet />
           <ScrollRestoration />
           <Scripts />
