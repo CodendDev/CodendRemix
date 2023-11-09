@@ -125,9 +125,7 @@ export function ProjectBoardTaskLoading({
 }
 
 function ProjectBoardTaskType({ type }: { type: TaskType }) {
-
   const colorClass = taskTypeToColorClass[type];
-
   return <div className={`${colorClass} font-semibold underline`}>{type}</div>;
 }
 

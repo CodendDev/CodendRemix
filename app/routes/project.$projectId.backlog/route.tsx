@@ -7,7 +7,7 @@ import Backlog from "~/components/backlog/Backlog";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
-  if (token === undefined) {
+  if (!token) {
     redirect("/user/login");
   }
   const backlogPromise = getBacklog({

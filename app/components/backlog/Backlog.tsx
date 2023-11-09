@@ -29,7 +29,7 @@ function AwaitedBacklog({ backlog }: { backlog: BacklogType }) {
   >(null);
 
   return (
-    <div className="px-6 py-1">
+    <div className="w-full px-6 py-1">
       <div className="px-6 py-2 font-bold text-gray-700">
         Backlog{" "}
         <span className="font-normal text-gray-400">
