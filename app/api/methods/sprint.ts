@@ -63,7 +63,10 @@ export async function updateSprint(request: UpdateSprintRequest) {
     name: request.name,
     startDate: `${request.startDate}T00:01:00.000Z`,
     endDate: `${request.endDate}T23:59:00.000Z`,
-    goal: { shouldUpdate: true, value: request.goal },
+    goal: {
+      shouldUpdate: true,
+      value: request.goal.trim().length > 0 ? request.goal.trim() : null,
+    },
   };
 
   try {
