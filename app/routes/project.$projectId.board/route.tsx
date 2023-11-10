@@ -10,7 +10,7 @@ import React from "react";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
-  if (token === undefined) {
+  if (!token) {
     redirect("/user/login");
   }
 

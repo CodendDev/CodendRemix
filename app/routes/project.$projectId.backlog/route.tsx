@@ -15,6 +15,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     token: token!,
   });
 
+  if (!backlogPromise) {
+    return new Response("Not found", { status: 404 });
+  }
+
   return defer({ backlogPromise });
 };
 

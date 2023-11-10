@@ -44,10 +44,7 @@ function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
   );
   const navigate = useNavigate();
   const location = useLocation();
-  const projectId = location.pathname
-    .toLowerCase()
-    .replace("/project/", "")
-    .slice(0, 36);
+  const projectId = useParams().projectId!;
   const getSelectedSprint = () => {
     const arr = Array.from(selectedValues);
     return arr.length > 0 ? arr[0].toString() : null;

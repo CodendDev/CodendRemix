@@ -45,7 +45,7 @@ export function BacklogTask({
       className={`flex min-w-fit flex-shrink-0 flex-row items-center bg-gray-100 p-1 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200 ${backlogTaskSelected}`}
       onClick={handleClick}
     >
-      <div className="flex w-unit-xl min-w-[15rem] grow flex-row">
+      <div className="flex w-unit-xl min-w-[8rem] grow flex-row">
         <div
           className={`${taskTypeToColorClass[taskType]}  min-w-unit-20 text-center font-bold`}
         >
