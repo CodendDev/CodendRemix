@@ -16,6 +16,10 @@ export interface CreateSprintRequest extends SprintsRequest {
   goal: string;
 }
 
+export interface UpdateSprintRequest
+  extends SprintRequest,
+    CreateSprintRequest {}
+
 export interface SprintResponse {
   id: string;
   name: string;
