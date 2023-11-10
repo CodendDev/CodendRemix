@@ -6,6 +6,7 @@ import type { Sprint as APISprintProps } from "~/api/types/baseEntitiesTypes";
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
+import { useNavigate } from "@remix-run/react";
 
 interface SprintProps extends APISprintProps {
   projectId: string;
@@ -23,8 +24,15 @@ export function Sprint(sprint: SprintProps) {
     deleteOption(() => showDeleteModal(sprint)),
   ];
 
+  const navigation = useNavigate();
+
   return (
-    <div className="flex flex-row items-center bg-gray-100 p-1 pl-2 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200">
+    <div
+      onClick={() => {
+        navigation(`/project/${sprint.projectId}/board/${sprint.id}`);
+      }}
+      className="flex flex-row items-center bg-gray-100 p-1 pl-2 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200"
+    >
       <div className="flex w-unit-xl min-w-[15rem] grow flex-row">
         <div className="truncate">{name}</div>
       </div>
