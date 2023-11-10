@@ -55,17 +55,21 @@ export default function SprintsPage() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <>
-      <Button onPress={onOpen} color="primary">
-        Create
-      </Button>
-      <CreateSprintModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        projectId={loaderData.projectId}
-      />
-      <SprintList sprintsPromise={sprints} />
+    <div className="grow flex-col">
+      <div>
+        <Button onPress={onOpen} color="primary">
+          Create
+        </Button>
+        <CreateSprintModal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          projectId={loaderData.projectId}
+        />
+      </div>
+      <div>
+        <SprintList sprintsPromise={sprints} />
+      </div>
       <Outlet />
-    </>
+    </div>
   );
 }
