@@ -1,29 +1,26 @@
 import React from "react";
 
-import { Skeleton, useDisclosure } from "@nextui-org/react";
+import { Skeleton } from "@nextui-org/react";
 
 import type { Sprint as APISprintProps } from "~/api/types/baseEntitiesTypes";
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 
-import { DeleteModal } from "~/components/utils/deleteModal";
-import { UpdateSprintModal } from "~/components/sprint/SprintFormModals";
-
 interface SprintProps extends APISprintProps {
   projectId: string;
+  showUpdateModal: (sprint: APISprintProps) => void;
+  showDeleteModal: (sprint: APISprintProps) => void;
 }
 export function Sprint(sprint: SprintProps) {
-  const { name, id, projectId } = sprint;
-  const deleteModal = useDisclosure();
-  const editModal = useDisclosure();
+  const { name, showDeleteModal, showUpdateModal } = sprint;
 
   const dropdownOptions: OptionsDropdownItem[] = [
     {
       label: "Edit",
-      onPress: editModal.onOpen,
+      onPress: () => showUpdateModal(sprint),
     },
-    deleteOption(deleteModal.onOpen),
+    deleteOption(() => showDeleteModal(sprint)),
   ];
 
   return (
@@ -32,18 +29,6 @@ export function Sprint(sprint: SprintProps) {
         <div className="truncate">{name}</div>
       </div>
       <OptionsDropdown options={dropdownOptions} />
-      <DeleteModal
-        label={name}
-        isOpen={deleteModal.isOpen}
-        onOpenChange={deleteModal.onOpenChange}
-        url={`/project/${projectId}/sprints/${id}`}
-      />
-      <UpdateSprintModal
-        isOpen={editModal.isOpen}
-        onOpenChange={editModal.onOpenChange}
-        projectId={projectId}
-        sprint={sprint}
-      />
     </div>
   );
 }
