@@ -3,14 +3,17 @@ import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDro
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 import React from "react";
-import { Skeleton } from "@nextui-org/react";
+import { Skeleton, useDisclosure } from "@nextui-org/react";
+import { DeleteModal } from "~/components/utils/deleteModal";
 
 export function Sprint({ name }: SprintProps) {
+  const deleteModal = useDisclosure();
+
   const dropdownOptions: OptionsDropdownItem[] = [
     {
       label: "Edit",
     },
-    deleteOption(() => {}),
+    deleteOption(deleteModal.onOpen),
   ];
 
   return (
@@ -19,6 +22,11 @@ export function Sprint({ name }: SprintProps) {
         <div className="truncate">{name}</div>
       </div>
       <OptionsDropdown options={dropdownOptions} />
+      <DeleteModal
+        label={name}
+        isOpen={deleteModal.isOpen}
+        onOpenChange={deleteModal.onOpenChange}
+      />
     </div>
   );
 }
