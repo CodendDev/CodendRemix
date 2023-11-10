@@ -3,7 +3,7 @@ import React from "react";
 import { Outlet } from "@remix-run/react";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { GiSprint } from "~/components/projectNavigation/icons";
-import { CreateSprintModal } from "~/components/sprint/CreateSprintModal";
+import { CreateSprintModal } from "~/components/sprint/SprintFormModals";
 import SprintList from "~/components/sprint/SprintList";
 import type { SprintsResponse } from "~/api/types/sprintTypes";
 

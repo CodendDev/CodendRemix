@@ -6,11 +6,12 @@ import { createSprint, getSprints } from "~/api/methods/sprint";
 import getToken from "~/actions/getToken";
 import ProjectSprints from "~/components/sprint/ProjectSprints";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const token = await getToken(request);
   if (token === undefined) {
     return null;
   }
+  const projectId = params.projectId!;
 
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
@@ -20,8 +21,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     startDate: data.StartDate.toString(),
     endDate: data.EndDate.toString(),
     goal: data.Goal.toString().trim(),
-    projectId: data.ProjectId.toString(),
-    token: token,
+    token,
+    projectId,
   });
 
   if (res === undefined || res.errors !== undefined) {
