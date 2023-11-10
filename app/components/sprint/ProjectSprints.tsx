@@ -38,7 +38,7 @@ export function ProjectSprints({ projectId, sprints }: ProjectSprintsProps) {
         />
       </div>
       <div>
-        <SprintList sprintsPromise={sprints} />
+        <SprintList projectId={projectId} sprintsPromise={sprints} />
       </div>
       <Outlet />
     </div>

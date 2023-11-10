@@ -5,14 +5,19 @@ import CustomError from "~/components/errors/CustomError";
 import Sprint, { SprintLoading } from "~/components/sprint/Sprint";
 
 interface SprintListProps {
+  projectId: string;
   sprintsPromise: Promise<SprintsResponse | undefined>;
 }
-export function SprintList({ sprintsPromise }: SprintListProps) {
+export function SprintList({ projectId, sprintsPromise }: SprintListProps) {
   return (
     <Suspense fallback={<SprintListLoading />}>
       <Await resolve={sprintsPromise} errorElement={<CustomError />}>
         {(sprints) =>
-          sprints ? <AwaitedSprintList {...sprints} /> : <CustomError />
+          sprints ? (
+            <AwaitedSprintList projectId={projectId} {...sprints} />
+          ) : (
+            <CustomError />
+          )
         }
       </Await>
     </Suspense>
@@ -35,18 +40,23 @@ export function SprintListLoading() {
   );
 }
 
-export function AwaitedSprintList(sprints: SprintsResponse) {
+export function AwaitedSprintList({
+  projectId,
+  sprints,
+}: SprintsResponse & {
+  projectId: string;
+}) {
   return (
     <div className="w-full px-6 py-1">
       <div className="px-6 py-2 font-bold text-gray-700">
         Sprints
         <span className="ml-1 font-normal text-gray-400">
-          ({sprints.sprints.length} sprints)
+          ({sprints.length} sprints)
         </span>
       </div>
       <div className="outl flex flex-col justify-between gap-1 rounded-lg outline-dashed outline-1 outline-offset-4 outline-gray-400">
-        {sprints.sprints.map((sprint) => (
-          <Sprint key={sprint.id} {...sprint} />
+        {sprints.map((sprint) => (
+          <Sprint key={sprint.id} {...sprint} projectId={projectId} />
         ))}
       </div>
     </div>

@@ -6,7 +6,11 @@ import React from "react";
 import { Skeleton, useDisclosure } from "@nextui-org/react";
 import { DeleteModal } from "~/components/utils/deleteModal";
 
-export function Sprint({ name }: SprintProps) {
+export function Sprint({
+  name,
+  id,
+  projectId,
+}: SprintProps & { projectId: string }) {
   const deleteModal = useDisclosure();
 
   const dropdownOptions: OptionsDropdownItem[] = [
@@ -26,6 +30,7 @@ export function Sprint({ name }: SprintProps) {
         label={name}
         isOpen={deleteModal.isOpen}
         onOpenChange={deleteModal.onOpenChange}
+        url={`/project/${projectId}/sprints/${id}`}
       />
     </div>
   );
