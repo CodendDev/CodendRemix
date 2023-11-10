@@ -7,7 +7,6 @@ import CustomError from "~/components/errors/CustomError";
 import React from "react";
 import { getProjectTask } from "~/api/methods/projectTask";
 import TaskSidebar from "~/components/taskSidebar/TaskSidebar";
-import { ProjectTask } from "~/api/types/baseEntitiesTypes";
 import { getProjectTaskStatuses } from "~/api/methods/projectTaskStauses";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {

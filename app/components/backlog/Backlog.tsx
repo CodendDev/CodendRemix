@@ -4,7 +4,6 @@ import { Await } from "@remix-run/react";
 import BacklogTask, {
   BacklogTaskLoading,
 } from "~/components/backlog/BacklogTask";
-import TaskSidebar from "~/components/taskSidebar/TaskSidebar";
 
 type BacklogProps = {
   backlogPromise: Promise<BacklogType>;
