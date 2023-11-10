@@ -3,17 +3,7 @@ import type {
   Priority,
   TaskType,
 } from "~/api/types/baseEntitiesTypes";
-import {
-  Avatar,
-  Spacer,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-  Skeleton,
-  Button,
-} from "@nextui-org/react";
-import { MdMoreHoriz } from "react-icons/md/index.js";
+import { Avatar, Spacer, Skeleton } from "@nextui-org/react";
 import React, { useContext } from "react";
 import {
   priorityToColorClass,
@@ -27,6 +17,9 @@ import {
   SelectedProjectBoardTaskContext,
 } from "~/components/board/ProjectBoard";
 import { useDrag } from "react-dnd";
+import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
+import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
+import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 
 export function ProjectBoardTask({
   id,
@@ -72,6 +65,14 @@ export function ProjectBoardTask({
       ? `outline ${typeToOutlineColor[taskType]} -outline-offset-1 outline-1`
       : "";
 
+  const dropdownOptions: OptionsDropdownItem[] = [
+    {
+      label: "Assign to me",
+    },
+    { label: "Edit" },
+    deleteOption(() => {}),
+  ];
+
   return (
     <div
       ref={drag}
@@ -103,7 +104,7 @@ export function ProjectBoardTask({
             </>
           )}
           <div className="flex justify-center">
-            <ProjectBoardTaskDropdown />
+            <OptionsDropdown options={dropdownOptions} />
           </div>
         </div>
       </div>
@@ -137,26 +138,5 @@ function ProjectBoardTaskPriority({ priority }: { priority: Priority }) {
     <div className={`${colorClass} font-semibold`}>
       {priority.replace(/Very/, "Very ")}
     </div>
-  );
-}
-
-function ProjectBoardTaskDropdown() {
-  const iconsStyle: string = "text-sky-500 text-xl";
-
-  return (
-    <Dropdown className="min-w-fit">
-      <DropdownTrigger>
-        <Button variant="light" radius="full" size="sm" isIconOnly>
-          <MdMoreHoriz className={iconsStyle} />
-        </Button>
-      </DropdownTrigger>
-      <DropdownMenu aria-label="More">
-        <DropdownItem key="assignToMe">Assign to me</DropdownItem>
-        <DropdownItem key="edit">Edit</DropdownItem>
-        <DropdownItem key="delete" className="text-danger" color="danger">
-          Delete
-        </DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
   );
 }
