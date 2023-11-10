@@ -17,9 +17,9 @@ interface UpdateSprintModalProps {
   onOpenChange: () => void;
   sprint: Sprint;
 }
-export function UpdateSprintModal(props: UpdateSprintModalProps) {
-  return <CreateSprintModal {...props} />;
-}
+export const UpdateSprintModal = (props: UpdateSprintModalProps) => (
+  <CreateSprintModal {...props} />
+);
 
 interface CreateSprintModalProps {
   projectId: string;
@@ -33,9 +33,12 @@ export function CreateSprintModal({
   onOpenChange,
   sprint,
 }: CreateSprintModalProps) {
+  const [name, setName] = useState<string>(sprint?.name ?? "");
   const [dateError, setDateError] = useState<boolean>(false);
-  const [start, setStart] = useState<string>("");
-  const [end, setEnd] = useState<string>("");
+  const [start, setStart] = useState<string>(
+    sprint?.startDate.slice(0, 10) ?? ""
+  );
+  const [end, setEnd] = useState<string>(sprint?.endDate.slice(0, 10) ?? "");
   const fetcher = useFetcher();
 
   useEffect(() => {
@@ -47,6 +50,16 @@ export function CreateSprintModal({
   const onClose = () => {
     setDateError(false);
     onOpenChange();
+  };
+
+  const onSubmit = (onClose: () => void) => {
+    // validate
+    if (dateError || name.trim().length == 0) {
+      return;
+    }
+
+    // close if valid
+    onClose();
   };
 
   return (
@@ -71,6 +84,7 @@ export function CreateSprintModal({
                 name="Name"
                 isRequired
                 defaultValue={sprint?.name}
+                onChange={(e) => setName(e.target.value)}
               />
               <div className="flex flex-row flex-nowrap">
                 <label className="shrink-0 p-2" htmlFor="StartDate">
@@ -120,8 +134,15 @@ export function CreateSprintModal({
               >
                 Close
               </Button>
-              <Button size="lg" color="primary" type="submit" onClick={onClose}>
-                Create
+              <Button
+                size="lg"
+                color="primary"
+                type="submit"
+                onPress={() => {
+                  onSubmit(onClose);
+                }}
+              >
+                {sprint ? "Edit" : "Create"}
               </Button>
             </ModalFooter>
           </fetcher.Form>
