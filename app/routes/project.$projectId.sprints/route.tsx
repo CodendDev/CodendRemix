@@ -1,12 +1,10 @@
 import React from "react";
 import { defer, json, redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
-import { Button, useDisclosure } from "@nextui-org/react";
+import { useLoaderData } from "@remix-run/react";
 import { createSprint, getSprints } from "~/api/methods/sprint";
 import getToken from "~/actions/getToken";
-import { CreateSprintModal } from "~/components/sprint/CreateSprintModal";
-import SprintList from "~/components/sprint/SprintList";
+import ProjectSprints from "~/components/sprint/ProjectSprints";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const token = await getToken(request);
@@ -51,25 +49,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 export default function SprintsPage() {
   const loaderData = useLoaderData<typeof loader>();
-  const sprints = loaderData.sprints;
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  return (
-    <div className="grow flex-col">
-      <div>
-        <Button onPress={onOpen} color="primary">
-          Create
-        </Button>
-        <CreateSprintModal
-          isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          projectId={loaderData.projectId}
-        />
-      </div>
-      <div>
-        <SprintList sprintsPromise={sprints} />
-      </div>
-      <Outlet />
-    </div>
-  );
+  return <ProjectSprints {...loaderData} />;
 }
