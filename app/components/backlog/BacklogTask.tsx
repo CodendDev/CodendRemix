@@ -14,6 +14,7 @@ import {
   taskTypeToColorClass,
   typeToOutlineColor,
 } from "~/components/utils/TypeToColor";
+import { useNavigate, useParams } from "@remix-run/react";
 
 type backlogTaskProps = Omit<BacklogTaskType, "createdOn"> & {
   selectedBacklogTaskId: string | undefined;
@@ -31,6 +32,9 @@ export function BacklogTask({
   selectedBacklogTaskId,
   setSelectedBacklogTaskId,
 }: backlogTaskProps) {
+  const navigate = useNavigate();
+  const params = useParams();
+  const projectId = params.projectId!;
   const backlogTaskSelected: string =
     selectedBacklogTaskId === id
       ? `outline ${typeToOutlineColor[taskType]} outline-offset-0 outline-1`
@@ -38,6 +42,7 @@ export function BacklogTask({
 
   const handleClick = () => {
     setSelectedBacklogTaskId(id);
+    navigate(`/project/${projectId}/backlog/${id}/${taskType.toLowerCase()}`);
   };
 
   return (
