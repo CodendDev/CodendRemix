@@ -2,6 +2,7 @@ import type {
   SprintsResponse,
   SprintsRequest,
   CreateSprintRequest,
+  DeleteSprintRequest,
 } from "~/api/types/sprintTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 
@@ -30,6 +31,23 @@ export async function createSprint(request: CreateSprintRequest) {
       endDate: `${endDate}T23:59:00.000Z`,
       goal: goal.length === 0 ? null : goal,
     });
+    return response.data;
+  } catch (err) {
+    return getApiErrorsFromError(err);
+  }
+}
+
+export async function deleteSprint({
+  token,
+  projectId,
+  sprintId,
+}: DeleteSprintRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.delete(
+      `/api/projects/${projectId}/sprints/${sprintId}`
+    );
     return response.data;
   } catch (err) {
     return getApiErrorsFromError(err);
