@@ -14,6 +14,10 @@ export function ProjectNavigationList({
   projects,
   selectedProjectId,
 }: ProjectNavigationListProps) {
+  if (projects.length === 0) {
+    return <EmptyProjectList />;
+  }
+
   return (
     <Accordion defaultExpandedKeys={["Projects"]} className="text-center">
       <AccordionItem
@@ -61,6 +65,12 @@ function ProjectNavigationListTitle() {
       </div>
       Projects
     </div>
+  );
+}
+
+function EmptyProjectList() {
+  return (
+    <div className="flex h-full items-center justify-center">No projects💀</div>
   );
 }
 

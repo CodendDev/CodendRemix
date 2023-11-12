@@ -30,7 +30,7 @@ export function ProjectNavigationBar({
     .slice(0, 36);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex w-full flex-col">
       <Suspense fallback={<LoadingProjectNavigationBar />}>
         <Await
           resolve={projectsPromise}
