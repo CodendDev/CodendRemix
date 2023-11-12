@@ -8,16 +8,23 @@ import { GiSprint } from "~/components/projectNavigation/icons";
 
 type ProjectBoardSprintSelectorProps = {
   sprintsPromise: Promise<Sprint[]>;
+  route: string;
 };
 
 export function ProjectBoardSprintSelector({
   sprintsPromise,
+  route,
 }: ProjectBoardSprintSelectorProps) {
   return (
     <div className="flex flex-col">
       <Suspense fallback={<ProjectBoardSprintSelectorLoading />}>
         <Await resolve={sprintsPromise}>
-          {(sprints) => <AwaitedProjectBoardSprintSelector sprints={sprints} />}
+          {(sprints) => (
+            <AwaitedProjectBoardSprintSelector
+              sprints={sprints}
+              route={route}
+            />
+          )}
         </Await>
       </Suspense>
     </div>
@@ -38,7 +45,13 @@ export function ProjectBoardSprintSelectorLoading() {
     </div>
   );
 }
-function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
+function AwaitedProjectBoardSprintSelector({
+  sprints,
+  route,
+}: {
+  sprints: Sprint[];
+  route: string;
+}) {
   const [selectedValues, setSelectedValues] = useState<Selection>(
     sprints.length > 0 ? new Set([sprints[0].id]) : new Set([])
   );
@@ -59,7 +72,7 @@ function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
       selectedSprint &&
       !location.pathname.toLowerCase().includes(selectedSprint)
     ) {
-      navigate(`/project/${projectId}/board/${selectedSprint}`);
+      navigate(`/project/${projectId}/${route}/${selectedSprint}`);
     }
   }, [selectedValues, location]);
 
@@ -67,8 +80,8 @@ function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
     setSelectedValues(keys);
     const keysArray = Array.from(keys);
     keysArray.length > 0
-      ? navigate(`/project/${projectId}/board/${keysArray[0]}`)
-      : navigate(`/project/${projectId}/board`);
+      ? navigate(`/project/${projectId}/${route}/${keysArray[0]}`)
+      : navigate(`/project/${projectId}/${route}`);
   };
 
   const noSprintSelected =

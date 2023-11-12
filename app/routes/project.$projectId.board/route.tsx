@@ -36,7 +36,10 @@ export default function BoardPage() {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <ProjectBoardSprintSelector sprintsPromise={sprintsPromise} />
+      <ProjectBoardSprintSelector
+        sprintsPromise={sprintsPromise}
+        route={"board"}
+      />
       <Outlet />
     </div>
   );
