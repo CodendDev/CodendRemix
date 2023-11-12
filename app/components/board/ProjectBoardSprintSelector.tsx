@@ -2,22 +2,25 @@ import React, { Suspense, useEffect, useState } from "react";
 import type { Sprint } from "~/api/types/baseEntitiesTypes";
 import { Await, useLocation, useNavigate } from "@remix-run/react";
 import type { Selection } from "@nextui-org/react";
-import { Button, Link, Select, SelectItem, Skeleton } from "@nextui-org/react";
+import { Select, SelectItem, Skeleton } from "@nextui-org/react";
 import { ProjectBoardLoading } from "~/components/board/ProjectBoard";
-import { GiSprint } from "~/components/projectNavigation/icons";
 
 type ProjectBoardSprintSelectorProps = {
   sprintsPromise: Promise<Sprint[]>;
+  noSprintsComponent: React.ReactElement;
+  route: string;
 };
-
-export function ProjectBoardSprintSelector({
-  sprintsPromise,
-}: ProjectBoardSprintSelectorProps) {
+export function ProjectBoardSprintSelector(
+  props: ProjectBoardSprintSelectorProps
+) {
+  const { sprintsPromise } = props;
   return (
     <div className="flex flex-col">
       <Suspense fallback={<ProjectBoardSprintSelectorLoading />}>
         <Await resolve={sprintsPromise}>
-          {(sprints) => <AwaitedProjectBoardSprintSelector sprints={sprints} />}
+          {(sprints) => (
+            <AwaitedProjectBoardSprintSelector {...props} sprints={sprints} />
+          )}
         </Await>
       </Suspense>
     </div>
@@ -38,16 +41,21 @@ export function ProjectBoardSprintSelectorLoading() {
     </div>
   );
 }
-function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
+
+interface AwaitedProjectBoardSprintSelectorProps
+  extends ProjectBoardSprintSelectorProps {
+  sprints: Sprint[];
+}
+function AwaitedProjectBoardSprintSelector({
+  sprints,
+  noSprintsComponent,
+  route,
+}: AwaitedProjectBoardSprintSelectorProps) {
   const [selectedValues, setSelectedValues] = useState<Selection>(
     sprints.length > 0 ? new Set([sprints[0].id]) : new Set([])
   );
   const navigate = useNavigate();
   const location = useLocation();
-  const projectId = location.pathname
-    .toLowerCase()
-    .replace("/project/", "")
-    .slice(0, 36);
   const getSelectedSprint = () => {
     const arr = Array.from(selectedValues);
     return arr.length > 0 ? arr[0].toString() : null;
@@ -59,7 +67,7 @@ function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
       selectedSprint &&
       !location.pathname.toLowerCase().includes(selectedSprint)
     ) {
-      navigate(`/project/${projectId}/board/${selectedSprint}`);
+      navigate(`${route}/${selectedSprint}`);
     }
   }, [selectedValues, location]);
 
@@ -67,14 +75,13 @@ function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
     setSelectedValues(keys);
     const keysArray = Array.from(keys);
     keysArray.length > 0
-      ? navigate(`/project/${projectId}/board/${keysArray[0]}`)
-      : navigate(`/project/${projectId}/board`);
+      ? navigate(`${route}/${keysArray[0]}`)
+      : navigate(`${route}`);
   };
 
   const noSprintSelected =
     selectedValues[Symbol.iterator]().next().done === true;
 
-  // @ts-ignore
   // noinspection RequiredAttributes
   return (
     <>
@@ -94,22 +101,7 @@ function AwaitedProjectBoardSprintSelector({ sprints }: { sprints: Sprint[] }) {
             </SelectItem>
           )}
         </Select>
-        {noSprintSelected && (
-          <div className="flex flex-row gap-3">
-            <span className="flex items-center text-lg text-gray-700">
-              No existing active sprints? Add new or start one now!
-            </span>
-            <Button
-              href={`/project/${projectId}/sprints`}
-              as={Link}
-              size="lg"
-              anchorIcon={<GiSprint />}
-              showAnchorIcon={true}
-            >
-              New sprint
-            </Button>
-          </div>
-        )}
+        {noSprintSelected && noSprintsComponent}
       </div>
       {noSprintSelected && (
         <div>
