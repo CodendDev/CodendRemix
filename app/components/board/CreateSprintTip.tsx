@@ -5,9 +5,10 @@ import React from "react";
 export const CreateSprintTip = ({ projectId }: { projectId: string }) => (
   <div className="flex flex-row gap-3">
     <span className="flex items-center text-lg text-gray-700">
-      No existing active sprints? Add new or start one now!
+      No active sprints? Create a new one now!
     </span>
     <Button
+      color="primary"
       href={`/project/${projectId}/sprints`}
       as={Link}
       size="lg"

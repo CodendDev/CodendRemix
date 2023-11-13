@@ -1,17 +1,17 @@
 import React from "react";
-import { json, redirect } from "@remix-run/node";
+import { defer, json, redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
-import { Button, useDisclosure } from "@nextui-org/react";
+import { useLoaderData } from "@remix-run/react";
 import { createSprint, getSprints } from "~/api/methods/sprint";
 import getToken from "~/actions/getToken";
-import { CreateSprintModal } from "~/components/sprint/CreateSprintModal";
+import ProjectSprints from "~/components/sprint/ProjectSprints";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const token = await getToken(request);
   if (token === undefined) {
     return null;
   }
+  const projectId = params.projectId!;
 
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
@@ -21,8 +21,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     startDate: data.StartDate.toString(),
     endDate: data.EndDate.toString(),
     goal: data.Goal.toString().trim(),
-    projectId: data.ProjectId.toString(),
-    token: token,
+    token,
+    projectId,
   });
 
   if (res === undefined || res.errors !== undefined) {
@@ -40,29 +40,16 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const projectId = params.projectId!;
 
-  const sprints = await getSprints({
+  const sprints = getSprints({
     projectId: projectId,
     token: token!,
   });
 
-  return json({ projectId: projectId, sprints });
+  return defer({ projectId: projectId, sprints });
 };
 
 export default function SprintsPage() {
   const loaderData = useLoaderData<typeof loader>();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  return (
-    <>
-      <Button onPress={onOpen} color="primary">
-        Create
-      </Button>
-      <CreateSprintModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        projectId={loaderData.projectId}
-      />
-      <Outlet />
-    </>
-  );
+  return <ProjectSprints {...loaderData} />;
 }
