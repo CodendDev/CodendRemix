@@ -82,6 +82,7 @@ export interface ProjectTaskStatus {
  * Represents user details.
  */
 export interface UserDetails {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -152,6 +153,7 @@ export interface ProjectTask {
   storyPoints?: number;
   assigneeId?: string;
   storyId?: string;
+  epicId?: string;
 }
 
 //
