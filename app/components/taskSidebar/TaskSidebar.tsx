@@ -1,4 +1,8 @@
-import { ProjectTask, ProjectTaskStatus } from "~/api/types/baseEntitiesTypes";
+import {
+  ProjectTask,
+  ProjectTaskStatus,
+  UserDetails,
+} from "~/api/types/baseEntitiesTypes";
 import { Suspense } from "react";
 import { Await } from "@remix-run/react";
 import { Skeleton } from "@nextui-org/react";
@@ -8,10 +12,12 @@ import { ProjectTaskStatusesResponse } from "~/api/types/projectTaskStatusesType
 type TaskSidebarProps = {
   projectTaskPromise: Promise<ProjectTask>;
   projectTaskStatusesResponse: ProjectTaskStatusesResponse;
+  projectMembers: UserDetails[];
 };
 export function TaskSidebar({
   projectTaskPromise,
   projectTaskStatusesResponse,
+  projectMembers,
 }: TaskSidebarProps) {
   return (
     <Suspense fallback={<TaskSidebarLoading />}>
@@ -20,6 +26,7 @@ export function TaskSidebar({
           <AwaitedTaskSidebar
             task={projectTask}
             statuses={projectTaskStatusesResponse.projectTaskStatuses}
+            projectMembers={projectMembers}
           />
         )}
       </Await>
@@ -36,13 +43,19 @@ function TaskSidebarLoading() {
 function AwaitedTaskSidebar({
   task,
   statuses,
+  projectMembers,
 }: {
   task: ProjectTask;
   statuses: ProjectTaskStatus[];
+  projectMembers: UserDetails[];
 }) {
   return (
-    <div className="flex h-full w-[30rem] min-w-[20rem] flex-shrink flex-col overflow-x-auto rounded-lg border-1 border-emerald-700 bg-gray-100">
-      <TaskDetails projectTask={task} statuses={statuses} />
+    <div className="w-min-[25rem] flex h-full w-[40rem] flex-col overflow-x-auto border-l-1 border-emerald-700">
+      <TaskDetails
+        projectTask={task}
+        statuses={statuses}
+        projectMembers={projectMembers}
+      />
     </div>
   );
 }
