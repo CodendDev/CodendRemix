@@ -4,18 +4,22 @@ export function SprintDetails({ sprint }: { sprint: Sprint }) {
   const { name, startDate, endDate, goal } = sprint;
   return (
     <div className="border-b-1 border-emerald-700 px-4">
-      <SprintDetail label="Name" value={name} />
-      <SprintDetail label="Start date" value={startDate} />
-      <SprintDetail label="End date" value={endDate} />
-      {goal && <SprintDetail label="Goal" value={goal} />}
+      <div className="flex items-end">
+        <div className="text-xl">{name}</div>
+      </div>
+      <div>
+        <span className="font-bold">Date&nbsp;</span>
+        {startDate.slice(0, 10)} - {endDate.slice(0, 10)}
+      </div>
+      {goal && <SprintGoal value={goal} />}
     </div>
   );
 }
 
-function SprintDetail({ label, value }: { label: string; value: string }) {
+function SprintGoal({ value }: { value: string }) {
   return (
     <div className="flex">
-      <div>{label}&nbsp;</div>
+      <span className="font-bold">Goal&nbsp;</span>
       <div>{value}</div>
     </div>
   );
