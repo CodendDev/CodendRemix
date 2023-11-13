@@ -28,9 +28,11 @@ export default function BacklogPage() {
   const { backlogPromise } = loaderData;
 
   return (
-    <div className="flex w-full flex-row gap-6 px-6 py-6">
-      <Backlog backlogPromise={backlogPromise} />
-      <Outlet />
-    </div>
+    <>
+      <div className="flex w-full flex-row gap-6 px-6 py-6">
+        <Backlog backlogPromise={backlogPromise} />
+      </div>
+      <Outlet context={backlogPromise} />
+    </>
   );
 }
