@@ -4,6 +4,7 @@ import type { WithTokenRequest } from "~/api/types/authorizationTypes";
 export interface ProjectBoardRequest extends WithTokenRequest {
   projectId: string;
   sprintId: string;
+  assigneeId?: string;
 }
 
 export interface ProjectBoardResponse {
