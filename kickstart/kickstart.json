@@ -118,7 +118,7 @@
           "firstName": "Fred",
           "lastName": "Flintstone",
           "password": "#{userPassword}",
-          "imageUrl": "https://picsum.photos/400"
+          "imageUrl": "https://i.pravatar.cc/400?img=12"
         },
         "registration": {
           "applicationId": "#{applicationId}"
@@ -134,7 +134,7 @@
           "firstName": "Norbert",
           "lastName": "Gierczak",
           "password": "#{userPassword}",
-          "imageUrl": "https://picsum.photos/400"
+          "imageUrl": "https://i.pravatar.cc/400?img=69"
         },
         "registration": {
           "applicationId": "#{applicationId}"
