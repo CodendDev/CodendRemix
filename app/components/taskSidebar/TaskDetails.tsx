@@ -32,6 +32,7 @@ import {
   formatEstimatedTimeToString,
   formatStringToEstimatedTime,
 } from "~/components/utils/EstimatedTimeUtils";
+import { isEqual } from "lodash";
 
 interface TaskDetailsProps {
   projectTask: ProjectTask;
@@ -70,7 +71,7 @@ export function TaskDetails({
   }, [projectTask]);
 
   const checkIfChanged = () => {
-    if (JSON.stringify(projectTask) === JSON.stringify(task)) {
+    if (isEqual(projectTask, task)) {
       setIsChanged(false);
     } else {
       setIsChanged(true);
