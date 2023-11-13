@@ -1,7 +1,7 @@
 import React from "react";
 import { defer, json, redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { createSprint, getSprints } from "~/api/methods/sprint";
 import getToken from "~/actions/getToken";
 import ProjectSprints from "~/components/sprint/ProjectSprints";
@@ -51,5 +51,10 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 export default function SprintsPage() {
   const loaderData = useLoaderData<typeof loader>();
 
-  return <ProjectSprints {...loaderData} />;
+  return (
+    <>
+      <ProjectSprints {...loaderData} />
+      <Outlet />
+    </>
+  );
 }

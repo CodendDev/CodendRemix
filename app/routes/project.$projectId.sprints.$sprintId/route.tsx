@@ -1,6 +1,13 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { deleteSprint, updateSprint } from "~/api/methods/sprint";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { defer, redirect } from "@remix-run/node";
+
+import { deleteSprint, getSprint, updateSprint } from "~/api/methods/sprint";
+import { getBacklog } from "~/api/methods/project";
+
 import getToken from "~/actions/getToken";
+
+import SideSprint from "~/components/sprint/sideSprint/SideSprint";
 
 export const action = async (args: ActionFunctionArgs) => {
   switch (args.request.method) {
@@ -44,3 +51,34 @@ const actionPut = async ({ request, params }: ActionFunctionArgs) => {
 
   return await updateSprint({ token, sprintId, ...sprint });
 };
+
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const token = await getToken(request);
+  if (!token) {
+    return redirect("/user/login");
+  }
+
+  const projectId = params.projectId!;
+  const sprintId = params.sprintId!;
+
+  const sprint = getSprint({ sprintId, projectId, token });
+  const backlog = getBacklog({ projectId, token });
+
+  return defer({ projectId, sprint, backlog });
+};
+
+export default function SprintPage() {
+  const loaderData = useLoaderData<typeof loader>();
+  // @ts-ignore
+  const { projectId, sprint, backlog } = loaderData;
+
+  return (
+    <div className="grow border-l-1 border-emerald-700">
+      <SideSprint
+        sprintPromise={sprint}
+        backlogPromise={backlog}
+        projectId={projectId}
+      />
+    </div>
+  );
+}

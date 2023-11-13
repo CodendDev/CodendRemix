@@ -4,6 +4,7 @@ import type {
   CreateSprintRequest,
   DeleteSprintRequest,
   UpdateSprintRequest,
+  SprintRequest,
 } from "~/api/types/sprintTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 
@@ -16,6 +17,15 @@ export async function getSprints({
   try {
     const response = await axios.get(`/api/projects/${projectId}/sprints`);
     return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getSprint({ sprintId, projectId, token }: SprintRequest) {
+  try {
+    const response = await getSprints({ projectId, token });
+    return response?.sprints.find((s) => s.id === sprintId);
   } catch (err) {
     return undefined;
   }
