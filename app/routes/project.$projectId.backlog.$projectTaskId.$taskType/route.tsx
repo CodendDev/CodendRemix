@@ -9,6 +9,9 @@ import { getProjectTask } from "~/api/methods/projectTask";
 import TaskSidebar from "~/components/taskSidebar/TaskSidebar";
 import { getProjectTaskStatuses } from "~/api/methods/projectTaskStauses";
 import { getMembers } from "~/api/methods/project";
+import { ProjectTask } from "~/api/types/baseEntitiesTypes";
+import { getEpic } from "~/api/methods/epic";
+import { getStory } from "~/api/methods/story";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -32,23 +35,57 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     projectMembersPromise,
   ]);
 
+  const projectTaskPromise = getProjectTaskByType({
+    token: token!,
+    projectId,
+    projectTaskId,
+    taskType,
+  });
+
+  return defer({
+    projectTaskPromise,
+    projectTaskStatusesResponse,
+    projectMembers,
+  });
+};
+
+export const getProjectTaskByType = ({
+  token,
+  projectId,
+  projectTaskId,
+  taskType,
+}: {
+  token: string;
+  projectId: string;
+  projectTaskId: string;
+  taskType: string;
+}): Promise<ProjectTask | undefined> => {
   switch (taskType.toLowerCase()) {
     case "bugfix":
     case "base": {
-      const projectTaskPromise = getProjectTask({
+      return getProjectTask({
         projectId: projectId,
         token: token!,
         projectTaskId: projectTaskId,
       });
-
-      return defer({
-        projectTaskPromise,
-        projectTaskStatusesResponse,
-        projectMembers,
+    }
+    case "story": {
+      return getStory({
+        projectId: projectId,
+        token: token!,
+        storyId: projectTaskId,
       });
     }
+    case "epic": {
+      return getEpic({
+        projectId: projectId,
+        token: token!,
+        epicId: projectTaskId,
+      });
+    }
+    default:
+      throw new Error("Unknown TaskType.");
   }
-  return undefined;
 };
 
 export function ErrorBoundary() {
@@ -68,8 +105,8 @@ export default function BoardPage() {
     <>
       <TaskSidebar
         projectTaskPromise={projectTaskPromise}
-        projectTaskStatusesResponse={projectTaskStatusesResponse}
-        projectMembers={projectMembers}
+        projectTaskStatusesResponse={projectTaskStatusesResponse!}
+        projectMembers={projectMembers!}
       />
       <Outlet />
     </>
