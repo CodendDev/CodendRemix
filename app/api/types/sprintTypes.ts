@@ -3,12 +3,22 @@ import type { BoardTask } from "~/api/types/baseEntitiesTypes";
 
 export interface SprintsRequest extends ProjectRequest {}
 
+export interface SprintRequest extends ProjectRequest {
+  sprintId: string;
+}
+
+export interface DeleteSprintRequest extends SprintRequest {}
+
 export interface CreateSprintRequest extends SprintsRequest {
   name: string;
   startDate: string;
   endDate: string;
   goal: string;
 }
+
+export interface UpdateSprintRequest
+  extends SprintRequest,
+    CreateSprintRequest {}
 
 export interface SprintResponse {
   id: string;

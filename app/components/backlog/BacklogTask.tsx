@@ -1,19 +1,13 @@
-import { BacklogTaskType } from "~/api/types/baseEntitiesTypes";
+import type { BacklogTaskType } from "~/api/types/baseEntitiesTypes";
 import React from "react";
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Skeleton,
-} from "@nextui-org/react";
-import { MdMoreHoriz } from "react-icons/md/index.js";
+import { Avatar, Skeleton } from "@nextui-org/react";
 import {
   taskTypeToColorClass,
   typeToOutlineColor,
 } from "~/components/utils/TypeToColor";
+import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
+import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
+import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 import { useNavigate, useParams } from "@remix-run/react";
 
 type backlogTaskProps = Omit<BacklogTaskType, "createdOn"> & {
@@ -45,6 +39,18 @@ export function BacklogTask({
     navigate(`/project/${projectId}/backlog/${id}/${taskType.toLowerCase()}`);
   };
 
+  const dropDownOptions: OptionsDropdownItem[] = [
+    {
+      label: "Assign to me",
+      onClick: () => {},
+    },
+    {
+      label: "Edit",
+      onClick: () => {},
+    },
+    deleteOption(() => {}),
+  ];
+
   return (
     <div
       className={`flex min-w-fit flex-shrink-0 flex-row items-center bg-gray-100 p-1 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200 ${backlogTaskSelected}`}
@@ -66,7 +72,7 @@ export function BacklogTask({
           {assigneeAvatar && <Avatar src={assigneeAvatar} size="sm" />}
         </div>
         <div className="w-8 text-center">
-          <BacklogTaskMoreDropdown />
+          <OptionsDropdown options={dropDownOptions} />
         </div>
       </div>
     </div>
@@ -77,25 +83,4 @@ export default BacklogTask;
 
 export function BacklogTaskLoading() {
   return <Skeleton className="h-10 p-1 first:rounded-t-lg last:rounded-b-lg" />;
-}
-
-function BacklogTaskMoreDropdown() {
-  const iconsStyle: string = "text-sky-500 text-xl";
-
-  return (
-    <Dropdown className="min-w-fit">
-      <DropdownTrigger>
-        <Button variant="light" radius="full" size="sm" isIconOnly>
-          <MdMoreHoriz className={iconsStyle} />
-        </Button>
-      </DropdownTrigger>
-      <DropdownMenu aria-label="More">
-        <DropdownItem key="assignToMe">Assign to me</DropdownItem>
-        <DropdownItem key="edit">Edit</DropdownItem>
-        <DropdownItem key="delete" className="text-danger" color="danger">
-          Delete
-        </DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
-  );
 }

@@ -4,6 +4,7 @@ import type {
   ProjectBoardRequest,
   ProjectBoardResponse,
   ProjectRequest,
+  ProjectActiveSprintsRequest,
 } from "~/api/types/projectTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 import type {
@@ -13,18 +14,19 @@ import type {
   Sprint,
   UserDetails,
 } from "~/api/types/baseEntitiesTypes";
-import { ProjectActiveSprintsRequest } from "~/api/types/projectTypes";
 
 export async function getBoard({
   projectId,
   sprintId,
   token,
+  assigneeId,
 }: ProjectBoardRequest): Promise<ProjectBoardResponse | undefined> {
   const axios = getAxiosInstance(token);
 
   try {
     const response = await axios.get(
-      `/api/projects/${projectId}/board/${sprintId}`
+      `/api/projects/${projectId}/board/${sprintId}
+      ${assigneeId ? `?assigneeId=${assigneeId}` : ""}`
     );
     return { board: response.data };
   } catch (err) {

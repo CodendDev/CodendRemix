@@ -6,6 +6,7 @@ import { defer, redirect } from "@remix-run/node";
 import { getProjectTaskStatuses } from "~/api/methods/projectTaskStauses";
 import { useLoaderData } from "@remix-run/react";
 import { DndProviderWrapper } from "~/components/utils/DndProviderWrapper";
+import { jwtDecode } from "jwt-decode";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -15,8 +16,9 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const projectId = params.projectId!;
   const sprintId = params.sprintId!;
+  const assigneeId = jwtDecode(token).sub;
 
-  const boardPromise = getBoard({ projectId, sprintId, token });
+  const boardPromise = getBoard({ projectId, sprintId, assigneeId, token });
   const statusesPromise = getProjectTaskStatuses({ projectId, token });
 
   return defer({ boardPromise, statusesPromise });

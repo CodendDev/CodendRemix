@@ -1,12 +1,11 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import getToken from "~/actions/getToken";
 import { defer, redirect } from "@remix-run/node";
-import { Outlet, useLoaderData, useRouteError } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import ProjectBoardSprintSelector from "~/components/board/ProjectBoardSprintSelector";
 import { getActiveSprints } from "~/api/methods/project";
-import NotFoundError from "~/components/errors/NotFoundError";
-import CustomError from "~/components/errors/CustomError";
 import React from "react";
+import CreateSprintTip from "~/components/board/CreateSprintTip";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -14,29 +13,25 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     redirect("/user/login");
   }
 
-  const sprintsPromise = getActiveSprints({
-    projectId: params.projectId!,
-    token: token!,
-  });
+  const projectId = params.projectId!;
+  const sprintsPromise = getActiveSprints({ projectId, token: token! });
 
-  return defer({ sprintsPromise });
+  return defer({ sprintsPromise, projectId });
 };
-
-export function ErrorBoundary() {
-  const error = useRouteError();
-  // @ts-ignore
-  return <>{error.statusCode === 404 ? <NotFoundError /> : <CustomError />}</>;
-}
 
 export default function BoardPage() {
   const loaderData = useLoaderData<typeof loader>();
 
   // @ts-ignore
-  const { sprintsPromise } = loaderData;
+  const { sprintsPromise, projectId } = loaderData;
 
   return (
     <div className="flex h-full w-full flex-col">
-      <ProjectBoardSprintSelector sprintsPromise={sprintsPromise} />
+      <ProjectBoardSprintSelector
+        route={`/project/${projectId}/board`}
+        sprintsPromise={sprintsPromise}
+        noSprintsComponent={CreateSprintTip({ projectId })}
+      />
       <Outlet />
     </div>
   );
