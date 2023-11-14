@@ -3,7 +3,7 @@ import React, { Suspense, useState } from "react";
 import { Await } from "@remix-run/react";
 import CustomError from "~/components/errors/CustomError";
 import Sprint, { SprintLoading } from "~/components/sprint/Sprint";
-import { DeleteModal } from "~/components/utils/deleteModal";
+import { DeleteModal } from "~/components/shared/modals/DeleteModal";
 import { UpdateSprintModal } from "~/components/sprint/SprintFormModals";
 import { useDisclosure } from "@nextui-org/react";
 import type { Sprint as APISprintProps } from "~/api/types/baseEntitiesTypes";
@@ -70,10 +70,11 @@ export function AwaitedSprintList({
     if (action === "DELETE") {
       return (
         <DeleteModal
-          label={sprint!.name}
+          deleteHeader="Delete Sprint"
+          deleteName={sprint!.name}
           isOpen={deleteModal.isOpen}
           onOpenChange={deleteModal.onOpenChange}
-          url={`/project/${projectId}/sprints/${sprint!.id}`}
+          actionRoute={`/project/${projectId}/sprints/${sprint!.id}`}
         />
       );
     }

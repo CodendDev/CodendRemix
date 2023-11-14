@@ -2,10 +2,8 @@ import React, { Suspense, useEffect, useState } from "react";
 import type { Sprint } from "~/api/types/baseEntitiesTypes";
 import { Await, useLocation, useNavigate } from "@remix-run/react";
 import type { Selection } from "@nextui-org/react";
-import { Button, Link, Select, SelectItem, Skeleton } from "@nextui-org/react";
+import { Select, SelectItem, Skeleton } from "@nextui-org/react";
 import { ProjectBoardLoading } from "~/components/board/ProjectBoard";
-import { GiSprint } from "~/components/projectNavigation/icons";
-
 type ProjectBoardSprintSelectorProps = {
   sprintsPromise: Promise<Sprint[]>;
   noSprintsComponent: React.ReactElement;

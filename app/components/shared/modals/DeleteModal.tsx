@@ -7,11 +7,11 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import React from "react";
-import { Form, useFetcher, useNavigate } from "@remix-run/react";
+import { Form, useFetcher } from "@remix-run/react";
 
 interface DeleteModalProps {
   actionRoute: string;
-  useFetcherForm: boolean;
+  useFetcherForm?: boolean;
   deleteName?: string;
   deleteHeader?: string;
   isOpen: boolean;
