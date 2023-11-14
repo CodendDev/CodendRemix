@@ -20,15 +20,18 @@ export function formatEstimatedTimeToString(est?: EstimatedTime) {
 export function formatStringToEstimatedTime(
   est: string
 ): EstimatedTime | undefined {
+  if (!est) {
+    return undefined;
+  }
   const match = est.match(estimatedTimeRegex);
   if (!match) {
     return undefined;
   }
-  const [, days, hours, minutes] = match.map(Number);
+  const [, days, hours, minutes] = match.map(String);
 
   return {
-    days: days || 0,
-    hours: hours || 0,
-    minutes: minutes || 0,
+    days: +days?.slice(0, -1) || 0,
+    hours: +hours?.slice(0, -1) || 0,
+    minutes: +minutes?.slice(0, -1) || 0,
   };
 }
