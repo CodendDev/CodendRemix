@@ -55,6 +55,7 @@ function AwaitedTaskSidebar({
         projectTask={task}
         statuses={statuses}
         projectMembers={projectMembers}
+        formType="PUT"
       />
     </div>
   );

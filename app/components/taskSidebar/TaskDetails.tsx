@@ -4,11 +4,11 @@ import {
   TaskType,
   UserDetails,
 } from "~/api/types/baseEntitiesTypes";
-import { Button } from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { taskTypeToColorClass } from "~/components/utils/TypeToColor";
-import { useFetcher } from "@remix-run/react";
-import { isEqual } from "lodash";
+import { useFetcher, useParams } from "@remix-run/react";
+import _ from "lodash";
 import {
   DescriptionInput,
   DueDateInput,
@@ -23,30 +23,40 @@ import {
   RelatedTaskInput,
   StatusInput,
 } from "~/components/taskSidebar/TaskDetailsSelectInputs";
+import DeleteModal from "~/components/shared/modals/DeleteModal";
+import { emptyTask } from "~/api/types/projectTaskTypes";
 
 interface TaskDetailsProps {
-  projectTask: ProjectTask;
+  projectTask?: ProjectTask;
   statuses: ProjectTaskStatus[];
   projectMembers: UserDetails[];
+  formType: "PUT" | "POST";
 }
 
 export function TaskDetails({
-  projectTask,
+  projectTask = emptyTask(),
   statuses,
   projectMembers,
+  formType,
 }: TaskDetailsProps) {
   const [task, setTask] = useState({ ...projectTask });
   const [isFormInvalid, setIsFormInvalid] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const fetcher = useFetcher();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const projectId = useParams().projectId!;
+
   useEffect(() => {
     setTask({ ...projectTask });
     setIsFormInvalid(false);
     setIsChanged(false);
   }, [projectTask]);
+  useEffect(() => {
+    checkIfChanged();
+  }, [task]);
 
   const checkIfChanged = () => {
-    if (isEqual(projectTask, task)) {
+    if (_.isEqual(projectTask, task)) {
       setIsChanged(false);
     } else {
       setIsChanged(true);
@@ -71,14 +81,12 @@ export function TaskDetails({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask({ ...task, [e.currentTarget.name]: e.currentTarget.value });
-    checkIfChanged();
   };
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectName = e.target.name;
     const selectValue = e.target.value;
     validateRequiredSelects(selectName, selectValue);
     setTask({ ...task, [selectName]: selectValue });
-    checkIfChanged();
   };
 
   const projectTaskFieldStringFor = (fieldName: keyof ProjectTask) => fieldName;
@@ -103,7 +111,15 @@ export function TaskDetails({
   };
 
   return (
-    <fetcher.Form>
+    <fetcher.Form
+      method={formType}
+      action={
+        formType === "PUT"
+          ? `/project/${projectId}/backlog/${projectTask?.id}/${projectTask?.taskType}`
+          : ""
+      }
+      className={"h-full"}
+    >
       <div className="flex h-full flex-col gap-3 px-4 py-3">
         <div className="flex w-full flex-row gap-3">
           <TaskTypeBadge taskType={task.taskType} />
@@ -138,6 +154,7 @@ export function TaskDetails({
           handleInputChange={handleInputChange}
           label={getLabelFor("description")}
           propPack={propPack}
+          isTaskOrBugfix={isTaskOrBugfix()}
         />
         {isTaskOrBugfix() && (
           <>
@@ -151,6 +168,7 @@ export function TaskDetails({
             <DueDateInput
               name={projectTaskFieldStringFor("dueDate")}
               value={task.dueDate}
+              setTask={setTask}
               handleInputChange={handleInputChange}
               label={getLabelFor("dueDate")}
               propPack={propPack}
@@ -191,10 +209,12 @@ export function TaskDetails({
             color="danger"
             className="font-bold"
             variant="solid"
+            onPress={onOpen}
           >
             Delete
           </Button>
           <Button
+            type="submit"
             size="lg"
             color="primary"
             className="font-bold"
@@ -203,6 +223,16 @@ export function TaskDetails({
           >
             Apply
           </Button>
+          {formType === "PUT" && (
+            <DeleteModal
+              actionRoute={`/project/${projectId}/backlog/${projectTask?.id}/${projectTask?.taskType}`}
+              useFetcherForm={false}
+              deleteName={projectTask.name}
+              deleteHeader="Delete Task"
+              isOpen={isOpen}
+              onOpenChange={onOpenChange}
+            />
+          )}
         </div>
       </div>
     </fetcher.Form>

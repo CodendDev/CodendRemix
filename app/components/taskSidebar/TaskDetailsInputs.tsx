@@ -2,7 +2,6 @@ import { Input, InputProps, Textarea } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { EstimatedTime, ProjectTask } from "~/api/types/baseEntitiesTypes";
 import {
-  estimatedTimeRegex,
   formatEstimatedTimeToString,
   formatStringToEstimatedTime,
 } from "~/components/utils/EstimatedTimeUtils";
@@ -68,7 +67,9 @@ export function NameInput({
 }
 
 interface DescriptionInputProps
-  extends Omit<CustomInputProps<string>, "handleSelectChange"> {}
+  extends Omit<CustomInputProps<string>, "handleSelectChange"> {
+  isTaskOrBugfix: boolean;
+}
 
 export function DescriptionInput({
   name,
@@ -76,14 +77,17 @@ export function DescriptionInput({
   label,
   handleInputChange,
   propPack,
+  isTaskOrBugfix,
 }: DescriptionInputProps) {
   return (
-    <div>
+    <div className="w-full">
       <Textarea
+        required={!isTaskOrBugfix}
         name={name}
         value={value ?? ""}
         onChange={handleInputChange}
         label={label}
+        isInvalid={!isTaskOrBugfix && (!value || value.trim().length === 0)}
         minRows={10}
         maxRows={10}
         {...propPack}
@@ -118,22 +122,53 @@ export function StoryPointsInput({
 }
 
 interface DueDateInputProps
-  extends Omit<CustomInputProps<string>, "handleSelectChange"> {}
+  extends Omit<CustomInputProps<string>, "handleSelectChange"> {
+  setTask: React.Dispatch<React.SetStateAction<ProjectTask>>;
+}
 
 export function DueDateInput({
   name,
   value,
+  setTask,
   label,
   handleInputChange,
   propPack,
 }: DueDateInputProps) {
+  const [dueDate, setDueDate] = useState(
+    value ? new Date(value).toISOString().split("T")[0] : ""
+  );
+
+  useEffect(() => {
+    if (value?.trim() !== dueDate.trim()) {
+      if (value) {
+        setDueDate(new Date(value).toISOString().split("T")[0]);
+      } else if (dueDate !== "") {
+        setDueDate("");
+      }
+    }
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDueDate(e.target.value);
+    if (e.target.value === "") {
+      setTask((task) => {
+        return {
+          ...task,
+          [e.target.name]: null,
+        };
+      });
+    } else {
+      handleInputChange(e);
+    }
+  };
+
   return (
     <div>
       <Input
         type="date"
         name={name}
-        value={value ? new Date(value).toLocaleDateString("en-CA") : ""}
-        onChange={handleInputChange}
+        value={dueDate}
+        onChange={handleChange}
         label={label}
         min={new Date().toISOString().split("T")[0]}
         {...propPack}
@@ -161,8 +196,11 @@ export function EstimatedTimeInput({
   const [estValue, setEstValue] = useState(formatEstimatedTimeToString(value));
   const [isInvalid, setIsInvalid] = useState(false);
   useEffect(() => {
-    setEstValue(formatEstimatedTimeToString(value));
-    setIsInvalid(false);
+    const est = formatEstimatedTimeToString(value);
+    if (est.trim() !== estValue.trim()) {
+      setEstValue(est);
+      setIsInvalid(false);
+    }
   }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -176,7 +214,7 @@ export function EstimatedTimeInput({
     setIsInvalid(false);
     setIsFormInvalid!(false);
     setTask((task) => {
-      return { ...task, [name]: estTime };
+      return { ...task, ["estimatedTime"]: estTime };
     });
   };
 
@@ -191,7 +229,6 @@ export function EstimatedTimeInput({
         placeholder="e.g. 1d 2h 30m"
         isInvalid={isInvalid}
         errorMessage={isInvalid && "Etc. must match patter: 2d 4h 30m"}
-        pattern={estimatedTimeRegex.toString()}
         {...propPack}
       />
     </div>
