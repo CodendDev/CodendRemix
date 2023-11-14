@@ -1,17 +1,129 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import getToken from "~/actions/getToken";
 import { defer, redirect } from "@remix-run/node";
 import { Outlet, useLoaderData, useRouteError } from "@remix-run/react";
 import NotFoundError from "~/components/errors/NotFoundError";
 import CustomError from "~/components/errors/CustomError";
 import React from "react";
-import { getProjectTask } from "~/api/methods/projectTask";
+import {
+  deleteProjectTask,
+  getProjectTask,
+  updateProjectTask,
+} from "~/api/methods/projectTask";
 import TaskSidebar from "~/components/taskSidebar/TaskSidebar";
 import { getProjectTaskStatuses } from "~/api/methods/projectTaskStauses";
 import { getMembers } from "~/api/methods/project";
 import { ProjectTask } from "~/api/types/baseEntitiesTypes";
-import { getEpic } from "~/api/methods/epic";
-import { getStory } from "~/api/methods/story";
+import { deleteEpic, getEpic, updateEpic } from "~/api/methods/epic";
+import { deleteStory, getStory, updateStory } from "~/api/methods/story";
+import { formatStringToEstimatedTime } from "~/components/utils/EstimatedTimeUtils";
+
+export const action = async (args: ActionFunctionArgs) => {
+  switch (args.request.method) {
+    case "DELETE":
+      return await actionDelete(args);
+    case "PUT":
+      return await actionPut(args);
+  }
+};
+
+const actionDelete = async ({ request, params }: ActionFunctionArgs) => {
+  const token = await getToken(request);
+  if (!token) {
+    redirect("/user/login");
+  }
+  const projectId = params.projectId!;
+  const projectTaskId = params.projectTaskId!;
+  const taskType = params.taskType!;
+
+  let response: any;
+
+  switch (taskType.toLowerCase()) {
+    case "bugfix":
+    case "base":
+      response = await deleteProjectTask({
+        token: token!,
+        projectId,
+        projectTaskId,
+      });
+      break;
+    case "story":
+      response = await deleteStory({
+        token: token!,
+        projectId,
+        id: projectTaskId,
+      });
+      break;
+    case "epic":
+      response = await deleteEpic({
+        token: token!,
+        projectId,
+        id: projectTaskId,
+      });
+      break;
+    default:
+      throw new Error("Unsupported TaskType");
+  }
+  if (response) {
+    return redirect(`/project/${projectId}/backlog`);
+  }
+  return undefined;
+};
+
+const actionPut = async ({ params, request }: LoaderFunctionArgs) => {
+  const token = await getToken(request);
+  if (!token) {
+    redirect("/user/login");
+  }
+  const projectId = params.projectId!;
+  const projectTaskId = params.projectTaskId!;
+  const taskType = params.taskType!;
+
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
+  const task = {
+    name: data.name.toString().trim(),
+    priority: data.priority?.toString(),
+    statusId: data.statusId.toString(),
+    description: data.description?.toString().trim(),
+    dueDate: data.dueDate?.toString(),
+    estimatedTime: formatStringToEstimatedTime(
+      data.estimatedTimeString?.toString()
+    )!,
+    storyPoints: +data.storyPoints?.toString(),
+    assigneeId: data.assigneeId?.toString(),
+    storyId: data.storyId?.toString(),
+    epicId: data.epicId?.toString(),
+  };
+
+  switch (taskType.toLowerCase()) {
+    case "bugfix":
+    case "base":
+      return await updateProjectTask({
+        token: token!,
+        projectId,
+        projectTaskId,
+        taskType,
+        ...task,
+      });
+    case "story":
+      return await updateStory({
+        token: token!,
+        projectId,
+        id: projectTaskId,
+        ...task,
+      });
+    case "epic":
+      return await updateEpic({
+        token: token!,
+        projectId,
+        id: projectTaskId,
+        ...task,
+      });
+    default:
+      throw new Error("Unsupported TaskType");
+  }
+};
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -73,14 +185,14 @@ export const getProjectTaskByType = ({
       return getStory({
         projectId: projectId,
         token: token!,
-        storyId: projectTaskId,
+        id: projectTaskId,
       });
     }
     case "epic": {
       return getEpic({
         projectId: projectId,
         token: token!,
-        epicId: projectTaskId,
+        id: projectTaskId,
       });
     }
     default:
