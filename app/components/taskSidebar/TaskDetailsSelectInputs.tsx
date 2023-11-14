@@ -1,0 +1,280 @@
+import { Avatar, Select, SelectItem, Skeleton } from "@nextui-org/react";
+import { BsFillClipboardDataFill } from "react-icons/bs/index.js";
+import React, { Suspense } from "react";
+import {
+  BacklogType,
+  Priority,
+  ProjectTaskStatus,
+  TaskType,
+  UserDetails,
+} from "~/api/types/baseEntitiesTypes";
+import { prioritiesList } from "~/components/utils/PrioritiesList";
+import {
+  priorityToColorClass,
+  taskTypeToColorClass,
+} from "~/components/utils/TypeToColor";
+import { useOutletContext } from "react-router";
+import { TbSubtask } from "react-icons/tb/index.js";
+import { Await } from "@remix-run/react";
+import { CustomInputProps } from "~/components/taskSidebar/TaskDetailsInputs";
+
+interface StatusInputProps
+  extends Omit<CustomInputProps<string>, "handleInputChange"> {
+  statuses: ProjectTaskStatus[];
+}
+
+export function StatusInput({
+  name,
+  value,
+  label,
+  handleSelectChange,
+  propPack,
+  statuses,
+}: StatusInputProps) {
+  return (
+    <div className="flex-grow">
+      <Select
+        required
+        unselectable="off"
+        name={name}
+        value={value}
+        onChange={handleSelectChange}
+        aria-label={label}
+        placeholder="Select status"
+        isInvalid={!value}
+        errorMessage={!value && "Status is required"}
+        items={statuses}
+        selectedKeys={value ? [value] : []}
+        startContent={<BsFillClipboardDataFill />}
+        {...propPack}
+        className={"min-w-[13rem]"}
+        size="lg"
+      >
+        {(status) => (
+          <SelectItem key={status.id} value={status.id}>
+            {status.name}
+          </SelectItem>
+        )}
+      </Select>
+    </div>
+  );
+}
+
+interface PriorityInputProps
+  extends Omit<CustomInputProps<Priority>, "handleInputChange"> {}
+
+export function PriorityInput({
+  name,
+  value,
+  label,
+  handleSelectChange,
+  propPack,
+}: PriorityInputProps) {
+  return (
+    <div>
+      <Select
+        required
+        name={name}
+        value={value}
+        onChange={handleSelectChange}
+        label={label}
+        placeholder={"Select priority"}
+        isInvalid={!value}
+        errorMessage={!value && "Status is required"}
+        selectedKeys={value ? [value] : []}
+        startContent={
+          value && prioritiesList.find((p) => p.value === value)?.icon
+        }
+        {...propPack}
+        className={`w-full items-start ${value && priorityToColorClass[value]}`}
+      >
+        {prioritiesList.map((priority) => (
+          <SelectItem
+            key={priority.value}
+            value={priority.value}
+            startContent={priority.icon}
+            className={priorityToColorClass[priority.value]}
+          >
+            {priority.value}
+          </SelectItem>
+        ))}
+      </Select>
+    </div>
+  );
+}
+
+interface AssigneeInputProps
+  extends Omit<CustomInputProps<string>, "handleInputChange"> {
+  projectMembers: UserDetails[];
+}
+
+export function AssigneeInput({
+  name,
+  value,
+  handleSelectChange,
+  label,
+  propPack,
+  projectMembers,
+}: AssigneeInputProps) {
+  return (
+    <div>
+      <Select
+        name={name}
+        value={value ?? ""}
+        onChange={handleSelectChange}
+        label={label}
+        items={projectMembers}
+        selectedKeys={value ? [value] : []}
+        placeholder="Not assigned"
+        startContent={
+          <Avatar
+            src={projectMembers.find((user) => user.id === value)?.imageUrl}
+            size="sm"
+            className="w-9"
+            showFallback
+          />
+        }
+        {...propPack}
+      >
+        {(member) => (
+          <SelectItem
+            key={member.id}
+            value={member.id}
+            startContent={
+              <Avatar
+                alt={member.email}
+                src={member.imageUrl}
+                className="h-8 w-8"
+                showFallback
+              />
+            }
+          >
+            {`${member.firstName} ${member.lastName} (${member.email})`}
+          </SelectItem>
+        )}
+      </Select>
+    </div>
+  );
+}
+
+interface RelatedTaskInputProps
+  extends Omit<CustomInputProps<string>, "handleInputChange"> {
+  taskType: TaskType;
+}
+
+export function RelatedTaskInput({
+  name,
+  value,
+  handleSelectChange,
+  label,
+  propPack,
+  taskType,
+}: RelatedTaskInputProps) {
+  const backlogPromise: Promise<BacklogType> = useOutletContext();
+  return (
+    <div>
+      <Suspense
+        fallback={
+          <Select
+            label={label}
+            selectedKeys={undefined}
+            placeholder="Loading..."
+            isLoading
+            startContent={<TbSubtask />}
+            {...propPack}
+          >
+            <SelectItem
+              key="notselected"
+              value="notselected"
+              textValue="Loading..."
+            >
+              <Skeleton className="m-1 h-full w-full" />
+            </SelectItem>
+          </Select>
+        }
+      >
+        <Await resolve={backlogPromise}>
+          {(backlog) => (
+            <AwaitedRelatedTaskInput
+              backlog={backlog}
+              name={name}
+              value={value}
+              handleSelectChange={handleSelectChange}
+              label={label}
+              propPack={propPack}
+              taskType={taskType}
+            />
+          )}
+        </Await>
+      </Suspense>
+    </div>
+  );
+}
+
+interface AwaitedRelatedTaskInputProps extends RelatedTaskInputProps {
+  backlog: BacklogType;
+}
+
+function AwaitedRelatedTaskInput({
+  name,
+  value,
+  handleSelectChange,
+  label,
+  propPack,
+  taskType,
+  backlog,
+}: AwaitedRelatedTaskInputProps) {
+  const taskTypeWithColor = (taskId: string) => {
+    const task = backlog.tasks.find((task) => task.id === taskId)!;
+    return (
+      <span
+        className={`text-sm ${
+          taskTypeToColorClass[task?.taskType as unknown as TaskType]
+        }`}
+      >
+        {task?.taskType}
+      </span>
+    );
+  };
+
+  const getTasksAccordingToType = () => {
+    if (taskType === "Story") {
+      return backlog.tasks.filter((task) => task.taskType === "Epic");
+    }
+    return backlog.tasks.filter((task) => task.taskType === "Story");
+  };
+
+  return (
+    <Select
+      name={name}
+      value={value}
+      onChange={handleSelectChange}
+      label={label}
+      items={getTasksAccordingToType()}
+      selectedKeys={value ? [value] : []}
+      placeholder="Not selected"
+      startContent={
+        <>
+          <TbSubtask />
+          {value && taskTypeWithColor(value)}
+        </>
+      }
+      {...propPack}
+    >
+      {(task) => (
+        <SelectItem
+          key={task.id}
+          value={task.id}
+          textValue={task.name}
+          startContent={
+            <span className={`italic ${taskTypeToColorClass[task.taskType]}`}>
+              {task.taskType}
+            </span>
+          }
+        >
+          <span className="overflow-ellipsis">{task.name}</span>
+        </SelectItem>
+      )}
+    </Select>
+  );
+}
