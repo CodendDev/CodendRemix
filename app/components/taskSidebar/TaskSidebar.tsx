@@ -36,8 +36,23 @@ export function TaskSidebar({
 
 export default TaskSidebar;
 
-function TaskSidebarLoading() {
-  return <Skeleton className="h-full w-[30rem] border-1 border-emerald-700" />;
+export function TaskSidebarLoading() {
+  return (
+    <div className="flex h-full w-[40rem] flex-col gap-3 px-4 py-3">
+      <div className="flex flex-row gap-3">
+        <Skeleton className="h-12 w-36 rounded-lg" />
+        <Skeleton className="h-12 w-full rounded-lg" />
+      </div>
+      <div className="ml-32 flex flex-col gap-3">
+        <Skeleton className="h-12 w-full rounded-lg" />
+        <Skeleton className="h-64 w-full rounded-lg" />
+        <Skeleton className="h-12 w-1/2 rounded-lg" />
+        <Skeleton className="h-12 w-1/2 rounded-lg" />
+        <Skeleton className="h-12 w-full rounded-lg" />
+        <Skeleton className="h-12 w-full rounded-lg" />
+      </div>
+    </div>
+  );
 }
 
 function AwaitedTaskSidebar({
