@@ -18,7 +18,7 @@ import { DragItemTypes } from "~/components/board/ProjectBoard";
 import { BoardTask } from "~/api/types/baseEntitiesTypes";
 import { useLocation } from "@remix-run/react";
 import EditStatusModal from "~/components/projectTaskStatus/EditStatusModal";
-import DeleteStatusModal from "~/components/projectTaskStatus/DeleteStatusModal";
+import DeleteModal from "~/components/shared/modals/DeleteModal";
 
 type BoardStatusContainerProps = {
   name: string;
@@ -74,10 +74,10 @@ export function ProjectTaskStatusContainer({
         isOpen={editStatusModal.isOpen}
         onOpenChange={editStatusModal.onOpenChange}
       />
-      <DeleteStatusModal
-        projectId={projectId}
-        statusId={statusId}
-        statusName={name}
+      <DeleteModal
+        actionRoute={`/api/project/${projectId}/projectTaskStatus/${statusId}`}
+        deleteName={name}
+        deleteHeader="Delete status"
         isOpen={deleteStatusModal.isOpen}
         onOpenChange={deleteStatusModal.onOpenChange}
       />
