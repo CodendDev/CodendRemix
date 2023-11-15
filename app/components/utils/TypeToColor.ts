@@ -32,6 +32,6 @@ export const priorityToColorClass: Record<Priority, string> = {
   VeryHigh: "text-red-500",
   High: "text-orange-500",
   Normal: "text-yellow-500",
-  Low: "text-emerald-500",
-  VeryLow: "text-teal-500",
+  Low: "text-sky-500",
+  VeryLow: "text-blue-500",
 };

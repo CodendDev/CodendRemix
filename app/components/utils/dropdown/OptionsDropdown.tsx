@@ -18,7 +18,7 @@ interface OptionsDropdownProps {
   options: OptionsDropdownItem[];
 }
 export function OptionsDropdown({ options }: OptionsDropdownProps) {
-  const iconsStyle: string = "text-sky-500 text-xl";
+  const iconsStyle: string = "text-primary-500 text-xl";
 
   return (
     <Dropdown className="min-w-fit">

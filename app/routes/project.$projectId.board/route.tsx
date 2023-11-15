@@ -14,7 +14,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   }
 
   const projectId = params.projectId!;
-  const sprintsPromise = getActiveSprints({ projectId, token });
+  const sprintsPromise = getActiveSprints({ projectId, token: token! });
 
   return defer({ sprintsPromise, projectId });
 };

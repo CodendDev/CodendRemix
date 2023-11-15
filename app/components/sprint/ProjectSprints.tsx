@@ -17,7 +17,7 @@ export function ProjectSprints({ projectId, sprints }: ProjectSprintsProps) {
   return (
     <div className="grow flex-col">
       <div className="p-2">
-        <div className="flex flex-row gap-3">
+        <div className="ml-10 flex flex-row gap-3">
           <span className="flex items-center text-lg text-gray-700">
             Create a new one now!
           </span>

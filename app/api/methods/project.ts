@@ -12,6 +12,7 @@ import type {
   PagedResponse,
   Project,
   Sprint,
+  UserDetails,
 } from "~/api/types/baseEntitiesTypes";
 
 export async function getBoard({
@@ -95,6 +96,20 @@ export async function getBacklog({
 
   try {
     const response = await axios.get(`/api/projects/${projectId}/backlog`);
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getMembers({
+  projectId,
+  token,
+}: ProjectRequest): Promise<UserDetails[] | undefined> {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(`/api/projects/${projectId}/members`);
     return response.data;
   } catch (err) {
     return undefined;

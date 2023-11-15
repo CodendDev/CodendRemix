@@ -10,10 +10,10 @@ import { DragItemTypes } from "~/components/board/ProjectBoard";
 import type { BoardTask } from "~/api/types/baseEntitiesTypes";
 import { useLocation } from "@remix-run/react";
 import EditStatusModal from "~/components/projectTaskStatus/EditStatusModal";
-import DeleteStatusModal from "~/components/projectTaskStatus/DeleteStatusModal";
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
+import DeleteModal from "~/components/shared/modals/DeleteModal";
 
 type BoardStatusContainerProps = {
   name: string;
@@ -69,10 +69,10 @@ export function ProjectTaskStatusContainer({
         isOpen={editStatusModal.isOpen}
         onOpenChange={editStatusModal.onOpenChange}
       />
-      <DeleteStatusModal
-        projectId={projectId}
-        statusId={statusId}
-        statusName={name}
+      <DeleteModal
+        actionRoute={`/api/project/${projectId}/projectTaskStatus/${statusId}`}
+        deleteName={name}
+        deleteHeader="Delete status"
         isOpen={deleteStatusModal.isOpen}
         onOpenChange={deleteStatusModal.onOpenChange}
       />
@@ -123,7 +123,7 @@ function StatusContainerHeader({
   onEdit: () => void;
   onDelete: () => void;
 }) {
-  const iconsStyle: string = "text-sky-500 text-xl";
+  const iconsStyle: string = "text-primary-500 text-xl";
   const dropdownOptions: OptionsDropdownItem[] = [
     {
       label: "Edit name",

@@ -82,6 +82,7 @@ export interface ProjectTaskStatus {
  * Represents user details.
  */
 export interface UserDetails {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -138,6 +139,21 @@ export interface BacklogTaskType {
  */
 export interface BacklogType {
   tasks: BacklogTaskType[];
+}
+
+export interface ProjectTask {
+  id: string;
+  taskType?: TaskType;
+  name: string;
+  priority?: Priority;
+  statusId: string;
+  description?: string;
+  dueDate?: string;
+  estimatedTime?: EstimatedTime;
+  storyPoints?: number;
+  assigneeId?: string;
+  storyId?: string;
+  epicId?: string;
 }
 
 //

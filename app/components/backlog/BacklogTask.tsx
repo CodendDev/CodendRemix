@@ -8,10 +8,13 @@ import {
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
+import { useNavigate, useParams } from "@remix-run/react";
 
 type backlogTaskProps = Omit<BacklogTaskType, "createdOn"> & {
-  selectedBacklogTaskId: string | null;
-  setSelectedBacklogTaskId: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedBacklogTaskId: string | undefined;
+  setSelectedBacklogTaskId: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
 };
 
 export function BacklogTask({
@@ -23,6 +26,9 @@ export function BacklogTask({
   selectedBacklogTaskId,
   setSelectedBacklogTaskId,
 }: backlogTaskProps) {
+  const navigate = useNavigate();
+  const params = useParams();
+  const projectId = params.projectId!;
   const backlogTaskSelected: string =
     selectedBacklogTaskId === id
       ? `outline ${typeToOutlineColor[taskType]} outline-offset-0 outline-1`
@@ -30,6 +36,7 @@ export function BacklogTask({
 
   const handleClick = () => {
     setSelectedBacklogTaskId(id);
+    navigate(`/project/${projectId}/backlog/${id}/${taskType.toLowerCase()}`);
   };
 
   const dropDownOptions: OptionsDropdownItem[] = [
@@ -46,10 +53,10 @@ export function BacklogTask({
 
   return (
     <div
-      className={`flex flex-row items-center bg-gray-100 p-1 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200 ${backlogTaskSelected}`}
+      className={`flex min-w-fit flex-shrink-0 flex-row items-center bg-gray-100 p-1 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200 ${backlogTaskSelected}`}
       onClick={handleClick}
     >
-      <div className="flex w-unit-xl min-w-[15rem] grow flex-row">
+      <div className="flex w-unit-xl min-w-[8rem] grow flex-row">
         <div
           className={`${taskTypeToColorClass[taskType]}  min-w-unit-20 text-center font-bold`}
         >

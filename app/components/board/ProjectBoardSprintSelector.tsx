@@ -4,7 +4,6 @@ import { Await, useLocation, useNavigate } from "@remix-run/react";
 import type { Selection } from "@nextui-org/react";
 import { Select, SelectItem, Skeleton } from "@nextui-org/react";
 import { ProjectBoardLoading } from "~/components/board/ProjectBoard";
-
 type ProjectBoardSprintSelectorProps = {
   sprintsPromise: Promise<Sprint[]>;
   noSprintsComponent: React.ReactElement;
@@ -82,6 +81,7 @@ function AwaitedProjectBoardSprintSelector({
   const noSprintSelected =
     selectedValues[Symbol.iterator]().next().done === true;
 
+  // @ts-ignore
   // noinspection RequiredAttributes
   return (
     <>
