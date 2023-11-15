@@ -12,7 +12,9 @@
     "userEmail": "test@test.com",
     "userPassword": "password",
     "userUserId": "#{UUID()}",
-    "issuer": "https://codend.fusionauth.com"
+    "user2UserId": "#{UUID()}",
+    "issuer": "https://codend.fusionauth.com",
+    "lambdaId": "d27d4083-e3f0-4cc6-bddd-a8cd0cd62cc2"
   },
   "apiKeys": [
     {
@@ -45,21 +47,42 @@
     },
     {
       "method": "POST",
+      "url": "/api/lambda/#{lambdaId}",
+      "body": {
+        "lambda": {
+          "body": "function populate(jwt, user, registration) {\r\n\tjwt.imageUrl = user.imageUrl;\r\n}\r\n",
+          "debug": false,
+          "engineType": "GraalJS",
+          "name": "Add ImageUrl to JWT token.",
+          "type": "JWTPopulate"
+        }
+      }
+    },
+    {
+      "method": "POST",
       "url": "/api/application/#{applicationId}",
       "tenantId": "#{defaultTenantId}",
       "body": {
         "application": {
           "name": "Codend-backend",
           "oauthConfiguration": {
-            "authorizedRedirectURLs": ["http://localhost:3000/oauth-callback"],
+            "authorizedRedirectURLs": [
+              "http://localhost:3000/oauth-callback"
+            ],
             "logoutURL": "http://localhost:4200/",
             "clientSecret": "#{clientSecret}",
-            "enabledGrants": ["authorization_code", "refresh_token"]
+            "enabledGrants": [
+              "authorization_code",
+              "refresh_token"
+            ]
           },
           "jwtConfiguration": {
             "enabled": true,
             "accessTokenKeyId": "#{signingKeyId}",
             "idTokenKeyId": "#{signingKeyId}"
+          },
+          "lambdaConfiguration": {
+            "accessTokenPopulateId": "#{lambdaId}"
           }
         }
       }
@@ -70,9 +93,13 @@
       "body": {
         "registration": {
           "applicationId": "#{FUSIONAUTH_APPLICATION_ID}",
-          "roles": ["admin"]
+          "roles": [
+            "admin"
+          ]
         },
-        "roles": ["admin"],
+        "roles": [
+          "admin"
+        ],
         "skipRegistrationVerification": true,
         "user": {
           "email": "#{adminEmail}",
@@ -90,7 +117,24 @@
           "email": "#{userEmail}",
           "firstName": "Fred",
           "lastName": "Flintstone",
-          "password": "#{userPassword}"
+          "password": "#{userPassword}",
+          "imageUrl": "https://i.pravatar.cc/400?img=12"
+        },
+        "registration": {
+          "applicationId": "#{applicationId}"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/user/registration/#{user2UserId}",
+      "body": {
+        "user": {
+          "email": "test2@test.com",
+          "firstName": "Norbert",
+          "lastName": "Gierczak",
+          "password": "#{userPassword}",
+          "imageUrl": "https://i.pravatar.cc/400?img=69"
         },
         "registration": {
           "applicationId": "#{applicationId}"

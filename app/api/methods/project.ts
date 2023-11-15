@@ -1,20 +1,33 @@
 import type {
   PagedProjectRequest,
+  ProjectBacklogRequest,
   ProjectBoardRequest,
   ProjectBoardResponse,
   ProjectRequest,
+  ProjectActiveSprintsRequest,
 } from "~/api/types/projectTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
-import type { PagedResponse, Project } from "~/api/types/baseEntitiesTypes";
+import type {
+  BacklogType,
+  PagedResponse,
+  Project,
+  Sprint,
+  UserDetails,
+} from "~/api/types/baseEntitiesTypes";
 
 export async function getBoard({
   projectId,
+  sprintId,
   token,
+  assigneeId,
 }: ProjectBoardRequest): Promise<ProjectBoardResponse | undefined> {
   const axios = getAxiosInstance(token);
 
   try {
-    const response = await axios.get(`/api/projects/${projectId}/board`);
+    const response = await axios.get(
+      `/api/projects/${projectId}/board/${sprintId}
+      ${assigneeId ? `?assigneeId=${assigneeId}` : ""}`
+    );
     return { board: response.data };
   } catch (err) {
     return undefined;
@@ -53,6 +66,50 @@ export async function getProject({
 
   try {
     const response = await axios.get(`api/projects/${projectId}`);
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getActiveSprints({
+  projectId,
+  token,
+}: ProjectActiveSprintsRequest): Promise<Sprint[] | undefined> {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(
+      `/api/projects/${projectId}/sprints/active`
+    );
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getBacklog({
+  projectId,
+  token,
+}: ProjectBacklogRequest): Promise<BacklogType | undefined> {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(`/api/projects/${projectId}/backlog`);
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getMembers({
+  projectId,
+  token,
+}: ProjectRequest): Promise<UserDetails[] | undefined> {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(`/api/projects/${projectId}/members`);
     return response.data;
   } catch (err) {
     return undefined;

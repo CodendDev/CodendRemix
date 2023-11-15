@@ -21,7 +21,7 @@ export function ProjectNavigationActionsList({
       {actions().map(({ name, redirectUrl, icon }, index) => (
         <ListboxItem
           key={name.toLowerCase()}
-          onClick={async () => navigate(`/project/${projectId}/${redirectUrl}`)}
+          onClick={() => navigate(`/project/${projectId}/${redirectUrl}`)}
           startContent={icon}
           className="w-full min-w-[120px]"
         >

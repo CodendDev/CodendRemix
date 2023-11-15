@@ -1,26 +1,36 @@
 import type { Dispatch, SetStateAction } from "react";
 import React, { createContext, Suspense, useState } from "react";
-import type { MiniTaskProps } from "~/components/board/ProjectBoardTask";
 import ProjectTaskStatusContainer, {
   ProjectTaskStatusContainerLoading,
 } from "~/components/board/ProjectTaskStatusContainer";
-import type { Board, ProjectTaskStatus } from "~/api/types/baseEntitiesTypes";
-import { Await } from "@remix-run/react";
+import type {
+  Board,
+  BoardTask,
+  ProjectTaskStatus,
+} from "~/api/types/baseEntitiesTypes";
+import { Await, useLocation } from "@remix-run/react";
 import type { ProjectBoardResponse } from "~/api/types/projectTypes";
 import type { ProjectTaskStatusesResponse } from "~/api/types/projectTaskStatusesTypes";
+import { Button, Tooltip, useDisclosure } from "@nextui-org/react";
+import { AiOutlinePlus } from "react-icons/ai/index.js";
+import { EditStatusModal } from "~/components/projectTaskStatus/EditStatusModal";
 
-interface SelectedMiniTaskContextType {
-  selectedMiniTaskId: string | null;
-  setSelectedMiniTaskId: Dispatch<SetStateAction<string | null>>;
+export const DragItemTypes = {
+  Task: "TASK",
+};
+
+interface SelectedProjectBoardTaskContextType {
+  selectedProjectBoardTaskId: string | null;
+  setSelectedProjectBoardTaskId: Dispatch<SetStateAction<string | null>>;
 }
 
-export const SelectedMiniTaskContext =
-  createContext<SelectedMiniTaskContextType>({
-    selectedMiniTaskId: null,
-    setSelectedMiniTaskId: () => {},
+export const SelectedProjectBoardTaskContext =
+  createContext<SelectedProjectBoardTaskContextType>({
+    selectedProjectBoardTaskId: null,
+    setSelectedProjectBoardTaskId: () => {},
   });
 
-type BoardContainerProps = {
+type ProjectBoardProps = {
   boardPromise: Promise<ProjectBoardResponse>;
   statusesPromise: Promise<ProjectTaskStatusesResponse>;
 };
@@ -28,58 +38,67 @@ type BoardContainerProps = {
 export function ProjectBoard({
   boardPromise,
   statusesPromise,
-}: BoardContainerProps) {
-  const [selectedMiniTaskId, setSelectedMiniTaskId] = useState<string | null>(
-    null
-  );
+}: ProjectBoardProps) {
+  const [selectedProjectBoardTaskId, setSelectedProjectBoardTaskId] = useState<
+    string | null
+  >(null);
 
   return (
-    <div className="flex h-full gap-6 p-4">
-      <SelectedMiniTaskContext.Provider
-        value={{ selectedMiniTaskId, setSelectedMiniTaskId }}
-      >
-        <Suspense fallback={<ProjectBoardLoading />}>
-          <Await resolve={statusesPromise}>
-            {(statusesResponse) => (
-              <Suspense
-                fallback={
-                  <ProjectBoardLoading
+    <SelectedProjectBoardTaskContext.Provider
+      value={{ selectedProjectBoardTaskId, setSelectedProjectBoardTaskId }}
+    >
+      <Suspense fallback={<ProjectBoardLoading />}>
+        <Await resolve={statusesPromise}>
+          {(statusesResponse) => (
+            <Suspense
+              fallback={
+                <ProjectBoardLoading
+                  statuses={statusesResponse.projectTaskStatuses}
+                />
+              }
+            >
+              <Await resolve={boardPromise}>
+                {(boardResponse) => (
+                  <AwaitedBoardContainer
                     statuses={statusesResponse.projectTaskStatuses}
+                    board={boardResponse.board}
                   />
-                }
-              >
-                <Await resolve={boardPromise}>
-                  {(boardResponse) => (
-                    <AwaitedBoardContainer
-                      statuses={statusesResponse.projectTaskStatuses}
-                      board={boardResponse.board}
-                    />
-                  )}
-                </Await>
-              </Suspense>
-            )}
-          </Await>
-        </Suspense>
-      </SelectedMiniTaskContext.Provider>
-    </div>
+                )}
+              </Await>
+            </Suspense>
+          )}
+        </Await>
+      </Suspense>
+    </SelectedProjectBoardTaskContext.Provider>
   );
 }
 
 export default ProjectBoard;
 
-function ProjectBoardLoading({ statuses }: { statuses?: ProjectTaskStatus[] }) {
+export function ProjectBoardLoading({
+  statuses,
+  isLoaded = false,
+}: {
+  statuses?: ProjectTaskStatus[];
+  isLoaded?: boolean;
+}) {
   return statuses ? (
-    <>
-      {statuses.map((status) => (
-        <ProjectTaskStatusContainerLoading key={status.id} name={status.name} />
-      ))}
-    </>
+    <div className="flex h-full w-full grow gap-6 p-4">
+      {statuses
+        .sort((a, b) => a.position.localeCompare(b.position))
+        .map((status) => (
+          <ProjectTaskStatusContainerLoading
+            key={status.id}
+            name={status.name}
+          />
+        ))}
+    </div>
   ) : (
-    <>
-      <ProjectTaskStatusContainerLoading />
-      <ProjectTaskStatusContainerLoading />
-      <ProjectTaskStatusContainerLoading />
-    </>
+    <div className="flex h-full w-full grow gap-6 p-4">
+      <ProjectTaskStatusContainerLoading isLoaded={isLoaded} />
+      <ProjectTaskStatusContainerLoading isLoaded={isLoaded} />
+      <ProjectTaskStatusContainerLoading isLoaded={isLoaded} />
+    </div>
   );
 }
 
@@ -90,39 +109,49 @@ function AwaitedBoardContainer({
   statuses: ProjectTaskStatus[];
   board: Board;
 }) {
-  /* Probably will be replaced, when backend endpoint will be improved. */
-  const tasksForStatus = (statusId: string): MiniTaskProps[] => {
-    const tasks = board.tasks.filter((task) => task.statusId === statusId);
-    const epics = board.epics.filter((story) => story.statusId === statusId);
-    const stories = board.stories.filter(
-      (epics) => epics.statusId === statusId
-    );
-    return tasks
-      .map((task): MiniTaskProps => ({ ...task, relatedTaskId: task.storyId }))
-      .concat(
-        epics.map((epic): MiniTaskProps => ({ ...epic, taskType: "Epic" }))
-      )
-      .concat(
-        stories.map(
-          (story): MiniTaskProps => ({
-            ...story,
-            taskType: "Story",
-            relatedTaskId: story.epicId,
-          })
-        )
-      );
-  };
+  const location = useLocation();
+  const createStatusModal = useDisclosure();
+  const projectId = location.pathname
+    .toLowerCase()
+    .replace("/project/", "")
+    .slice(0, 36);
+
+  const tasksForStatus = (statusId: string): BoardTask[] =>
+    board.tasks
+      .filter((task) => task.statusId === statusId)
+      .sort((a, b) => a.position!.localeCompare(b.position!));
 
   return (
-    <>
-      {statuses.map((status) => (
-        <ProjectTaskStatusContainer
-          key={status.id}
-          statusId={status.id}
-          name={status.name}
-          tasks={tasksForStatus(status.id)}
-        />
-      ))}
-    </>
+    <div className="flex max-h-full w-full gap-6 overflow-x-auto scroll-smooth p-4">
+      {statuses
+        .sort((a, b) => a.position!.localeCompare(b.position!))
+        .map((status) => (
+          <ProjectTaskStatusContainer
+            key={status.id}
+            statusId={status.id}
+            name={status.name}
+            position={status.position}
+            tasks={tasksForStatus(status.id)}
+          />
+        ))}
+      <div className="p-1">
+        <Tooltip content="Add new status" placement="top" closeDelay={50}>
+          <Button
+            isIconOnly
+            radius="full"
+            size="sm"
+            variant="light"
+            onPress={createStatusModal.onOpen}
+          >
+            <AiOutlinePlus className="text-2xl text-gray-700" />
+          </Button>
+        </Tooltip>
+      </div>
+      <EditStatusModal
+        projectId={projectId}
+        isOpen={createStatusModal.isOpen}
+        onOpenChange={createStatusModal.onOpenChange}
+      />
+    </div>
   );
 }
