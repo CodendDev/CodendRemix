@@ -7,6 +7,8 @@ import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDro
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 import { useNavigate } from "@remix-run/react";
+import { SprintStatus } from "~/api/types/sprintTypes";
+import { sprintStatusToColorClass } from "~/components/utils/TypeToColor";
 
 interface SprintProps extends APISprintProps {
   projectId: string;
@@ -14,6 +16,7 @@ interface SprintProps extends APISprintProps {
   showDeleteModal: (sprint: APISprintProps) => void;
 }
 export function Sprint(sprint: SprintProps) {
+  const navigation = useNavigate();
   const { name, showDeleteModal, showUpdateModal } = sprint;
 
   const dropdownOptions: OptionsDropdownItem[] = [
@@ -24,15 +27,39 @@ export function Sprint(sprint: SprintProps) {
     deleteOption(() => showDeleteModal(sprint)),
   ];
 
-  const navigation = useNavigate();
+  const getSprintStatus = (): SprintStatus => {
+    const now = new Date();
+    const start = new Date(sprint.startDate);
+    const end = new Date(sprint.endDate);
+    if (end < now) {
+      return "Archived";
+    } else if (start < now && now < end) {
+      return "Active";
+    } else {
+      return "Future";
+    }
+  };
 
   return (
     <div
       onClick={() => {
-        navigation(`/project/${sprint.projectId}/board/${sprint.id}`);
+        getSprintStatus() !== "Archived" &&
+          navigation(`/project/${sprint.projectId}/board/${sprint.id}`);
       }}
-      className="flex flex-row items-center bg-gray-100 p-1 pl-2 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200"
+      className={`flex flex-row items-center bg-gray-100 p-1 pl-2 first:rounded-t-lg last:rounded-b-lg
+      ${
+        getSprintStatus() !== "Archived"
+          ? "hover:cursor-pointer hover:bg-gray-200"
+          : "text-gray-400"
+      }`}
     >
+      <div
+        className={`min-w-[5rem] font-bold ${
+          sprintStatusToColorClass[getSprintStatus()]
+        }`}
+      >
+        {getSprintStatus()}
+      </div>
       <div className="flex w-unit-xl min-w-[15rem] grow flex-row">
         <div className="truncate">{name}</div>
       </div>
