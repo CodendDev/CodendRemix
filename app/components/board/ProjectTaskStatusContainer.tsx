@@ -123,7 +123,7 @@ function StatusContainerHeader({
   onEdit: () => void;
   onDelete: () => void;
 }) {
-  const iconsStyle: string = "text-sky-500 text-xl";
+  const iconsStyle: string = "text-primary-500 text-xl";
   const dropdownOptions: OptionsDropdownItem[] = [
     {
       label: "Edit name",
