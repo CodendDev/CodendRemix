@@ -10,7 +10,7 @@ import CreateSprintTip from "~/components/board/CreateSprintTip";
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   if (!token) {
-    redirect("/user/login");
+    return redirect("/user/login");
   }
 
   const projectId = params.projectId!;

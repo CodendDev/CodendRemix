@@ -1,9 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import getToken from "~/actions/getToken";
 import { defer, redirect } from "@remix-run/node";
-import { Outlet, useLoaderData, useRouteError } from "@remix-run/react";
-import NotFoundError from "~/components/errors/NotFoundError";
-import CustomError from "~/components/errors/CustomError";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import React from "react";
 import {
   deleteProjectTask,
@@ -73,7 +71,7 @@ const actionDelete = async ({ request, params }: ActionFunctionArgs) => {
 const actionPut = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   if (!token) {
-    redirect("/user/login");
+    return redirect("/user/login");
   }
   const projectId = params.projectId!;
   const projectTaskId = params.projectTaskId!;
@@ -128,7 +126,7 @@ const actionPut = async ({ params, request }: LoaderFunctionArgs) => {
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   if (!token) {
-    redirect("/user/login");
+    return redirect("/user/login");
   }
   const projectId = params.projectId!;
   const projectTaskId = params.projectTaskId!;
@@ -199,12 +197,6 @@ export const getProjectTaskByType = ({
       throw new Error("Unknown TaskType.");
   }
 };
-
-export function ErrorBoundary() {
-  const error = useRouteError();
-  // @ts-ignore
-  return <>{error.statusCode === 404 ? <NotFoundError /> : <CustomError />}</>;
-}
 
 export default function BoardPage() {
   const loaderData = useLoaderData<typeof loader>();

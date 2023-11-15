@@ -8,16 +8,12 @@ import Backlog from "~/components/backlog/Backlog";
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   if (!token) {
-    redirect("/user/login");
+    return redirect("/user/login");
   }
   const backlogPromise = getBacklog({
     projectId: params.projectId!,
     token: token!,
   });
-
-  if (!backlogPromise) {
-    return new Response("Not found", { status: 404 });
-  }
 
   return defer({ backlogPromise });
 };

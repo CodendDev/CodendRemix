@@ -151,15 +151,13 @@ export function DueDateInput({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDueDate(e.target.value);
     if (e.target.value === "") {
-      setTask((task) => {
-        return {
-          ...task,
-          [e.target.name]: null,
-        };
-      });
-    } else {
-      handleInputChange(e);
+      setTask((task) => ({
+        ...task,
+        [e.target.name]: null,
+      }));
+      return;
     }
+    handleInputChange(e);
   };
 
   return (
@@ -213,9 +211,7 @@ export function EstimatedTimeInput({
     }
     setIsInvalid(false);
     setIsFormInvalid!(false);
-    setTask((task) => {
-      return { ...task, ["estimatedTime"]: estTime };
-    });
+    setTask((task) => ({ ...task, ["estimatedTime"]: estTime }));
   };
 
   return (

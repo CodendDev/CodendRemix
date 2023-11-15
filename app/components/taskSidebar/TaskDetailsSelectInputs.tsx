@@ -224,19 +224,6 @@ function AwaitedRelatedTaskInput({
   taskType,
   backlog,
 }: AwaitedRelatedTaskInputProps) {
-  const taskTypeWithColor = (taskId: string) => {
-    const task = backlog.tasks.find((task) => task.id === taskId)!;
-    return (
-      <span
-        className={`text-sm ${
-          taskTypeToColorClass[task?.taskType as unknown as TaskType]
-        }`}
-      >
-        {task?.taskType}
-      </span>
-    );
-  };
-
   const getTasksAccordingToType = () => {
     if (taskType === "Story") {
       return backlog.tasks.filter((task) => task.taskType === "Epic");
@@ -256,7 +243,7 @@ function AwaitedRelatedTaskInput({
       startContent={
         <>
           <TbSubtask />
-          {value && taskTypeWithColor(value)}
+          {value && <TaskTypeWithColor taskId={value} backlog={backlog} />}
         </>
       }
       {...propPack}
@@ -276,5 +263,24 @@ function AwaitedRelatedTaskInput({
         </SelectItem>
       )}
     </Select>
+  );
+}
+
+function TaskTypeWithColor({
+  taskId,
+  backlog,
+}: {
+  taskId: string;
+  backlog: BacklogType;
+}) {
+  const task = backlog.tasks.find((task) => task.id === taskId)!;
+  return (
+    <span
+      className={`text-sm ${
+        taskTypeToColorClass[task?.taskType as unknown as TaskType]
+      }`}
+    >
+      {task?.taskType}
+    </span>
   );
 }
