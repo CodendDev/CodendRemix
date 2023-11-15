@@ -33,7 +33,7 @@ export default {
               900: "#064e3b",
               950: "#022c22",
               DEFAULT: "#10b981",
-              foreground: "#CECECE",
+              foreground: "#FFFFFF",
             },
             focus: "#10b981",
           },
