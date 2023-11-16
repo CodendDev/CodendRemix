@@ -2,7 +2,12 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { defer, redirect } from "@remix-run/node";
 
-import { deleteSprint, getSprint, updateSprint } from "~/api/methods/sprint";
+import {
+  deleteSprint,
+  getAssignableToSprintTasks,
+  getSprint,
+  updateSprint,
+} from "~/api/methods/sprint";
 import { getBacklog } from "~/api/methods/project";
 
 import getToken from "~/actions/getToken";
@@ -63,14 +68,19 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const sprint = getSprint({ sprintId, projectId, token });
   const backlog = getBacklog({ projectId, token });
+  const assignableTasks = getAssignableToSprintTasks({
+    projectId,
+    sprintId,
+    token,
+  });
 
-  return defer({ projectId, sprint, backlog });
+  return defer({ projectId, sprint, backlog, assignableTasks });
 };
 
 export default function SprintPage() {
   const loaderData = useLoaderData<typeof loader>();
   // @ts-ignore
-  const { projectId, sprint, backlog } = loaderData;
+  const { projectId, sprint, backlog, assignableTasks } = loaderData;
 
   return (
     <div className="grow border-l-1 border-emerald-700">
@@ -78,6 +88,7 @@ export default function SprintPage() {
         sprintPromise={sprint}
         backlogPromise={backlog}
         projectId={projectId}
+        assignableTasksPromise={assignableTasks}
       />
     </div>
   );

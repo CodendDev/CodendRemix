@@ -1,6 +1,6 @@
 import type {
-  BacklogType,
-  BacklogTaskType,
+  Sprint,
+  SprintAssignableTask,
 } from "~/api/types/baseEntitiesTypes";
 import { Suspense, useState } from "react";
 import { Await } from "@remix-run/react";
@@ -10,21 +10,24 @@ import { AiOutlineCheck, AiOutlineSave } from "react-icons/ai/index.js";
 import { Button } from "@nextui-org/react";
 
 interface SprintBacklogProps {
-  backlogPromise: Promise<BacklogType>;
+  assignableTasksPromise: Promise<SprintAssignableTask[]>;
+  sprint: Sprint;
 }
+
 export default function SprintBacklog(props: SprintBacklogProps) {
   return (
     <Suspense>
-      <Await resolve={props.backlogPromise}>
-        {(backlog) => <AwaitedBacklog backlog={backlog} {...props} />}
+      <Await resolve={props.assignableTasksPromise}>
+        {(tasks) => <AwaitedBacklog tasks={tasks} {...props} />}
       </Await>
     </Suspense>
   );
 }
 
 const AwaitedBacklog = ({
-  backlog,
-}: SprintBacklogProps & { backlog: BacklogType }) => {
+  tasks,
+  sprint,
+}: SprintBacklogProps & { tasks: SprintAssignableTask[] }) => {
   const [checkedTasks, setCheckedTasks] = useState<string[]>([]);
   const handleCheck = (id: string, check: boolean) => {
     const c_checkedTasks = checkedTasks;
@@ -54,8 +57,15 @@ const AwaitedBacklog = ({
           Save
         </Button>
       </div>
-      <div>
-        {backlog.tasks.map((task, i) => (
+      <div className="px-4">
+        <div>Assigned tasks</div>
+        {sprint.sprintTasks.tasks.map((task, i) => (
+          <BacklogTask key={i} {...task} checkTask={handleCheck} checked />
+        ))}
+      </div>
+      <div className="px-4">
+        <div>Unassigned tasks</div>
+        {tasks.map((task, i) => (
           <BacklogTask key={i} {...task} checkTask={handleCheck} />
         ))}
       </div>
@@ -66,14 +76,15 @@ const AwaitedBacklog = ({
 const BacklogTask = ({
   id,
   name,
-  statusName,
   taskType,
   checkTask,
-}: BacklogTaskType & {
+  checked = false,
+}: SprintAssignableTask & {
   checkTask: (taskId: string, check: boolean) => void;
+  checked?: boolean;
 }) => {
   const colorClass = taskTypeToColorClass[taskType];
-  const [selected, setSelected] = useState(false);
+  const [selected, setSelected] = useState(checked);
   const handleClick = () => {
     setSelected((prev) => !prev);
     checkTask(id, !selected);
@@ -91,9 +102,6 @@ const BacklogTask = ({
         </div>
         <div className={`pr-1 ${colorClass}`}>{taskType}</div>
         <div>{name}</div>
-      </div>
-      <div className="flex">
-        <div>{statusName}</div>
       </div>
     </div>
   );

@@ -1,4 +1,8 @@
-import type { BacklogType, Sprint } from "~/api/types/baseEntitiesTypes";
+import type {
+  BacklogType,
+  Sprint,
+  SprintAssignableTask,
+} from "~/api/types/baseEntitiesTypes";
 import { Suspense } from "react";
 import { Await } from "@remix-run/react";
 import { SprintDetails } from "~/components/sprint/sideSprint/SprintDetails";
@@ -8,6 +12,7 @@ import SideSprintHeader from "~/components/sprint/sideSprint/SideSprintHeader";
 interface SideSprintProps {
   sprintPromise: Promise<Sprint>;
   backlogPromise: Promise<BacklogType>;
+  assignableTasksPromise: Promise<SprintAssignableTask[]>;
   projectId: string;
 }
 export default function SideSprint(props: SideSprintProps) {
