@@ -23,9 +23,30 @@ export async function getSprints({
 }
 
 export async function getSprint({ sprintId, projectId, token }: SprintRequest) {
+  const axios = getAxiosInstance(token);
+
   try {
-    const response = await getSprints({ projectId, token });
-    return response?.sprints.find((s) => s.id === sprintId);
+    const response = await axios.get(
+      `/api/projects/${projectId}/sprints/${sprintId}`
+    );
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getAssignableToSprintTasks({
+  sprintId,
+  projectId,
+  token,
+}: SprintRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(
+      `/api/projects/${projectId}/sprints/${sprintId}/assignable`
+    );
+    return response.data.tasks;
   } catch (err) {
     return undefined;
   }
