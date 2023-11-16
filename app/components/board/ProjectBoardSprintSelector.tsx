@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import type { Sprint } from "~/api/types/baseEntitiesTypes";
-import { Await, useLocation, useNavigate } from "@remix-run/react";
+import { Await, useLocation, useNavigate, useParams } from "@remix-run/react";
 import type { Selection } from "@nextui-org/react";
 import { Select, SelectItem, Skeleton } from "@nextui-org/react";
 import { ProjectBoardLoading } from "~/components/board/ProjectBoard";
@@ -54,21 +54,20 @@ function AwaitedProjectBoardSprintSelector({
     sprints.length > 0 ? new Set([sprints[0].id]) : new Set([])
   );
   const navigate = useNavigate();
-  const location = useLocation();
+  const routeSprintId = useParams().sprintId;
   const getSelectedSprint = () => {
     const arr = Array.from(selectedValues);
     return arr.length > 0 ? arr[0].toString() : null;
   };
 
   useEffect(() => {
-    const selectedSprint = getSelectedSprint();
-    if (
-      selectedSprint &&
-      !location.pathname.toLowerCase().includes(selectedSprint)
-    ) {
-      navigate(`${route}/${selectedSprint}`);
+    if (!routeSprintId) {
+      const selectedSprint = getSelectedSprint();
+      if (selectedSprint) {
+        navigate(`${route}/${selectedSprint}`);
+      }
     }
-  }, [selectedValues, location]);
+  }, [selectedValues, routeSprintId]);
 
   const handleSelectionChange = (keys: Selection) => {
     setSelectedValues(keys);
@@ -93,6 +92,7 @@ function AwaitedProjectBoardSprintSelector({
           placeholder="No active sprints."
           className="w-96"
           selectedKeys={selectedValues}
+          disabledKeys={new Set(["archived"])}
           onSelectionChange={handleSelectionChange}
         >
           {(sprint) => (

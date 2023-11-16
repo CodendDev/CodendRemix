@@ -33,3 +33,5 @@ export interface SprintsResponse {
   activeSprints: string[];
   sprints: SprintResponse[];
 }
+
+export type SprintStatus = "Archived" | "Active" | "Future";
