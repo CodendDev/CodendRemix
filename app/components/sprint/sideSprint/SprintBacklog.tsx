@@ -39,6 +39,9 @@ export default function SprintBacklog({
 }: SprintBacklogProps) {
   const assigned = toSprintTasks(sprint.sprintTasks.tasks, "ASSIGNED");
   const [tasks, setTasks] = useState<SprintTask[]>(assigned);
+  const [updatedTasks, setUpdatedTasks] = useState<{
+    [Key: string]: SprintTask;
+  }>({});
 
   useEffect(() => {
     (async () => {
@@ -63,11 +66,21 @@ export default function SprintBacklog({
       return;
     }
 
+    if (updatedTasks[task.id] === undefined) {
+      updatedTasks[task.id] = task;
+    }
+    setUpdatedTasks(updatedTasks);
     tasks.splice(index, 1);
     setTasks(tasks.concat([{ ...task, state: matcher(task.state) }]));
   };
   const handleSave = () => {
-    console.log("save");
+    const toUpdate: SprintTask[] = [];
+
+    for (const id in updatedTasks) {
+      if (tasks.find((t) => t.id === id)?.state !== updatedTasks[id].state) {
+        toUpdate.push(updatedTasks[id]);
+      }
+    }
   };
 
   if (!tasks) {
@@ -117,24 +130,24 @@ const AwaitedBacklog = () => {
       </div>
       <BacklogTasksList
         handleCheck={handleCheck}
-        label="Assigned tasks"
+        labelElement={<>Sprint tasks</>}
         tasks={tasks.filter(({ state }) => state === "ASSIGNED")}
         defaultChecked
       />
       <BacklogTasksList
         handleCheck={handleCheck}
-        label="New tasks"
+        labelElement={<>Tasks that you unassigned</>}
+        tasks={tasks.filter(({ state }) => state === "DELETED")}
+      />
+      <BacklogTasksList
+        handleCheck={handleCheck}
+        labelElement={<>Tasks that you assigned</>}
         tasks={tasks.filter(({ state }) => state === "NEW")}
         defaultChecked
       />
       <BacklogTasksList
         handleCheck={handleCheck}
-        label="Deleted tasks"
-        tasks={tasks.filter(({ state }) => state === "DELETED")}
-      />
-      <BacklogTasksList
-        handleCheck={handleCheck}
-        label="Tasks you can assign"
+        labelElement={<>Available tasks</>}
         tasks={tasks.filter(({ state }) => state === "UNASSIGNED")}
       />
     </div>
@@ -142,12 +155,12 @@ const AwaitedBacklog = () => {
 };
 
 const BacklogTasksList = ({
-  label,
+  labelElement,
   tasks,
   handleCheck,
   defaultChecked = false,
 }: {
-  label: string;
+  labelElement: React.ReactElement;
   tasks: SprintTask[];
   handleCheck: (task: SprintTask, check: boolean) => void;
   defaultChecked?: boolean;
@@ -158,7 +171,7 @@ const BacklogTasksList = ({
 
   return (
     <div>
-      <div className="px-2">{label}</div>
+      <div className="px-2">{labelElement}</div>
       {tasks.map((task) => (
         <BacklogTask
           key={task.id}
