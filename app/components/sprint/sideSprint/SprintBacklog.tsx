@@ -1,32 +1,32 @@
+import React, { useContext, useEffect, useState } from "react";
+
+import { taskTypeToColorClass } from "~/components/utils/TypeToColor";
+import type {
+  SprintContextType,
+  SprintTask,
+  SprintTaskState,
+} from "~/components/sprint/sideSprint/SprintContext";
+import {
+  matchAdd,
+  matchDelete,
+  toSprintTasks,
+} from "~/components/sprint/sideSprint/SprintContext";
+
 import type {
   Sprint,
   SprintAssignableTask,
 } from "~/api/types/baseEntitiesTypes";
-import React, { useContext, useEffect, useState } from "react";
-import { AiOutlineCheck, AiOutlineSave } from "react-icons/ai/index.js";
+
 import { Button } from "@nextui-org/react";
-import { taskTypeToColorClass } from "~/components/utils/TypeToColor";
+import { AiOutlineCheck, AiOutlineSave } from "react-icons/ai/index.js";
 import { GrAdd } from "react-icons/gr/index.js";
 
-interface SprintContextType {
-  assignedTasks: SprintAssignableTask[];
-  unassignedTasks: SprintAssignableTask[];
-  newTasks: SprintAssignableTask[];
-  toDelete: SprintAssignableTask[];
-  sprint?: Sprint;
-  handleDelete: (_: SprintAssignableTask) => void;
-  handleAdd: (_: SprintAssignableTask) => void;
-  handleSave: () => void;
-}
 export const SprintContext = React.createContext<SprintContextType>({
-  handleAdd(_: SprintAssignableTask): void {},
-  handleDelete(_: SprintAssignableTask): void {},
+  handleAdd(_: SprintTask): void {},
+  handleDelete(_: SprintTask): void {},
   handleSave(): void {},
   sprint: undefined,
-  assignedTasks: [],
-  unassignedTasks: [],
-  toDelete: [],
-  newTasks: [],
+  tasks: [],
 });
 
 interface SprintBacklogProps {
@@ -37,56 +37,64 @@ export default function SprintBacklog({
   assignableTasksPromise,
   sprint,
 }: SprintBacklogProps) {
-  // 💀💀💀💀💀💀💀💀💀💀
-  const [tasks, setTasks] = useState<SprintContextType | undefined>();
+  const assigned = toSprintTasks(sprint.sprintTasks.tasks, "ASSIGNED");
+  const [tasks, setTasks] = useState<SprintTask[]>(assigned);
 
-  const handleDelete = (task: SprintAssignableTask) => {
-    console.log("delete", task);
-  };
-  const handleAdd = (task: SprintAssignableTask) => {
-    console.log("add", task);
+  useEffect(() => {
+    (async () => {
+      const unassigned = toSprintTasks(
+        await assignableTasksPromise,
+        "UNASSIGNED"
+      );
+      setTasks(assigned.concat(unassigned));
+    })();
+  }, [assignableTasksPromise, sprint]);
+
+  const handleTask = (
+    task: SprintTask,
+    matcher: (_: SprintTaskState) => SprintTaskState
+  ) => {
+    if (!tasks) {
+      return;
+    }
+
+    const index = tasks.findIndex((t) => t.id === task.id);
+    if (index === -1) {
+      return;
+    }
+
+    tasks.splice(index, 1);
+    setTasks(tasks.concat([{ ...task, state: matcher(task.state) }]));
   };
   const handleSave = () => {
     console.log("save");
   };
 
-  useEffect(() => {
-    (async () => {
-      const res = await assignableTasksPromise;
-      setTasks({
-        assignedTasks: sprint.sprintTasks.tasks,
-        newTasks: [],
-        unassignedTasks: res,
-        toDelete: [],
-        handleDelete,
-        handleAdd,
-        handleSave,
-      });
-    })();
-  }, [assignableTasksPromise, sprint]);
-
   if (!tasks) {
-    return <></>;
+    return <BacklogLoading />;
   }
 
   return (
-    <SprintContext.Provider value={tasks}>
+    <SprintContext.Provider
+      value={{
+        tasks,
+        handleDelete: (t) => handleTask(t, matchDelete),
+        handleAdd: (t) => handleTask(t, matchAdd),
+        handleSave,
+      }}
+    >
       <AwaitedBacklog />
     </SprintContext.Provider>
   );
 }
 
-const AwaitedBacklog = () => {
-  const {
-    assignedTasks,
-    unassignedTasks,
-    newTasks,
-    handleSave,
-    handleAdd,
-    handleDelete,
-  } = useContext(SprintContext);
+const BacklogLoading = () => <></>;
 
-  const handleCheck = (task: SprintAssignableTask, check: boolean) => {
+const AwaitedBacklog = () => {
+  const { handleSave, handleAdd, handleDelete, tasks } =
+    useContext(SprintContext);
+
+  const handleCheck = (task: SprintTask, check: boolean) => {
     if (check) {
       handleAdd(task);
     } else {
@@ -110,18 +118,24 @@ const AwaitedBacklog = () => {
       <BacklogTasksList
         handleCheck={handleCheck}
         label="Assigned tasks"
-        tasks={assignedTasks}
+        tasks={tasks.filter(({ state }) => state === "ASSIGNED")}
         defaultChecked
       />
       <BacklogTasksList
         handleCheck={handleCheck}
         label="New tasks"
-        tasks={newTasks}
+        tasks={tasks.filter(({ state }) => state === "NEW")}
+        defaultChecked
+      />
+      <BacklogTasksList
+        handleCheck={handleCheck}
+        label="Deleted tasks"
+        tasks={tasks.filter(({ state }) => state === "DELETED")}
       />
       <BacklogTasksList
         handleCheck={handleCheck}
         label="Tasks you can assign"
-        tasks={unassignedTasks}
+        tasks={tasks.filter(({ state }) => state === "UNASSIGNED")}
       />
     </div>
   );
@@ -134,8 +148,8 @@ const BacklogTasksList = ({
   defaultChecked = false,
 }: {
   label: string;
-  tasks: SprintAssignableTask[];
-  handleCheck: (task: SprintAssignableTask, check: boolean) => void;
+  tasks: SprintTask[];
+  handleCheck: (task: SprintTask, check: boolean) => void;
   defaultChecked?: boolean;
 }) => {
   if (tasks.length < 1) {
@@ -163,16 +177,17 @@ const BacklogTask = ({
   taskType,
   checkTask,
   statusName,
+  state,
   checked = false,
-}: SprintAssignableTask & {
-  checkTask: (task: SprintAssignableTask, check: boolean) => void;
+}: SprintTask & {
+  checkTask: (task: SprintTask, check: boolean) => void;
   checked?: boolean;
 }) => {
   const colorClass = taskTypeToColorClass[taskType];
   const [selected, setSelected] = useState(checked);
   const handleClick = () => {
     setSelected((prev) => !prev);
-    checkTask({ id, name, taskType, statusName }, !selected);
+    checkTask({ id, name, taskType, statusName, state }, !selected);
   };
 
   return (
