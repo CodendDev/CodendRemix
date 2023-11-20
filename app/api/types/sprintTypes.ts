@@ -1,5 +1,6 @@
 import type { ProjectRequest } from "~/api/types/projectTypes";
 import type { BoardTask } from "~/api/types/baseEntitiesTypes";
+import type { SprintTask } from "~/components/sprint/sideSprint/SprintContext";
 
 export interface SprintsRequest extends ProjectRequest {}
 
@@ -35,3 +36,7 @@ export interface SprintsResponse {
 }
 
 export type SprintStatus = "Archived" | "Active" | "Future";
+
+export interface SprintAssignTasksRequest extends SprintRequest {
+  tasks: SprintTask[];
+}

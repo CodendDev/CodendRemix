@@ -5,6 +5,7 @@ import type {
   DeleteSprintRequest,
   UpdateSprintRequest,
   SprintRequest,
+  SprintAssignTasksRequest,
 } from "~/api/types/sprintTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 
@@ -104,6 +105,58 @@ export async function updateSprint(request: UpdateSprintRequest) {
     const response = await axios.put(
       `/api/projects/${projectId}/sprints/${sprintId}`,
       apiRequest
+    );
+    return response.data;
+  } catch (err) {
+    return getApiErrorsFromError(err);
+  }
+}
+
+export async function sprintRemoveTasks({
+  token,
+  projectId,
+  sprintId,
+  tasks,
+}: SprintAssignTasksRequest) {
+  const axios = getAxiosInstance(token);
+
+  const body = tasks
+    .filter(({ state }) => state === "DELETED")
+    .map(({ id, taskType }) => ({
+      id,
+      type: taskType,
+    }));
+
+  try {
+    const response = await axios.post(
+      `/api/projects/${projectId}/sprints/${sprintId}/tasks/delete`,
+      { tasks: body }
+    );
+    return response.data;
+  } catch (err) {
+    return getApiErrorsFromError(err);
+  }
+}
+
+export async function sprintAssignTasks({
+  token,
+  projectId,
+  sprintId,
+  tasks,
+}: SprintAssignTasksRequest) {
+  const axios = getAxiosInstance(token);
+
+  const body = tasks
+    .filter(({ state }) => state === "NEW")
+    .map(({ id, taskType }) => ({
+      id,
+      type: taskType,
+    }));
+
+  try {
+    const response = await axios.post(
+      `/api/projects/${projectId}/sprints/${sprintId}/tasks/assign`,
+      { tasks: body }
     );
     return response.data;
   } catch (err) {
