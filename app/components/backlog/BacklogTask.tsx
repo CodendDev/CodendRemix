@@ -53,10 +53,10 @@ export function BacklogTask({
 
   return (
     <div
-      className={`flex min-w-fit flex-shrink-0 flex-row items-center bg-gray-100 p-1 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200 ${backlogTaskSelected}`}
+      className={`flex justify-between bg-gray-100 p-1 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200 ${backlogTaskSelected}`}
       onClick={handleClick}
     >
-      <div className="flex w-unit-xl min-w-[8rem] grow flex-row">
+      <div className="flex flex-row items-center">
         <div
           className={`${taskTypeToColorClass[taskType]}  min-w-unit-20 text-center font-bold`}
         >
@@ -64,14 +64,18 @@ export function BacklogTask({
         </div>
         <div className="truncate">{name}</div>
       </div>
-      <div className="flex w-52 flex-row items-center justify-around">
-        <div className="wh w-24 truncate text-start italic text-gray-600">
-          {statusName}
+      <div className="flex flex-row items-center">
+        <div className="mx-2">{statusName}</div>
+        <div className="mx-1">
+          {
+            <Avatar
+              className={!assigneeAvatar ? "invisible" : ""}
+              src={assigneeAvatar}
+              size="sm"
+            />
+          }
         </div>
-        <div className="flex w-8 justify-center">
-          {assigneeAvatar && <Avatar src={assigneeAvatar} size="sm" />}
-        </div>
-        <div className="w-8 text-center">
+        <div className="mx-1">
           <OptionsDropdown options={dropDownOptions} />
         </div>
       </div>

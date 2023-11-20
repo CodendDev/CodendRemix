@@ -45,14 +45,14 @@ function AwaitedBacklog({ backlog }: { backlog: BacklogType }) {
   >(undefined);
 
   return (
-    <div className="w-full flex-grow">
-      <div className="px-6 pb-2 font-bold text-gray-700">
+    <div className="w-full overflow-x-auto px-6 py-1">
+      <div className="px-6 py-2 font-bold text-gray-700">
         Backlog
         <span className="ml-1 font-normal text-gray-400">
           ({backlog.tasks.length} tasks)
         </span>
       </div>
-      <div className="flex max-h-[calc(100vh-6rem)] min-h-0 min-w-[10rem] flex-shrink-0 flex-col justify-between gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
+      <div className="flex max-h-[calc(98vh-6rem)] min-h-0 min-w-[10rem] flex-shrink-0 flex-col justify-between gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
         {backlog.tasks.map((task) => (
           <BacklogTask
             key={task.id}
