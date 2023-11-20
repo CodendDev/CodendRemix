@@ -2,7 +2,7 @@ import { ProjectTask, TaskType } from "~/api/types/baseEntitiesTypes";
 import { Button, useDisclosure } from "@nextui-org/react";
 import React, { useContext, useEffect, useState } from "react";
 import { taskTypeToColorClass } from "~/components/utils/TypeToColor";
-import { useFetcher, useParams } from "@remix-run/react";
+import { useFetcher, useNavigate } from "@remix-run/react";
 import _ from "lodash";
 import {
   DescriptionInput,
@@ -17,6 +17,7 @@ import {
   PriorityInput,
   RelatedTaskInput,
   StatusInput,
+  TaskTypeInput,
 } from "~/components/taskSidebar/TaskDetailsSelectInputs";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
 import { emptyTask } from "~/api/types/projectTaskTypes";
@@ -28,18 +29,20 @@ import {
 interface TaskDetailsProps {
   projectTask?: ProjectTask;
   formType: "PUT" | "POST";
+  actionRouteRoot: string;
 }
 
 export function TaskDetails({
   projectTask = emptyTask(),
   formType,
+  actionRouteRoot,
 }: TaskDetailsProps) {
   const [task, setTask] = useState({ ...projectTask });
   const [isFormInvalid, setIsFormInvalid] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
+  const navigate = useNavigate();
   const fetcher = useFetcher();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const projectId = useParams().projectId!;
   const statuses = useContext(StatusesContext);
   const projectMembers = useContext(MembersContext);
 
@@ -49,11 +52,14 @@ export function TaskDetails({
     setIsChanged(false);
   }, [projectTask]);
   useEffect(() => {
+    console.log(`Check if changed: ${JSON.stringify(task)}`);
     checkIfChanged();
   }, [task]);
 
   const checkIfChanged = () => {
-    if (_.isEqual(projectTask, task)) {
+    if (
+      _.isEqual(_.omit(projectTask, ["taskType"]), _.omit(task, ["taskType"]))
+    ) {
       setIsChanged(false);
     } else {
       setIsChanged(true);
@@ -112,14 +118,24 @@ export function TaskDetails({
       method={formType}
       action={
         formType === "PUT"
-          ? `/project/${projectId}/backlog/${projectTask?.id}/${projectTask?.taskType}`
-          : ""
+          ? `${actionRouteRoot}/${projectTask?.id}/${projectTask?.taskType}`
+          : `${actionRouteRoot}/create`
       }
       className={"h-full"}
     >
       <div className="flex h-full flex-col gap-3 px-4 py-3">
         <div className="flex w-full flex-row gap-3">
-          <TaskTypeBadge taskType={task.taskType} />
+          {formType == "PUT" ? (
+            <TaskTypeBadge taskType={task.taskType} />
+          ) : (
+            <TaskTypeInput
+              name={projectTaskFieldStringFor("taskType")}
+              value={task.taskType}
+              handleSelectChange={handleSelectChange}
+              label={getLabelFor("taskType")}
+              propPack={propPack}
+            />
+          )}
           <StatusInput
             statuses={statuses}
             name={projectTaskFieldStringFor("statusId")}
@@ -201,15 +217,29 @@ export function TaskDetails({
           />
         )}
         <div className="mt-auto flex flex-row justify-end gap-3">
-          <Button
-            size="lg"
-            color="danger"
-            className="font-bold"
-            variant="solid"
-            onPress={onOpen}
-          >
-            Delete
-          </Button>
+          {formType === "PUT" ? (
+            <Button
+              size="lg"
+              color="danger"
+              className="font-bold"
+              variant="solid"
+              onPress={onOpen}
+            >
+              Delete
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              color="danger"
+              className="font-bold"
+              variant="solid"
+              onPress={() => {
+                navigate(actionRouteRoot);
+              }}
+            >
+              Cancel
+            </Button>
+          )}
           <Button
             type="submit"
             size="lg"
@@ -218,11 +248,11 @@ export function TaskDetails({
             variant="solid"
             isDisabled={isFormInvalid || !isChanged}
           >
-            Apply
+            {formType === "PUT" ? "Apply" : "Create"}
           </Button>
           {formType === "PUT" && (
             <DeleteModal
-              actionRoute={`/project/${projectId}/backlog/${projectTask?.id}/${projectTask?.taskType}`}
+              actionRoute={`${actionRouteRoot}/${projectTask?.id}/${projectTask?.taskType}`}
               useFetcherForm={false}
               deleteName={projectTask.name}
               deleteHeader="Delete Task"
