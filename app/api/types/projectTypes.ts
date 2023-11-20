@@ -1,14 +1,10 @@
-import type { Board, PagedRequest } from "~/api/types/baseEntitiesTypes";
+import type { PagedRequest } from "~/api/types/baseEntitiesTypes";
 import type { WithTokenRequest } from "~/api/types/authorizationTypes";
 
 export interface ProjectBoardRequest extends WithTokenRequest {
   projectId: string;
   sprintId: string;
   assigneeId?: string;
-}
-
-export interface ProjectBoardResponse {
-  board: Board;
 }
 
 export interface PagedProjectRequest extends WithTokenRequest, PagedRequest {}
