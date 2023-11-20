@@ -1,10 +1,9 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import ProjectBoard from "~/components/board/ProjectBoard";
 import getToken from "~/actions/getToken";
-import { getBoard } from "~/api/methods/project";
+import { getBacklog, getBoard } from "~/api/methods/project";
 import { defer, redirect } from "@remix-run/node";
-import { getProjectTaskStatuses } from "~/api/methods/projectTaskStauses";
-import { useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { DndProviderWrapper } from "~/components/utils/DndProviderWrapper";
 import { jwtDecode } from "jwt-decode";
 
@@ -19,22 +18,20 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const assigneeId = jwtDecode(token).sub;
 
   const boardPromise = getBoard({ projectId, sprintId, assigneeId, token });
-  const statusesPromise = getProjectTaskStatuses({ projectId, token });
+  const backlogPromise = getBacklog({ projectId, token });
 
-  return defer({ boardPromise, statusesPromise });
+  return defer({ boardPromise, backlogPromise });
 };
 
 export default function SelectedSprintBoardPage() {
   const loaderData = useLoaderData<typeof loader>();
   // @ts-ignore
-  const { boardPromise, statusesPromise } = loaderData;
+  const { boardPromise, backlogPromise } = loaderData;
 
   return (
     <DndProviderWrapper className="flex h-full grow">
-      <ProjectBoard
-        boardPromise={boardPromise}
-        statusesPromise={statusesPromise}
-      />
+      <ProjectBoard boardPromise={boardPromise} />
+      <Outlet context={backlogPromise} />
     </DndProviderWrapper>
   );
 }
