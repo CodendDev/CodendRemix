@@ -40,6 +40,17 @@ export interface Sprint {
   startDate: string;
   endDate: string;
   goal?: string;
+  sprintTasks: { tasks: BacklogTaskType[] };
+}
+
+/**
+ * Represents Sprint assignable task
+ */
+export interface SprintAssignableTask {
+  id: string;
+  name: string;
+  taskType: TaskType;
+  statusName: string;
 }
 
 /**

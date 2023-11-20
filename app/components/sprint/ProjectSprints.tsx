@@ -1,6 +1,5 @@
 import React from "react";
 
-import { Outlet } from "@remix-run/react";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { GiSprint } from "~/components/projectNavigation/icons";
 import { CreateSprintModal } from "~/components/sprint/SprintFormModals";
@@ -40,7 +39,6 @@ export function ProjectSprints({ projectId, sprints }: ProjectSprintsProps) {
       <div>
         <SprintList projectId={projectId} sprintsPromise={sprints} />
       </div>
-      <Outlet />
     </div>
   );
 }
