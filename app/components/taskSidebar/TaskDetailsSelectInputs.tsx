@@ -41,6 +41,7 @@ export function StatusInput({
         onChange={handleSelectChange}
         aria-label={label}
         placeholder="Select status"
+        disallowEmptySelection={true}
         isInvalid={!value}
         errorMessage={!value && "Status is required"}
         items={statuses}
@@ -79,6 +80,7 @@ export function PriorityInput({
         onChange={handleSelectChange}
         label={label}
         placeholder={"Select priority"}
+        disallowEmptySelection={true}
         isInvalid={!value}
         errorMessage={!value && "Status is required"}
         selectedKeys={value ? [value] : []}
@@ -120,7 +122,7 @@ export function AssigneeInput({
     <div>
       <Select
         name={name}
-        value={value ?? ""}
+        value={value ?? undefined}
         onChange={handleSelectChange}
         label={label}
         items={projectMembers}
