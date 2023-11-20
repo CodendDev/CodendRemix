@@ -18,6 +18,53 @@ import { TbSubtask } from "react-icons/tb/index.js";
 import { Await } from "@remix-run/react";
 import { CustomInputProps } from "~/components/taskSidebar/TaskDetailsInputs";
 
+const taskTypeList: TaskType[] = ["Base", "Bugfix", "Story", "Epic"];
+
+interface TaskTypeInputProps
+  extends Omit<CustomInputProps<string>, "handleInputChange"> {}
+
+export function TaskTypeInput({
+  name,
+  value,
+  label,
+  handleSelectChange,
+  propPack,
+}: TaskTypeInputProps) {
+  return (
+    <div>
+      <Select
+        required
+        name={name}
+        value={value}
+        onChange={handleSelectChange}
+        aria-label={label}
+        placeholder="Select type"
+        disallowEmptySelection={true}
+        isInvalid={!value}
+        errorMessage={!value && "Type is required"}
+        selectedKeys={value ? [value] : []}
+        {...propPack}
+        size="lg"
+        className={`min-w-[7rem] ${
+          value ? taskTypeToColorClass[value as unknown as TaskType] : ""
+        }`}
+        radius="full"
+        variant="faded"
+      >
+        {taskTypeList.map((taskType) => (
+          <SelectItem
+            key={taskType}
+            value={taskType}
+            className={taskTypeToColorClass[taskType]}
+          >
+            {taskType}
+          </SelectItem>
+        ))}
+      </Select>
+    </div>
+  );
+}
+
 interface StatusInputProps
   extends Omit<CustomInputProps<string>, "handleInputChange"> {
   statuses: ProjectTaskStatus[];
@@ -35,7 +82,6 @@ export function StatusInput({
     <div className="flex-grow">
       <Select
         required
-        unselectable="off"
         name={name}
         value={value}
         onChange={handleSelectChange}
