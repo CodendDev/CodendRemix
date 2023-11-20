@@ -9,6 +9,7 @@ export interface CreateStoryRequest extends ProjectRequest {
   description: string;
   statusId: string;
   epicId?: string;
+  sprintId?: string;
 }
 
 export interface UpdateStoryRequest

@@ -49,6 +49,7 @@ export async function createStory(request: CreateStoryRequest) {
     description: request.description,
     statusId: request.statusId,
     epicId: request.epicId,
+    sprintId: request.sprintId,
   };
 
   try {
