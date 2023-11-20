@@ -16,7 +16,7 @@ export function getAxiosInstance(token?: string): AxiosInstance {
 
   return axios.create({
     baseURL: url,
-    timeout: 2000,
+    timeout: 20000,
     headers: {
       ...authorizationHeaders,
       "Content-Type": "application/json",
