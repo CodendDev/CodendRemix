@@ -48,7 +48,7 @@ export function ProjectTaskStatusContainer({
 
   return (
     <>
-      <div className="flex h-full w-full min-w-[300px] flex-col">
+      <div className="flex h-full w-full min-w-[15rem] flex-col">
         <StatusContainerHeader
           name={name}
           onEdit={editStatusModal.onOpen}
@@ -90,7 +90,7 @@ export function ProjectTaskStatusContainerLoading({
   isLoaded?: boolean;
 }) {
   return (
-    <div className="flex h-full w-full min-w-[300px] grow flex-col">
+    <div className="flex h-full w-full min-w-[15rem] grow flex-col">
       {name ? (
         <StatusContainerHeader
           name={name}

@@ -3,7 +3,7 @@ import getToken from "~/actions/getToken";
 import { defer, redirect } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import ProjectBoardSprintSelector from "~/components/board/ProjectBoardSprintSelector";
-import { getActiveSprints, getBacklog } from "~/api/methods/project";
+import { getActiveSprints } from "~/api/methods/project";
 import React from "react";
 import CreateSprintTip from "~/components/board/CreateSprintTip";
 

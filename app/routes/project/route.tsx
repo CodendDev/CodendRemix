@@ -30,7 +30,7 @@ export default function ProjectPage() {
     <div className="flex h-full flex-col">
       <div>
         <div
-          className="flex basis-10 flex-col bg-emerald-800 p-3 shadow-sm shadow-emerald-700"
+          className="flex basis-10 flex-col bg-emerald-800 p-3 shadow-[inset_0_-2px_6px] shadow-emerald-900"
           onClick={() => setIsMenuOpen((prev) => !prev)}
         >
           {isMenuOpen ? (
