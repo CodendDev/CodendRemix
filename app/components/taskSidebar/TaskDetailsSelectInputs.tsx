@@ -2,7 +2,7 @@ import { Avatar, Select, SelectItem, Skeleton } from "@nextui-org/react";
 import { BsFillClipboardDataFill } from "react-icons/bs/index.js";
 import React, { Suspense } from "react";
 import {
-  BacklogType,
+  MinimalProjectTask,
   Priority,
   ProjectTaskStatus,
   TaskType,
@@ -170,7 +170,7 @@ export function RelatedTaskInput({
   propPack,
   taskType,
 }: RelatedTaskInputProps) {
-  const backlogPromise: Promise<BacklogType> = useOutletContext();
+  const tasksPromise: Promise<MinimalProjectTask[]> = useOutletContext();
   return (
     <div>
       <Suspense
@@ -193,10 +193,10 @@ export function RelatedTaskInput({
           </Select>
         }
       >
-        <Await resolve={backlogPromise}>
-          {(backlog) => (
+        <Await resolve={tasksPromise}>
+          {(tasks) => (
             <AwaitedRelatedTaskInput
-              backlog={backlog}
+              tasks={tasks}
               name={name}
               value={value}
               handleSelectChange={handleSelectChange}
@@ -212,7 +212,7 @@ export function RelatedTaskInput({
 }
 
 interface AwaitedRelatedTaskInputProps extends RelatedTaskInputProps {
-  backlog: BacklogType;
+  tasks: MinimalProjectTask[];
 }
 
 function AwaitedRelatedTaskInput({
@@ -222,13 +222,13 @@ function AwaitedRelatedTaskInput({
   label,
   propPack,
   taskType,
-  backlog,
+  tasks,
 }: AwaitedRelatedTaskInputProps) {
   const getTasksAccordingToType = () => {
     if (taskType === "Story") {
-      return backlog.tasks.filter((task) => task.taskType === "Epic");
+      return tasks.filter((task) => task.taskType === "Epic");
     }
-    return backlog.tasks.filter((task) => task.taskType === "Story");
+    return tasks.filter((task) => task.taskType === "Story");
   };
 
   return (
@@ -243,7 +243,7 @@ function AwaitedRelatedTaskInput({
       startContent={
         <>
           <TbSubtask />
-          {value && <TaskTypeWithColor taskId={value} backlog={backlog} />}
+          {value && <TaskTypeWithColor taskId={value} tasks={tasks} />}
         </>
       }
       {...propPack}
@@ -268,12 +268,12 @@ function AwaitedRelatedTaskInput({
 
 function TaskTypeWithColor({
   taskId,
-  backlog,
+  tasks,
 }: {
   taskId: string;
-  backlog: BacklogType;
+  tasks: MinimalProjectTask[];
 }) {
-  const task = backlog.tasks.find((task) => task.id === taskId)!;
+  const task = tasks.find((task) => task.id === taskId)!;
   return (
     <span
       className={`text-sm ${

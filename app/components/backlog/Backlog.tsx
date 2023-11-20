@@ -1,19 +1,19 @@
 import React, { Suspense, useState } from "react";
-import type { BacklogType } from "~/api/types/baseEntitiesTypes";
+import type { BacklogTaskType } from "~/api/types/baseEntitiesTypes";
 import { Await } from "@remix-run/react";
 import BacklogTask, {
   BacklogTaskLoading,
 } from "~/components/backlog/BacklogTask";
 
 type BacklogProps = {
-  backlogPromise: Promise<BacklogType>;
+  backlogTasksPromise: Promise<BacklogTaskType[]>;
 };
 
-export function Backlog({ backlogPromise }: BacklogProps) {
+export function Backlog({ backlogTasksPromise }: BacklogProps) {
   return (
     <Suspense fallback={<BacklogLoading />}>
-      <Await resolve={backlogPromise}>
-        {(backlog) => AwaitedBacklog({ backlog })}
+      <Await resolve={backlogTasksPromise}>
+        {(backlog) => AwaitedBacklog({ backlogTasks: backlog })}
       </Await>
     </Suspense>
   );
@@ -39,7 +39,7 @@ function BacklogLoading() {
   );
 }
 
-function AwaitedBacklog({ backlog }: { backlog: BacklogType }) {
+function AwaitedBacklog({ backlogTasks }: { backlogTasks: BacklogTaskType[] }) {
   const [selectedBacklogTaskId, setSelectedBacklogTaskId] = useState<
     string | undefined
   >(undefined);
@@ -49,11 +49,11 @@ function AwaitedBacklog({ backlog }: { backlog: BacklogType }) {
       <div className="px-6 pb-2 font-bold text-gray-700">
         Backlog
         <span className="ml-1 font-normal text-gray-400">
-          ({backlog.tasks.length} tasks)
+          ({backlogTasks.length} tasks)
         </span>
       </div>
       <div className="flex max-h-[calc(100vh-6rem)] min-h-0 min-w-[10rem] flex-shrink-0 flex-col justify-between gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
-        {backlog.tasks.map((task) => (
+        {backlogTasks.map((task) => (
           <BacklogTask
             key={task.id}
             {...task}

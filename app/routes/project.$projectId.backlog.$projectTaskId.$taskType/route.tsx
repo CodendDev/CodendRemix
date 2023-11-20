@@ -9,8 +9,6 @@ import {
   updateProjectTask,
 } from "~/api/methods/projectTask";
 import TaskSidebar from "~/components/taskSidebar/TaskSidebar";
-import { getProjectTaskStatuses } from "~/api/methods/projectTaskStauses";
-import { getMembers } from "~/api/methods/project";
 import { ProjectTask } from "~/api/types/baseEntitiesTypes";
 import { deleteEpic, getEpic, updateEpic } from "~/api/methods/epic";
 import { deleteStory, getStory, updateStory } from "~/api/methods/story";
@@ -132,19 +130,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const projectTaskId = params.projectTaskId!;
   const taskType = params.taskType!;
 
-  const projectTaskStatusesPromise = getProjectTaskStatuses({
-    projectId: projectId,
-    token: token!,
-  });
-  const projectMembersPromise = getMembers({
-    projectId: projectId,
-    token: token!,
-  });
-  const [projectTaskStatusesResponse, projectMembers] = await Promise.all([
-    projectTaskStatusesPromise,
-    projectMembersPromise,
-  ]);
-
   const projectTaskPromise = getProjectTaskByType({
     token: token!,
     projectId,
@@ -154,8 +139,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   return defer({
     projectTaskPromise,
-    projectTaskStatusesResponse,
-    projectMembers,
   });
 };
 
@@ -202,16 +185,11 @@ export default function BoardPage() {
   const loaderData = useLoaderData<typeof loader>();
 
   // @ts-ignore
-  const { projectTaskPromise, projectTaskStatusesResponse, projectMembers } =
-    loaderData;
+  const { projectTaskPromise } = loaderData;
 
   return (
     <>
-      <TaskSidebar
-        projectTaskPromise={projectTaskPromise}
-        projectTaskStatusesResponse={projectTaskStatusesResponse!}
-        projectMembers={projectMembers!}
-      />
+      <TaskSidebar projectTaskPromise={projectTaskPromise} />
       <Outlet />
     </>
   );
