@@ -47,6 +47,7 @@ export async function createEpic(request: CreateEpicRequest) {
     name: request.name,
     description: request.description,
     statusId: request.statusId,
+    sprintId: request.sprintId,
   };
 
   try {
