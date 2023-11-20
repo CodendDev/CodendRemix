@@ -54,6 +54,7 @@ export function NameInput({
           handleInputChange(e);
           checkIfValid(e);
         }}
+        placeholder="Task name"
         aria-label={label}
         isInvalid={isInvalid}
         errorMessage={isInvalid && "Name cannot be shorter than 3 chars."}

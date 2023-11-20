@@ -5,7 +5,6 @@ import {
   GetEpicRequest,
   UpdateEpicRequest,
 } from "~/api/types/epicTypes";
-import { CreateStoryRequest, UpdateStoryRequest } from "~/api/types/storyTypes";
 
 export async function getEpic({
   projectId,
