@@ -20,6 +20,7 @@ import type {
 import { Button } from "@nextui-org/react";
 import { AiOutlineCheck, AiOutlineSave } from "react-icons/ai/index.js";
 import { GrAdd } from "react-icons/gr/index.js";
+import { useSubmit } from "@remix-run/react";
 
 export const SprintContext = React.createContext<SprintContextType>({
   handleAdd(_: SprintTask): void {},
@@ -73,14 +74,19 @@ export default function SprintBacklog({
     tasks.splice(index, 1);
     setTasks(tasks.concat([{ ...task, state: matcher(task.state) }]));
   };
+
+  const submit = useSubmit();
   const handleSave = () => {
     const toUpdate: SprintTask[] = [];
 
     for (const id in updatedTasks) {
-      if (tasks.find((t) => t.id === id)?.state !== updatedTasks[id].state) {
-        toUpdate.push(updatedTasks[id]);
+      const task = tasks.find((t) => t.id === id);
+      if (task?.state !== updatedTasks[id].state) {
+        toUpdate.push(task!);
       }
     }
+
+    submit({ tasks: JSON.stringify(toUpdate) }, { method: "POST" });
   };
 
   if (!tasks) {

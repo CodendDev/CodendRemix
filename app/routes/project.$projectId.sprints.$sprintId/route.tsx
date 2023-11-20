@@ -6,6 +6,8 @@ import {
   deleteSprint,
   getAssignableToSprintTasks,
   getSprint,
+  sprintAssignTasks,
+  sprintRemoveTasks,
   updateSprint,
 } from "~/api/methods/sprint";
 import { getBacklog } from "~/api/methods/project";
@@ -20,7 +22,26 @@ export const action = async (args: ActionFunctionArgs) => {
       return actionDelete(args);
     case "PUT":
       return actionPut(args);
+    case "POST":
+      return actionPost(args);
   }
+};
+
+const actionPost = async ({ request, params }: ActionFunctionArgs) => {
+  const token = await getToken(request);
+  const projectId = params.projectId;
+  const sprintId = params.sprintId;
+  if (!token || !projectId || !sprintId) {
+    return;
+  }
+
+  // @ts-ignore
+  const tasks = JSON.parse(Object.fromEntries(await request.formData()).tasks);
+
+  await sprintAssignTasks({ token, sprintId, projectId, tasks });
+  await sprintRemoveTasks({ token, sprintId, projectId, tasks });
+
+  return {};
 };
 
 const actionDelete = async ({ request, params }: ActionFunctionArgs) => {
