@@ -52,7 +52,6 @@ export function TaskDetails({
     setIsChanged(false);
   }, [projectTask]);
   useEffect(() => {
-    console.log(`Check if changed: ${JSON.stringify(task)}`);
     checkIfChanged();
   }, [task]);
 
