@@ -55,12 +55,14 @@ function AwaitedTaskSidebar({
   actionRouteRoot: string;
 }) {
   return (
-    <div className="flex h-full w-[35rem] flex-col overflow-x-auto border-l-1 border-emerald-700">
-      <TaskDetails
-        projectTask={task}
-        formType="PUT"
-        actionRouteRoot={actionRouteRoot}
-      />
+    <div>
+      <div className="flex h-full w-[35rem] flex-col overflow-x-auto border-l-1 border-emerald-700">
+        <TaskDetails
+          projectTask={task}
+          formType="PUT"
+          actionRouteRoot={actionRouteRoot}
+        />
+      </div>
     </div>
   );
 }
