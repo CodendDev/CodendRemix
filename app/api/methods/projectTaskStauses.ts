@@ -3,23 +3,21 @@ import type {
   CreateProjectTaskStatusRequest,
   DeleteProjectTaskStatusRequest,
   ProjectTaskStatusesRequest,
-  ProjectTaskStatusesResponse,
 } from "~/api/types/projectTaskStatusesTypes";
 import { UpdateProjectTaskStatusRequest } from "~/api/types/projectTaskStatusesTypes";
+import { ProjectTaskStatus } from "~/api/types/baseEntitiesTypes";
 
 export async function getProjectTaskStatuses({
   projectId,
   token,
-}: ProjectTaskStatusesRequest): Promise<
-  ProjectTaskStatusesResponse | undefined
-> {
+}: ProjectTaskStatusesRequest): Promise<ProjectTaskStatus[] | undefined> {
   const axios = getAxiosInstance(token);
 
   try {
     const response = await axios.get(
       `/api/projects/${projectId}/task-statuses`
     );
-    return { projectTaskStatuses: response.data };
+    return response.data;
   } catch (err) {
     return undefined;
   }

@@ -4,11 +4,11 @@ export default {
     return defineRoutes((route) => {
       route(
         "api/project/:projectId/projectTaskStatus",
-        "api/routes/projectTaskStatus/projectTaskStatusCreateAction.tsx"
+        "routes/api/projectTaskStatus/projectTaskStatusCreateAction.tsx"
       );
       route(
         "api/project/:projectId/projectTaskStatus/:statusId",
-        "api/routes/projectTaskStatus/projectTaskStatusEditDeleteAction.tsx"
+        "routes/api/projectTaskStatus/projectTaskStatusEditDeleteAction.tsx"
       );
     });
   },

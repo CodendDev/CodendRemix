@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import type { Sprint } from "~/api/types/baseEntitiesTypes";
-import { Await, useLocation, useNavigate, useParams } from "@remix-run/react";
+import { Await, useNavigate, useParams } from "@remix-run/react";
 import type { Selection } from "@nextui-org/react";
 import { Select, SelectItem, Skeleton } from "@nextui-org/react";
 import { ProjectBoardLoading } from "~/components/board/ProjectBoard";
@@ -84,13 +84,18 @@ function AwaitedProjectBoardSprintSelector({
   // noinspection RequiredAttributes
   return (
     <>
-      <div className="ml-5 flex flex-row items-center justify-start gap-10 p-4">
+      <div className="ml-3 flex flex-row items-center justify-start gap-10 p-2">
         <Select
           items={sprints}
-          size="lg"
-          label="Selected sprint"
+          size="sm"
+          variant="flat"
+          label="Selected sprint:"
+          labelPlacement="outside-left"
           placeholder="No active sprints."
           className="w-96"
+          classNames={{
+            label: "w-40 self-center text-sm text-ellipsis whitespace-nowrap",
+          }}
           selectedKeys={selectedValues}
           disabledKeys={new Set(["archived"])}
           onSelectionChange={handleSelectionChange}

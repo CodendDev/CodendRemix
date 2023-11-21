@@ -20,6 +20,7 @@ import { useDrag } from "react-dnd";
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
+import { useNavigate, useParams } from "@remix-run/react";
 
 export function ProjectBoardTask({
   id,
@@ -30,6 +31,8 @@ export function ProjectBoardTask({
   assigneeAvatar,
   relatedTaskId,
 }: BoardTask) {
+  const navigate = useNavigate();
+  const params = useParams();
   const { selectedProjectBoardTaskId, setSelectedProjectBoardTaskId } =
     useContext(SelectedProjectBoardTaskContext);
 
@@ -52,6 +55,9 @@ export function ProjectBoardTask({
 
   const handleClick = () => {
     setSelectedProjectBoardTaskId(id);
+    navigate(
+      `/project/${params.projectId!}/board/${params.sprintId!}/${id}/${taskType.toLowerCase()}`
+    );
   };
   const type = taskType !== "Base" && taskType;
 
@@ -81,7 +87,7 @@ export function ProjectBoardTask({
       onClick={handleClick}
     >
       <div
-        className={`flex w-full justify-between rounded-lg px-5 py-3 ${gradientColor}`}
+        className={`flex w-full justify-between rounded-lg px-3 py-2 ${gradientColor}`}
       >
         <div>
           <div className="flex">
@@ -99,7 +105,7 @@ export function ProjectBoardTask({
           {assigneeAvatar && (
             <>
               <div className="flex justify-center ">
-                <Avatar src={assigneeAvatar} />
+                <Avatar src={assigneeAvatar} size="sm" />
               </div>
             </>
           )}
@@ -128,14 +134,14 @@ export function ProjectBoardTaskLoading({
 
 function ProjectBoardTaskType({ type }: { type: TaskType }) {
   const colorClass = taskTypeToColorClass[type];
-  return <div className={`${colorClass} font-semibold underline`}>{type}</div>;
+  return <div className={`${colorClass} font-bold underline`}>{type}</div>;
 }
 
 function ProjectBoardTaskPriority({ priority }: { priority: Priority }) {
   const colorClass = priorityToColorClass[priority];
 
   return (
-    <div className={`${colorClass} font-semibold`}>
+    <div className={`${colorClass} font-bold`}>
       {priority.replace(/Very/, "Very ")}
     </div>
   );

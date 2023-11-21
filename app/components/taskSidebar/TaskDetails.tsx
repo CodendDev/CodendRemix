@@ -1,11 +1,6 @@
-import {
-  ProjectTask,
-  ProjectTaskStatus,
-  TaskType,
-  UserDetails,
-} from "~/api/types/baseEntitiesTypes";
+import { ProjectTask, TaskType } from "~/api/types/baseEntitiesTypes";
 import { Button, useDisclosure } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { taskTypeToColorClass } from "~/components/utils/TypeToColor";
 import { useFetcher, useParams } from "@remix-run/react";
 import _ from "lodash";
@@ -25,18 +20,18 @@ import {
 } from "~/components/taskSidebar/TaskDetailsSelectInputs";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
 import { emptyTask } from "~/api/types/projectTaskTypes";
+import {
+  MembersContext,
+  StatusesContext,
+} from "~/routes/project.$projectId/route";
 
 interface TaskDetailsProps {
   projectTask?: ProjectTask;
-  statuses: ProjectTaskStatus[];
-  projectMembers: UserDetails[];
   formType: "PUT" | "POST";
 }
 
 export function TaskDetails({
   projectTask = emptyTask(),
-  statuses,
-  projectMembers,
   formType,
 }: TaskDetailsProps) {
   const [task, setTask] = useState({ ...projectTask });
@@ -45,6 +40,8 @@ export function TaskDetails({
   const fetcher = useFetcher();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const projectId = useParams().projectId!;
+  const statuses = useContext(StatusesContext);
+  const projectMembers = useContext(MembersContext);
 
   useEffect(() => {
     setTask({ ...projectTask });

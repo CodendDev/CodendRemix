@@ -6,7 +6,7 @@ import getToken from "~/actions/getToken";
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   const token = await getToken(request);
   if (!token) {
-    redirect("/user/login");
+    return redirect("/user/login");
   }
   const body = await request.formData();
   const data = Object.fromEntries(body);

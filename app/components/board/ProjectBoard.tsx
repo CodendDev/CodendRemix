@@ -1,19 +1,14 @@
 import type { Dispatch, SetStateAction } from "react";
-import React, { createContext, Suspense, useState } from "react";
+import React, { createContext, Suspense, useContext, useState } from "react";
 import ProjectTaskStatusContainer, {
   ProjectTaskStatusContainerLoading,
 } from "~/components/board/ProjectTaskStatusContainer";
-import type {
-  Board,
-  BoardTask,
-  ProjectTaskStatus,
-} from "~/api/types/baseEntitiesTypes";
-import { Await, useLocation } from "@remix-run/react";
-import type { ProjectBoardResponse } from "~/api/types/projectTypes";
-import type { ProjectTaskStatusesResponse } from "~/api/types/projectTaskStatusesTypes";
+import type { BoardTask } from "~/api/types/baseEntitiesTypes";
+import { Await, useParams } from "@remix-run/react";
 import { Button, Tooltip, useDisclosure } from "@nextui-org/react";
 import { AiOutlinePlus } from "react-icons/ai/index.js";
 import { EditStatusModal } from "~/components/projectTaskStatus/EditStatusModal";
+import { StatusesContext } from "~/routes/project.$projectId/route";
 
 export const DragItemTypes = {
   Task: "TASK",
@@ -31,14 +26,10 @@ export const SelectedProjectBoardTaskContext =
   });
 
 type ProjectBoardProps = {
-  boardPromise: Promise<ProjectBoardResponse>;
-  statusesPromise: Promise<ProjectTaskStatusesResponse>;
+  boardPromise: Promise<BoardTask[]>;
 };
 
-export function ProjectBoard({
-  boardPromise,
-  statusesPromise,
-}: ProjectBoardProps) {
+export function ProjectBoard({ boardPromise }: ProjectBoardProps) {
   const [selectedProjectBoardTaskId, setSelectedProjectBoardTaskId] = useState<
     string | null
   >(null);
@@ -48,25 +39,8 @@ export function ProjectBoard({
       value={{ selectedProjectBoardTaskId, setSelectedProjectBoardTaskId }}
     >
       <Suspense fallback={<ProjectBoardLoading />}>
-        <Await resolve={statusesPromise}>
-          {(statusesResponse) => (
-            <Suspense
-              fallback={
-                <ProjectBoardLoading
-                  statuses={statusesResponse.projectTaskStatuses}
-                />
-              }
-            >
-              <Await resolve={boardPromise}>
-                {(boardResponse) => (
-                  <AwaitedBoardContainer
-                    statuses={statusesResponse.projectTaskStatuses}
-                    board={boardResponse.board}
-                  />
-                )}
-              </Await>
-            </Suspense>
-          )}
+        <Await resolve={boardPromise}>
+          {(boardTasks) => <AwaitedBoardContainer boardTasks={boardTasks} />}
         </Await>
       </Suspense>
     </SelectedProjectBoardTaskContext.Provider>
@@ -76,12 +50,12 @@ export function ProjectBoard({
 export default ProjectBoard;
 
 export function ProjectBoardLoading({
-  statuses,
   isLoaded = false,
 }: {
-  statuses?: ProjectTaskStatus[];
   isLoaded?: boolean;
 }) {
+  const statuses = useContext(StatusesContext);
+
   return statuses ? (
     <div className="flex h-full w-full grow gap-6 p-4">
       {statuses
@@ -102,22 +76,13 @@ export function ProjectBoardLoading({
   );
 }
 
-function AwaitedBoardContainer({
-  statuses,
-  board,
-}: {
-  statuses: ProjectTaskStatus[];
-  board: Board;
-}) {
-  const location = useLocation();
+function AwaitedBoardContainer({ boardTasks }: { boardTasks: BoardTask[] }) {
   const createStatusModal = useDisclosure();
-  const projectId = location.pathname
-    .toLowerCase()
-    .replace("/project/", "")
-    .slice(0, 36);
+  const statuses = useContext(StatusesContext);
+  const projectId = useParams().projectId!;
 
   const tasksForStatus = (statusId: string): BoardTask[] =>
-    board.tasks
+    boardTasks
       .filter((task) => task.statusId === statusId)
       .sort((a, b) => a.position!.localeCompare(b.position!));
 
