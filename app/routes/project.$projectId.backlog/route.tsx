@@ -13,7 +13,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   }
   const backlogPromise = getBacklog({
     projectId: projectId,
-    token: token!,
+    token,
   });
 
   return defer({ backlogPromise });
@@ -26,12 +26,8 @@ export default function BacklogPage() {
 
   return (
     <div className="flex w-full flex-shrink overflow-x-auto">
-      <div className="grow">
-        <Backlog backlogTasksPromise={backlogPromise} />
-      </div>
-      <div>
-        <Outlet context={backlogPromise} />
-      </div>
+      <Backlog backlogTasksPromise={backlogPromise} />
+      <Outlet context={backlogPromise} />
     </div>
   );
 }
