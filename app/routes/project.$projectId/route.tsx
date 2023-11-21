@@ -15,11 +15,11 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const projectTaskStatusesPromise = getProjectTaskStatuses({
     projectId: projectId,
-    token: token!,
+    token: token,
   });
   const projectMembersPromise = getMembers({
     projectId: projectId,
-    token: token!,
+    token: token,
   });
   const [projectTaskStatuses, projectMembers] = await Promise.all([
     projectTaskStatusesPromise,

@@ -29,7 +29,7 @@ export default function SelectedSprintBoardPage() {
   const { boardPromise, backlogPromise } = loaderData;
 
   return (
-    <DndProviderWrapper className="flex h-full grow">
+    <DndProviderWrapper className="flex h-full grow border-t-1 border-emerald-700">
       <ProjectBoard boardPromise={boardPromise} />
       <Outlet context={backlogPromise} />
     </DndProviderWrapper>

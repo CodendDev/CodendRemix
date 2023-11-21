@@ -122,7 +122,7 @@ export function AssigneeInput({
     <div>
       <Select
         name={name}
-        value={value ?? undefined}
+        value={value}
         onChange={handleSelectChange}
         label={label}
         items={projectMembers}
