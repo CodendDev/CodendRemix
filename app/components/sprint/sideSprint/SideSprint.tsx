@@ -1,5 +1,4 @@
 import type {
-  BacklogType,
   Sprint,
   SprintAssignableTask,
 } from "~/api/types/baseEntitiesTypes";
@@ -11,7 +10,6 @@ import SideSprintHeader from "~/components/sprint/sideSprint/SideSprintHeader";
 
 interface SideSprintProps {
   sprintPromise: Promise<Sprint>;
-  backlogPromise: Promise<BacklogType>;
   assignableTasksPromise: Promise<SprintAssignableTask[]>;
   projectId: string;
 }

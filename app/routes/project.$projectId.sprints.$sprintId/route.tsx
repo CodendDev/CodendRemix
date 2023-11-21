@@ -88,26 +88,24 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const sprintId = params.sprintId!;
 
   const sprint = getSprint({ sprintId, projectId, token });
-  const backlog = getBacklog({ projectId, token });
   const assignableTasks = getAssignableToSprintTasks({
     projectId,
     sprintId,
     token,
   });
 
-  return defer({ projectId, sprint, backlog, assignableTasks });
+  return defer({ projectId, sprint, assignableTasks });
 };
 
 export default function SprintPage() {
   const loaderData = useLoaderData<typeof loader>();
   // @ts-ignore
-  const { projectId, sprint, backlog, assignableTasks } = loaderData;
+  const { projectId, sprint, assignableTasks } = loaderData;
 
   return (
-    <div className="grow border-l-1 border-emerald-700">
+    <div className="max-h-[calc(98vh-1em-4px)] grow overflow-y-auto border-l-1 border-emerald-700">
       <SideSprint
         sprintPromise={sprint}
-        backlogPromise={backlog}
         projectId={projectId}
         assignableTasksPromise={assignableTasks}
       />
