@@ -35,25 +35,27 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   if (token === undefined) {
-    redirect("/user/login");
+    return redirect("/user/login");
   }
 
   const projectId = params.projectId!;
 
   const sprints = getSprints({
     projectId: projectId,
-    token: token!,
+    token: token,
   });
 
-  return defer({ projectId: projectId, sprints });
+  return defer({ projectId, sprints });
 };
 
 export default function SprintsPage() {
   const loaderData = useLoaderData<typeof loader>();
+  // @ts-ignore
+  const { projectId, sprints } = loaderData;
 
   return (
     <>
-      <ProjectSprints {...loaderData} />
+      <ProjectSprints projectId={projectId} sprints={sprints} />
       <Outlet />
     </>
   );

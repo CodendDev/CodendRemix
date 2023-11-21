@@ -27,7 +27,7 @@ export const action = async (args: ActionFunctionArgs) => {
 const actionDelete = async ({ request, params }: ActionFunctionArgs) => {
   const token = await getToken(request);
   if (!token) {
-    redirect("/user/login");
+    return redirect("/user/login");
   }
   const projectId = params.projectId!;
   const projectTaskId = params.projectTaskId!;
