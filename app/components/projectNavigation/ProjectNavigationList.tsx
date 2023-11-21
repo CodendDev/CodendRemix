@@ -1,9 +1,10 @@
 import type { Project } from "~/api/types/baseEntitiesTypes";
 import { Accordion, AccordionItem, Skeleton } from "@nextui-org/react";
 import React, { useContext, useState } from "react";
-import { useNavigate } from "@remix-run/react";
+import { useNavigate, useSubmit } from "@remix-run/react";
 import { AiOutlineFileSearch } from "react-icons/ai/index.js";
 import { ProjectNavigationBarContext } from "~/components/projectNavigation/ProjectNavigationBar";
+import { FaStar, FaRegStar } from "react-icons/fa/index.js";
 
 type ProjectNavigationListProps = {
   projects: Project[];
@@ -23,7 +24,9 @@ export function ProjectNavigationList({
         title={<ProjectNavigationListTitle />}
       >
         <ProjectList
-          projects={projects}
+          projects={projects.sort(
+            (a, b) => Number(b.isFavourite) - Number(a.isFavourite)
+          )}
           selectedProjectId={selectedProjectId}
         />
       </AccordionItem>
@@ -74,13 +77,12 @@ function ProjectList({
 
   return (
     <div className="flex min-w-full flex-col">
-      {projects.map(({ id, name }, i) => (
+      {projects.map((project) => (
         <ProjectListItem
-          key={i}
-          id={id}
-          name={name}
-          selected={id == selected}
-          setSelect={() => setSelected(id)}
+          key={project.id}
+          {...project}
+          selected={project.id == selected}
+          setSelect={() => setSelected(project.id)}
         />
       ))}
     </div>
@@ -92,6 +94,7 @@ function ProjectListItem({
   name,
   selected,
   setSelect,
+  isFavourite,
 }: Omit<Project, "ownerId"> & {
   selected: boolean;
   setSelect: () => void;
@@ -106,16 +109,46 @@ function ProjectListItem({
         setSelect();
         nameContext.setProjectName(name);
       }}
-      className={`cursor-pointer p-2 text-center hover:bg-gray-100 
+      className={`flex cursor-pointer  p-2 text-center hover:bg-gray-100
       ${
         selected
           ? "border-r-5 border-gray-400 bg-gray-100 hover:bg-gray-200"
           : "border-r-5"
       }`}
     >
-      {name}
+      <ProjectStar isFavourite={isFavourite} projectId={id} />
+      <div className="w-full grow">{name}</div>
     </div>
   );
 }
+
+const ProjectStar = ({
+  isFavourite,
+  projectId,
+}: {
+  isFavourite: boolean;
+  projectId: string;
+}) => {
+  const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
+  const [hover, setHover] = useState(false);
+  const hoverIcon = isFavouriteState ? <FaRegStar /> : <FaStar />;
+  const icon = isFavouriteState ? <FaStar /> : <FaRegStar />;
+
+  const submit = useSubmit();
+  return (
+    <div
+      className="mx-2 flex items-center justify-center text-yellow-300"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={(e) => {
+        submit({ isFavourite: !isFavourite, projectId }, { method: "PUT" });
+        setIsFavouriteState((p) => !p);
+        e.stopPropagation();
+      }}
+    >
+      {hover ? hoverIcon : icon}
+    </div>
+  );
+};
 
 export default ProjectNavigationList;
