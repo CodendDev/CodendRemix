@@ -1,23 +1,25 @@
 import { Outlet, useLoaderData, useParams } from "@remix-run/react";
-import React from "react";
-import TaskSidebar from "~/components/taskSidebar/TaskSidebar";
 import {
   action as ProjectTaskAction,
   loader as ProjectTaskLoader,
 } from "~/routes/api/projectTask/projectTaskGetDeletePutAction";
+import TaskSidebar from "~/components/taskSidebar/TaskSidebar";
+import React from "react";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 
 export const action = async (args: ActionFunctionArgs) => {
   const response = await ProjectTaskAction(args);
   if (args.request.method === "DELETE") {
-    return redirect(`/project/${args.params.projectId!}/backlog`);
+    return redirect(
+      `/project/${args.params.projectId!}/tasks/${args.params.sprintId!}`
+    );
   }
   return response;
 };
 
 export const loader = ProjectTaskLoader;
 
-export default function BacklogTaskSidebar() {
+export default function TasksTaskSidebar() {
   const loaderData = useLoaderData<typeof loader>();
   const params = useParams();
 
@@ -28,7 +30,7 @@ export default function BacklogTaskSidebar() {
     <>
       <TaskSidebar
         projectTaskPromise={projectTaskPromise}
-        actionRouteRoot={`/project/${params.projectId!}/backlog`}
+        actionRouteRoot={`/project/${params.projectId!}/tasks/${params.sprintId!}`}
       />
       <Outlet />
     </>

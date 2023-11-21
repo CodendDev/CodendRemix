@@ -27,9 +27,13 @@ export const SelectedProjectBoardTaskContext =
 
 type ProjectBoardProps = {
   boardPromise: Promise<BoardTask[]>;
+  editable?: boolean;
 };
 
-export function ProjectBoard({ boardPromise }: ProjectBoardProps) {
+export function ProjectBoard({
+  boardPromise,
+  editable = true,
+}: ProjectBoardProps) {
   const [selectedProjectBoardTaskId, setSelectedProjectBoardTaskId] = useState<
     string | null
   >(null);
@@ -40,7 +44,12 @@ export function ProjectBoard({ boardPromise }: ProjectBoardProps) {
     >
       <Suspense fallback={<ProjectBoardLoading />}>
         <Await resolve={boardPromise}>
-          {(boardTasks) => <AwaitedBoardContainer boardTasks={boardTasks} />}
+          {(boardTasks) => (
+            <AwaitedBoardContainer
+              boardTasks={boardTasks}
+              editable={editable}
+            />
+          )}
         </Await>
       </Suspense>
     </SelectedProjectBoardTaskContext.Provider>
@@ -76,7 +85,13 @@ export function ProjectBoardLoading({
   );
 }
 
-function AwaitedBoardContainer({ boardTasks }: { boardTasks: BoardTask[] }) {
+function AwaitedBoardContainer({
+  boardTasks,
+  editable,
+}: {
+  boardTasks: BoardTask[];
+  editable: boolean;
+}) {
   const createStatusModal = useDisclosure();
   const statuses = useContext(StatusesContext);
   const projectId = useParams().projectId!;
@@ -97,26 +112,31 @@ function AwaitedBoardContainer({ boardTasks }: { boardTasks: BoardTask[] }) {
             name={status.name}
             position={status.position}
             tasks={tasksForStatus(status.id)}
+            editable={editable}
           />
         ))}
-      <div className="p-1">
-        <Tooltip content="Add new status" placement="top" closeDelay={50}>
-          <Button
-            isIconOnly
-            radius="full"
-            size="sm"
-            variant="light"
-            onPress={createStatusModal.onOpen}
-          >
-            <AiOutlinePlus className="text-2xl text-gray-700" />
-          </Button>
-        </Tooltip>
-      </div>
-      <EditStatusModal
-        projectId={projectId}
-        isOpen={createStatusModal.isOpen}
-        onOpenChange={createStatusModal.onOpenChange}
-      />
+      {editable && (
+        <>
+          <div className="p-1">
+            <Tooltip content="Add new status" placement="top" closeDelay={50}>
+              <Button
+                isIconOnly
+                radius="full"
+                size="sm"
+                variant="light"
+                onPress={createStatusModal.onOpen}
+              >
+                <AiOutlinePlus className="text-2xl text-gray-700" />
+              </Button>
+            </Tooltip>
+          </div>
+          <EditStatusModal
+            projectId={projectId}
+            isOpen={createStatusModal.isOpen}
+            onOpenChange={createStatusModal.onOpenChange}
+          />
+        </>
+      )}
     </div>
   );
 }

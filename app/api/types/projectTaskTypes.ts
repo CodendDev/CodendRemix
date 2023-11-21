@@ -1,15 +1,12 @@
 import { ProjectRequest } from "~/api/types/projectTypes";
-import {
-  EstimatedTime,
-  ProjectTask,
-  TaskType,
-} from "~/api/types/baseEntitiesTypes";
+import { EstimatedTime, ProjectTask } from "~/api/types/baseEntitiesTypes";
 
-export const emptyTask = (): ProjectTask => ({
+export const emptyTask = (statusId?: string): ProjectTask => ({
   id: "",
   name: "",
+  taskType: "Base",
   priority: "Normal",
-  statusId: "",
+  statusId: statusId ?? "",
   description: "",
   estimatedTime: undefined,
   dueDate: undefined,
@@ -34,6 +31,7 @@ export interface CreateProjectTaskRequest extends ProjectRequest {
   assigneeId?: string;
   storyId?: string;
   taskType: string;
+  sprintId?: string;
 }
 
 export interface UpdateProjectTaskRequest

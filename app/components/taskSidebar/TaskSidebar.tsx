@@ -6,12 +6,21 @@ import TaskDetails from "~/components/taskSidebar/TaskDetails";
 
 type TaskSidebarProps = {
   projectTaskPromise: Promise<ProjectTask>;
+  actionRouteRoot: string;
 };
-export function TaskSidebar({ projectTaskPromise }: TaskSidebarProps) {
+export function TaskSidebar({
+  projectTaskPromise,
+  actionRouteRoot,
+}: TaskSidebarProps) {
   return (
     <Suspense fallback={<TaskSidebarLoading />}>
       <Await resolve={projectTaskPromise}>
-        {(projectTask) => <AwaitedTaskSidebar task={projectTask} />}
+        {(projectTask) => (
+          <AwaitedTaskSidebar
+            task={projectTask}
+            actionRouteRoot={actionRouteRoot}
+          />
+        )}
       </Await>
     </Suspense>
   );
@@ -38,10 +47,20 @@ export function TaskSidebarLoading() {
   );
 }
 
-function AwaitedTaskSidebar({ task }: { task: ProjectTask }) {
+function AwaitedTaskSidebar({
+  task,
+  actionRouteRoot,
+}: {
+  task: ProjectTask;
+  actionRouteRoot: string;
+}) {
   return (
     <div className="flex h-full w-[35rem] flex-col overflow-x-auto border-l-1 border-emerald-700">
-      <TaskDetails projectTask={task} formType="PUT" />
+      <TaskDetails
+        projectTask={task}
+        formType="PUT"
+        actionRouteRoot={actionRouteRoot}
+      />
     </div>
   );
 }

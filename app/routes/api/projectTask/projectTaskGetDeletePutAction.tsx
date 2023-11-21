@@ -61,10 +61,7 @@ const actionDelete = async ({ request, params }: ActionFunctionArgs) => {
     default:
       throw new Error("Unsupported TaskType");
   }
-  if (response) {
-    return redirect(`/project/${projectId}/backlog`);
-  }
-  return undefined;
+  return response;
 };
 
 const actionPut = async ({ params, request }: LoaderFunctionArgs) => {
