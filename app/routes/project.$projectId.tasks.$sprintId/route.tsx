@@ -30,7 +30,7 @@ export default function SelectedSprintBoardPage() {
 
   return (
     <DndProviderWrapper className="flex h-full grow border-t-1 border-emerald-700">
-      <ProjectBoard boardPromise={boardPromise} />
+      <ProjectBoard boardPromise={boardPromise} editable={false} />
       <Outlet context={backlogPromise} />
     </DndProviderWrapper>
   );
