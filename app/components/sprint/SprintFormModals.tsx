@@ -15,7 +15,7 @@ interface UpdateSprintModalProps {
   projectId: string;
   isOpen: boolean;
   onOpenChange: () => void;
-  sprint: Sprint;
+  sprint: Omit<Sprint, "sprintTasks">;
 }
 export const UpdateSprintModal = (props: UpdateSprintModalProps) => (
   <CreateSprintModal {...props} />
@@ -25,7 +25,7 @@ interface CreateSprintModalProps {
   projectId: string;
   isOpen: boolean;
   onOpenChange: () => void;
-  sprint?: Sprint;
+  sprint?: Omit<Sprint, "sprintTasks">;
 }
 export function CreateSprintModal({
   projectId,
