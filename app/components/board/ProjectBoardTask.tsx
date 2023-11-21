@@ -20,7 +20,7 @@ import { useDrag } from "react-dnd";
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
-import { useNavigate, useParams } from "@remix-run/react";
+import { useLocation, useNavigate, useParams } from "@remix-run/react";
 
 export function ProjectBoardTask({
   id,
@@ -31,6 +31,7 @@ export function ProjectBoardTask({
   assigneeAvatar,
   relatedTaskId,
 }: BoardTask) {
+  const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
   const { selectedProjectBoardTaskId, setSelectedProjectBoardTaskId } =
@@ -55,9 +56,15 @@ export function ProjectBoardTask({
 
   const handleClick = () => {
     setSelectedProjectBoardTaskId(id);
-    navigate(
-      `/project/${params.projectId!}/board/${params.sprintId!}/${id}/${taskType.toLowerCase()}`
-    );
+    if (location.pathname.toLowerCase().includes("board")) {
+      navigate(
+        `/project/${params.projectId!}/board/${params.sprintId!}/${id}/${taskType.toLowerCase()}`
+      );
+    } else {
+      navigate(
+        `/project/${params.projectId!}/tasks/${params.sprintId!}/${id}/${taskType.toLowerCase()}`
+      );
+    }
   };
   const type = taskType !== "Base" && taskType;
 
