@@ -20,3 +20,7 @@ export interface ProjectBacklogRequest extends WithTokenRequest {
 export interface ProjectActiveSprintsRequest extends WithTokenRequest {
   projectId: string;
 }
+
+export interface isFavouriteProjectRequest extends ProjectRequest {
+  isFavourite: boolean;
+}

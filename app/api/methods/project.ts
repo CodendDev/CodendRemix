@@ -4,6 +4,7 @@ import type {
   ProjectBoardRequest,
   ProjectRequest,
   ProjectActiveSprintsRequest,
+  isFavouriteProjectRequest,
 } from "~/api/types/projectTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 import type {
@@ -110,6 +111,23 @@ export async function getMembers({
 
   try {
     const response = await axios.get(`/api/projects/${projectId}/members`);
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function setIsFavourite({
+  projectId,
+  token,
+  isFavourite,
+}: isFavouriteProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.put(`/api/projects/${projectId}/favourite`, {
+      isFavourite,
+    });
     return response.data;
   } catch (err) {
     return undefined;
