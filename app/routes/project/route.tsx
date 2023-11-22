@@ -4,9 +4,29 @@ import ProjectNavigationBar from "~/components/projectNavigation/ProjectNavigati
 import getToken from "~/actions/getToken";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { defer, redirect } from "@remix-run/node";
-import { getPagedProjects } from "~/api/methods/project";
+import { getPagedProjects, setIsFavourite } from "~/api/methods/project";
 import { RxRows } from "react-icons/rx/index.js";
 import { AiOutlineClose } from "react-icons/ai/index.js";
+
+export const action = async ({ request }: LoaderFunctionArgs) => {
+  const token = await getToken(request);
+  if (!token) {
+    return redirect("/user/login");
+  }
+
+  if (request.method !== "PUT") {
+    return undefined;
+  }
+
+  const formData = Object.fromEntries(await request.formData());
+  await setIsFavourite({
+    projectId: formData.projectId.toString(),
+    isFavourite: formData.isFavourite.toString() === "true",
+    token,
+  });
+
+  return redirect(formData.location.toString());
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
