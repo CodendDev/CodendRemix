@@ -1,7 +1,7 @@
 import type { Project } from "~/api/types/baseEntitiesTypes";
 import { Accordion, AccordionItem, Skeleton } from "@nextui-org/react";
 import React, { useContext, useState } from "react";
-import { useNavigate, useSubmit } from "@remix-run/react";
+import { useLocation, useNavigate, useSubmit } from "@remix-run/react";
 import { AiOutlineFileSearch } from "react-icons/ai/index.js";
 import { ProjectNavigationBarContext } from "~/components/projectNavigation/ProjectNavigationBar";
 import { FaStar, FaRegStar } from "react-icons/fa/index.js";
@@ -133,6 +133,7 @@ const ProjectStar = ({
   const [hover, setHover] = useState(false);
   const hoverIcon = isFavouriteState ? <FaRegStar /> : <FaStar />;
   const icon = isFavouriteState ? <FaStar /> : <FaRegStar />;
+  const location = useLocation().pathname;
 
   const submit = useSubmit();
   return (
@@ -141,7 +142,10 @@ const ProjectStar = ({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={(e) => {
-        submit({ isFavourite: !isFavourite, projectId }, { method: "PUT" });
+        submit(
+          { isFavourite: !isFavourite, projectId, location },
+          { method: "PUT" }
+        );
         setIsFavouriteState((p) => !p);
         e.stopPropagation();
       }}

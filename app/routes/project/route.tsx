@@ -25,7 +25,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
     token,
   });
 
-  return {};
+  return redirect(formData.location.toString());
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
