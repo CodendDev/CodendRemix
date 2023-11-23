@@ -2,6 +2,7 @@ import type { Project } from "~/api/types/baseEntitiesTypes";
 import {
   Accordion,
   AccordionItem,
+  Button,
   ScrollShadow,
   Skeleton,
 } from "@nextui-org/react";
@@ -10,6 +11,7 @@ import { useLocation, useNavigate, useSubmit } from "@remix-run/react";
 import { AiOutlineFileSearch } from "react-icons/ai/index.js";
 import { ProjectNavigationBarContext } from "~/components/projectNavigation/ProjectNavigationBar";
 import { FaStar, FaRegStar } from "react-icons/fa/index.js";
+import { AiOutlinePlus } from "react-icons/ai/index.js";
 
 type ProjectNavigationListProps = {
   projects: Project[];
@@ -21,24 +23,38 @@ export function ProjectNavigationList({
   selectedProjectId,
 }: ProjectNavigationListProps) {
   return (
-    <Accordion
-      variant="bordered"
-      defaultExpandedKeys={["Projects"]}
-      className="rounded-none border-none text-center"
-    >
-      <AccordionItem
-        key="Projects"
-        aria-label="Projects"
-        title={<ProjectNavigationListTitle />}
+    <>
+      <Accordion
+        variant="bordered"
+        defaultExpandedKeys={["Projects"]}
+        className="rounded-none border-none text-center"
       >
-        <ProjectList
-          projects={projects.sort(
-            (a, b) => Number(b.isFavourite) - Number(a.isFavourite)
-          )}
-          selectedProjectId={selectedProjectId}
-        />
-      </AccordionItem>
-    </Accordion>
+        <AccordionItem
+          key="Projects"
+          aria-label="Projects"
+          title={<ProjectNavigationListTitle />}
+        >
+          <ProjectList
+            projects={projects.sort(
+              (a, b) => Number(b.isFavourite) - Number(a.isFavourite)
+            )}
+            selectedProjectId={selectedProjectId}
+          />
+        </AccordionItem>
+      </Accordion>
+      <div className="flex flex-row px-4">
+        <Button
+          size="sm"
+          variant="light"
+          color="primary"
+          fullWidth
+          startContent={<AiOutlinePlus />}
+          className="text-lg"
+        >
+          New project
+        </Button>
+      </div>
+    </>
   );
 }
 
