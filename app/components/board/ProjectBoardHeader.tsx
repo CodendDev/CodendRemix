@@ -51,16 +51,27 @@ function AwaitedProjectBoardHeader({
   );
   const navigate = useNavigate();
   const routeSprintId = useParams().sprintId;
-  const getSelectedSprint = () => {
+  const selectedSprintId = (() => {
     const arr = Array.from(selectedValues);
     return arr.length > 0 ? arr[0].toString() : null;
+  })();
+
+  const getSprintDatesString = ({
+    startDate,
+    endDate,
+  }: {
+    startDate: string;
+    endDate: string;
+  }) => {
+    return `${new Date(startDate).toLocaleDateString()} ${new Date(
+      endDate
+    ).toLocaleDateString()}`;
   };
 
   useEffect(() => {
     if (!routeSprintId) {
-      const selectedSprint = getSelectedSprint();
-      if (selectedSprint) {
-        navigate(`${route}/${selectedSprint}`);
+      if (selectedSprintId) {
+        navigate(`${route}/${selectedSprintId}`);
       }
     }
   }, [selectedValues, routeSprintId]);
@@ -76,16 +87,27 @@ function AwaitedProjectBoardHeader({
   // @ts-ignore
   // noinspection RequiredAttributes
   return (
-    <div className="mx-3 flex w-full items-center justify-between p-2">
-      <div className="w-2/5">
+    <div className="mx-3 flex w-full items-center justify-between overflow-auto p-2">
+      <div className="w-2/5 min-w-[20rem]">
         <Select
           items={sprints}
           variant="flat"
           label="Selected sprint:"
           labelPlacement="outside-left"
           placeholder="No active sprints."
-          classNames={{ label: "self-center whitespace-nowrap" }}
+          classNames={{
+            label: "self-center whitespace-nowrap",
+          }}
           selectedKeys={selectedValues}
+          endContent={
+            selectedSprintId && (
+              <span className="text-sm text-gray-500">
+                {getSprintDatesString(
+                  sprints.find((s) => s.id === selectedSprintId)!
+                )}
+              </span>
+            )
+          }
           disabledKeys={new Set(["archived"])}
           onSelectionChange={handleSelectionChange}
         >
@@ -97,7 +119,7 @@ function AwaitedProjectBoardHeader({
         </Select>
       </div>
       {filterable && (
-        <div className="mx-5 flex w-3/5">
+        <div className="mx-5 flex w-3/5 min-w-[20rem]">
           <ProjectBoardFilter />
         </div>
       )}

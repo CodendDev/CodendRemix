@@ -183,6 +183,10 @@ export function AssigneeInput({
           />
         }
         {...propPack}
+        classNames={{
+          label: "min-w-unit-24",
+          mainWrapper: "min-w-[14rem]",
+        }}
       >
         {(member) => (
           <SelectItem

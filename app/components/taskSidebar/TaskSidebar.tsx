@@ -30,7 +30,7 @@ export default TaskSidebar;
 
 export function TaskSidebarLoading() {
   return (
-    <div className="flex h-full w-[35rem] flex-col gap-3 px-4 py-3">
+    <div className="flex h-full w-[15rem] flex-col gap-3 px-4 py-3 md:w-[25rem] xl:w-[30rem] 2xl:w-[35rem]">
       <div className="flex flex-row gap-3">
         <Skeleton className="h-12 w-36 rounded-lg" />
         <Skeleton className="h-12 w-full rounded-lg" />
@@ -56,7 +56,7 @@ function AwaitedTaskSidebar({
 }) {
   return (
     <div>
-      <div className="flex h-full w-[35rem] flex-col overflow-x-auto border-l-1 border-emerald-700">
+      <div className="flex h-full w-[15rem] flex-col overflow-x-auto border-l-1 border-emerald-700 md:w-[25rem] xl:w-[30rem] 2xl:w-[35rem]">
         <TaskDetails
           projectTask={task}
           formType="PUT"
