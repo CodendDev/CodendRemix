@@ -10,6 +10,7 @@ import {
   relatedTypeToGradientColor,
   taskTypeToColorClass,
   typeToGradientColor,
+  typeToOutlineColor,
 } from "~/components/utils/TypeToColor";
 import { SelectedProjectBoardTaskContext } from "~/components/board/ProjectBoard";
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
@@ -59,10 +60,15 @@ export function ProjectBoardTask({
     deleteOption(() => {}),
   ];
 
+  const projectBoardTaskSelected: string =
+    selectedProjectBoardTaskId === id
+      ? `outline ${typeToOutlineColor[taskType]} outline-offset-0 outline-1`
+      : "";
+
   return (
     <div
       onClick={handleClick}
-      className="rounded-lg bg-white text-start shadow-md hover:shadow-lg"
+      className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg ${projectBoardTaskSelected}`}
     >
       <div
         className={`flex w-full justify-between rounded-lg px-3 py-2 ${gradientColor}`}
