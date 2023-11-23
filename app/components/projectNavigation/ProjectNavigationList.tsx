@@ -1,5 +1,10 @@
 import type { Project } from "~/api/types/baseEntitiesTypes";
-import { Accordion, AccordionItem, Skeleton } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  ScrollShadow,
+  Skeleton,
+} from "@nextui-org/react";
 import React, { useContext, useState } from "react";
 import { useLocation, useNavigate, useSubmit } from "@remix-run/react";
 import { AiOutlineFileSearch } from "react-icons/ai/index.js";
@@ -16,7 +21,11 @@ export function ProjectNavigationList({
   selectedProjectId,
 }: ProjectNavigationListProps) {
   return (
-    <Accordion defaultExpandedKeys={["Projects"]} className="text-center">
+    <Accordion
+      variant="bordered"
+      defaultExpandedKeys={["Projects"]}
+      className="rounded-none border-none text-center"
+    >
       <AccordionItem
         key="Projects"
         aria-label="Projects"
@@ -57,8 +66,8 @@ export function LoadingProjectNavigationList({ error }: { error?: boolean }) {
 
 function ProjectNavigationListTitle() {
   return (
-    <div className="flex flex-row">
-      <div className="flex items-center justify-center">
+    <div className="flex flex-row text-xl">
+      <div className="mx-2 flex items-center justify-center">
         <AiOutlineFileSearch />
       </div>
       Projects
@@ -75,7 +84,10 @@ function ProjectList({
   );
 
   return (
-    <div className="flex min-w-full flex-col">
+    <ScrollShadow
+      hideScrollBar
+      className="-mt-2 flex max-h-44 min-w-full flex-col rounded-lg border-1 border-gray-200"
+    >
       {projects.map((project) => (
         <ProjectListItem
           key={project.id}
@@ -84,7 +96,7 @@ function ProjectList({
           setSelect={() => setSelected(project.id)}
         />
       ))}
-    </div>
+    </ScrollShadow>
   );
 }
 
@@ -108,11 +120,11 @@ function ProjectListItem({
         setSelect();
         nameContext.setProjectName(name);
       }}
-      className={`flex cursor-pointer  p-2 text-center hover:bg-gray-100
+      className={`not-first:border-t-1 not-first:border-gray-200 flex cursor-pointer p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100
       ${
         selected
-          ? "border-r-5 border-gray-400 bg-gray-100 hover:bg-gray-200"
-          : "border-r-5"
+          ? "outline outline-1 -outline-offset-1 outline-emerald-500"
+          : ""
       }`}
     >
       <ProjectStar isFavourite={isFavourite} projectId={id} />
@@ -129,17 +141,13 @@ const ProjectStar = ({
   projectId: string;
 }) => {
   const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
-  const [hover, setHover] = useState(false);
-  const hoverIcon = isFavouriteState ? <FaRegStar /> : <FaStar />;
   const icon = isFavouriteState ? <FaStar /> : <FaRegStar />;
   const location = useLocation().pathname;
 
   const submit = useSubmit();
   return (
     <div
-      className="mx-2 flex items-center justify-center text-yellow-300"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      className="mx-2 flex items-center justify-center text-primary-500 hover:text-primary-700"
       onClick={(e) => {
         submit(
           { isFavourite: !isFavourite, projectId, location },
@@ -149,7 +157,7 @@ const ProjectStar = ({
         e.stopPropagation();
       }}
     >
-      {hover ? hoverIcon : icon}
+      {icon}
     </div>
   );
 };
