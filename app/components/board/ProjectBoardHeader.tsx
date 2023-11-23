@@ -80,7 +80,6 @@ function AwaitedProjectBoardHeader({
       <div className="w-2/5">
         <Select
           items={sprints}
-          size="sm"
           variant="flat"
           label="Selected sprint:"
           labelPlacement="outside-left"
