@@ -34,14 +34,14 @@ export const ProjectBoardFilter = () => {
       classNames={{ mainWrapper: "grow" }}
       labelPlacement="outside-left"
       label="Search:"
-      placeholder="Filter"
+      placeholder="Sprint task name"
       endContent={<SearchToolTip />}
       onChange={(e) => setQuery(e.target.value)}
     />
   );
 };
 
-const ToolTipHint = "Someday I will teach you to filter tasks :)";
+const ToolTipHint = `You can also filter sprint tasks by their type. eg. "Story", "Epic", "Task", "Bugfix", etc.`;
 const SearchToolTip = () => (
   <Tooltip content={ToolTipHint} placement="bottom-start">
     <div className="cursor-pointer text-xl">
