@@ -10,6 +10,8 @@ import React, { Suspense, useState } from "react";
 import ProjectNameDivider, {
   LoadingProjectNameDivider,
 } from "~/components/projectNavigation/ProjectNameDivider";
+import { LuLogOut } from "react-icons/lu/index.js";
+import { Button } from "@nextui-org/react";
 
 type ProjectNavigationBarProps = {
   projectsPromise: Promise<PagedResponse<Project>>;
@@ -27,7 +29,7 @@ export function ProjectNavigationBar({
   const projectId = useParams().projectId;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex h-full flex-col">
       <Suspense fallback={<LoadingProjectNavigationBar />}>
         <Await
           resolve={projectsPromise}
@@ -76,7 +78,7 @@ function AwaitedProjectNavigationBar({
   const [name, setName] = useState<string | undefined>(project?.name);
 
   return (
-    <div className="w-56 overflow-y-auto">
+    <div className="flex h-full w-56 flex-col overflow-y-auto">
       <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
         <ProjectNavigationList
           projects={projects}
@@ -84,6 +86,18 @@ function AwaitedProjectNavigationBar({
         />
         <ProjectNameDivider name={name} />
         <ProjectNavigationActionsList projectId={projectId} />{" "}
+        <div className="mb-2 mt-auto flex flex-row px-3">
+          <Button
+            variant="ghost"
+            color="primary"
+            fullWidth
+            endContent={<LuLogOut />}
+            className="text-md font-bold"
+            onPress={() => {}}
+          >
+            Log Out
+          </Button>
+        </div>
       </ProjectNavigationBarContext.Provider>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Divider, Skeleton } from "@nextui-org/react";
+import { Skeleton } from "@nextui-org/react";
 import React from "react";
 
 export function ProjectNameDivider({ name }: { name: string | undefined }) {
