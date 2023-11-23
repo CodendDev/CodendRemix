@@ -79,18 +79,20 @@ function AwaitedProjectNavigationBar({
   const [name, setName] = useState<string | undefined>(project?.name);
 
   return (
-    <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
-      <ProjectNavigationList
-        projects={projects}
-        selectedProjectId={projectId}
-      />
-      {name && (
-        <>
-          <ProjectNameDivider name={name} />
-          <ProjectNavigationActionsList projectId={projectId} />{" "}
-        </>
-      )}
-    </ProjectNavigationBarContext.Provider>
+    <div className="overflow-y-auto">
+      <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
+        <ProjectNavigationList
+          projects={projects}
+          selectedProjectId={projectId}
+        />
+        {name && (
+          <>
+            <ProjectNameDivider name={name} />
+            <ProjectNavigationActionsList projectId={projectId} />{" "}
+          </>
+        )}
+      </ProjectNavigationBarContext.Provider>
+    </div>
   );
 }
 

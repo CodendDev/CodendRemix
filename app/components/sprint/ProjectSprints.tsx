@@ -14,7 +14,7 @@ export function ProjectSprints({ projectId, sprints }: ProjectSprintsProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className="grow flex-col">
+    <div className="grow flex-col overflow-y-auto">
       <div className="p-2">
         <div className="ml-10 flex flex-row gap-3">
           <span className="flex items-center text-lg text-gray-700">
