@@ -47,6 +47,7 @@ export default function Login() {
     <form className="max-w-lg grow px-5" method="post">
       <Input
         color={error ? "danger" : "default"}
+        variant="faded"
         size="lg"
         type="email"
         label="Email"
@@ -56,6 +57,7 @@ export default function Login() {
       <Spacer y={5} />
       <Input
         color={error ? "danger" : "default"}
+        variant="faded"
         size="lg"
         type="password"
         label="Password"
