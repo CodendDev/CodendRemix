@@ -30,7 +30,7 @@ function BacklogLoading() {
         Backlog
         <span className="ml-1 font-normal text-gray-400">(loading...)</span>
       </div>
-      <div className="outl flex flex-col justify-between gap-1 rounded-lg outline-dashed outline-1 outline-offset-4 outline-gray-400">
+      <div className="flex flex-col justify-between gap-1 rounded-lg outline-dashed outline-1 outline-offset-4 outline-gray-400">
         <BacklogTaskLoading />
         <BacklogTaskLoading />
         <BacklogTaskLoading />
@@ -82,6 +82,11 @@ function AwaitedBacklog({ backlogTasks }: { backlogTasks: BacklogTaskType[] }) {
             setSelectedBacklogTaskId={setSelectedBacklogTaskId}
           />
         ))}
+        {backlogTasks.length === 0 && (
+          <div className="flex w-full justify-center self-center p-1 text-lg">
+            No tasks in project.
+          </div>
+        )}
       </div>
     </div>
   );

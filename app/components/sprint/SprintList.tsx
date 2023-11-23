@@ -101,7 +101,7 @@ export function AwaitedSprintList({
           ({sprints.length} sprints)
         </span>
       </div>
-      <div className="outl flex flex-col justify-between gap-1 rounded-lg outline-dashed outline-1 outline-offset-4 outline-gray-400">
+      <div className="flex min-h-0 min-w-[10rem] flex-shrink-0 flex-col justify-between gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
         {sprints.map((sprint) => (
           <Sprint
             showUpdateModal={handleUpdate}
@@ -111,6 +111,11 @@ export function AwaitedSprintList({
             projectId={projectId}
           />
         ))}
+        {sprints.length === 0 && (
+          <div className="flex w-full justify-center self-center p-1 text-lg">
+            No existing sprints.
+          </div>
+        )}
       </div>
       {getModal()}
     </div>
