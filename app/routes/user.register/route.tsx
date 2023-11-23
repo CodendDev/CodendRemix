@@ -15,7 +15,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     data.password === undefined ||
     data.confirmpassword === undefined ||
     data.firstname === undefined ||
-    data.lastname === undefined
+    data.lastname === undefined ||
+    data.imageUrl === undefined
   ) {
     return json({ errors: [] });
   }
@@ -84,6 +85,7 @@ export default function Register() {
     <form className="max-w-lg grow px-5" method="post">
       <Input
         color={emailError ? "danger" : "default"}
+        variant="faded"
         size="lg"
         type="email"
         label="Email"
@@ -93,41 +95,47 @@ export default function Register() {
         onChange={() => setEmailError(undefined)}
       />
       <Spacer y={5} />
-      <Input
-        size="lg"
-        type="text"
-        label="First name"
-        name="firstname"
-        isRequired={true}
-      />
+      <div className="flex w-full gap-5">
+        <Input
+          variant="faded"
+          size="lg"
+          type="text"
+          label="First name"
+          name="firstname"
+          isRequired={true}
+        />
+        <Input
+          variant="faded"
+          size="lg"
+          type="text"
+          label="Last name"
+          name="lastname"
+          isRequired={true}
+        />
+      </div>
       <Spacer y={5} />
-      <Input
-        size="lg"
-        type="text"
-        label="Last name"
-        name="lastname"
-        isRequired={true}
-      />
-      <Spacer y={5} />
-      <Input
-        color={passwordError ? "danger" : "default"}
-        size="lg"
-        type="password"
-        label="Password"
-        name="password"
-        isRequired={true}
-        errorMessage={passwordError}
-        onChange={() => setPasswordError(undefined)}
-      />
-      <Spacer y={5} />
-      <Input
-        color={passwordError ? "danger" : "default"}
-        size="lg"
-        type="password"
-        label="Confirm password"
-        name="confirmpassword"
-        isRequired={true}
-      />
+      <div className="flex w-full gap-5">
+        <Input
+          variant="faded"
+          color={passwordError ? "danger" : "default"}
+          size="lg"
+          type="password"
+          label="Password"
+          name="password"
+          isRequired={true}
+          errorMessage={passwordError}
+          onChange={() => setPasswordError(undefined)}
+        />
+        <Input
+          variant="faded"
+          color={passwordError ? "danger" : "default"}
+          size="lg"
+          type="password"
+          label="Confirm password"
+          name="confirmpassword"
+          isRequired={true}
+        />
+      </div>
       <Spacer y={5} />
       <div className="flex justify-end">
         <Button size="lg" color="primary" type="submit">
