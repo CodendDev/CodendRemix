@@ -5,7 +5,7 @@ import ProjectNavigationList, {
 import ProjectNavigationActionsList, {
   LoadingProjectNavigationActionsList,
 } from "~/components/projectNavigation/ProjectNavigationActionsList";
-import { Await, useLocation } from "@remix-run/react";
+import { Await, useParams } from "@remix-run/react";
 import React, { Suspense, useState } from "react";
 import ProjectNameDivider, {
   LoadingProjectNameDivider,
@@ -24,10 +24,7 @@ export const ProjectNavigationBarContext = React.createContext<{
 export function ProjectNavigationBar({
   projectsPromise,
 }: ProjectNavigationBarProps) {
-  const projectId = useLocation()
-    .pathname.toLowerCase()
-    .replace("/project/", "")
-    .slice(0, 36);
+  const projectId = useParams().projectId;
 
   return (
     <div className="flex flex-col">
@@ -72,7 +69,7 @@ function AwaitedProjectNavigationBar({
   projectId,
   projects,
 }: {
-  projectId: string;
+  projectId: string | undefined;
   projects: Project[];
 }) {
   const project = projects.find((p) => p.id === projectId);
@@ -85,12 +82,8 @@ function AwaitedProjectNavigationBar({
           projects={projects}
           selectedProjectId={projectId}
         />
-        {name && (
-          <>
-            <ProjectNameDivider name={name} />
-            <ProjectNavigationActionsList projectId={projectId} />{" "}
-          </>
-        )}
+        <ProjectNameDivider name={name} />
+        <ProjectNavigationActionsList projectId={projectId} />{" "}
       </ProjectNavigationBarContext.Provider>
     </div>
   );
