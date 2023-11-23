@@ -20,6 +20,7 @@ export default function BoardTaskSidebarCreate() {
       <CreateTaskSidebar
         emptyTask={emptyTask(params.statusId!)}
         actionRouteRoot={`/project/${params.projectId!}/board/${params.sprintId!}/${params.statusId!}`}
+        cancelRoute={`/project/${params.projectId!}/board/${params.sprintId!}`}
       />
       <Outlet />
     </>

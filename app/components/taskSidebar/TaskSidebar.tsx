@@ -7,10 +7,12 @@ import TaskDetails from "~/components/taskSidebar/TaskDetails";
 type TaskSidebarProps = {
   projectTaskPromise: Promise<ProjectTask>;
   actionRouteRoot: string;
+  cancelRoute?: string;
 };
 export function TaskSidebar({
   projectTaskPromise,
   actionRouteRoot,
+  cancelRoute = actionRouteRoot,
 }: TaskSidebarProps) {
   return (
     <Suspense fallback={<TaskSidebarLoading />}>
@@ -19,6 +21,7 @@ export function TaskSidebar({
           <AwaitedTaskSidebar
             task={projectTask}
             actionRouteRoot={actionRouteRoot}
+            cancelRoute={cancelRoute}
           />
         )}
       </Await>
@@ -50,9 +53,11 @@ export function TaskSidebarLoading() {
 function AwaitedTaskSidebar({
   task,
   actionRouteRoot,
+  cancelRoute,
 }: {
   task: ProjectTask;
   actionRouteRoot: string;
+  cancelRoute: string;
 }) {
   return (
     <div>
@@ -61,6 +66,7 @@ function AwaitedTaskSidebar({
           projectTask={task}
           formType="PUT"
           actionRouteRoot={actionRouteRoot}
+          cancelRoute={cancelRoute}
         />
       </div>
     </div>
