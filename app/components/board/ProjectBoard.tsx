@@ -109,7 +109,7 @@ function AwaitedBoardContainer({
       .sort((a, b) => a.position!.localeCompare(b.position!));
 
   return (
-    <div className="flex max-h-full w-full gap-6 overflow-x-auto scroll-smooth p-4">
+    <div className="flex h-full flex-row gap-6 p-4">
       {statuses
         .sort((a, b) => a.position!.localeCompare(b.position!))
         .map((status) => (

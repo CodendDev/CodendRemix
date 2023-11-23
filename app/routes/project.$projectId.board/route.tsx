@@ -38,7 +38,7 @@ export default function BoardPage() {
   const location = regExp.test(useLocation().pathname);
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex w-full grow flex-col overflow-x-clip">
       <BoardQueryContext.Provider
         value={{ query, setQuery, filter: queryFilterBoardTasks }}
       >
