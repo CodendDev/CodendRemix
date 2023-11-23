@@ -5,6 +5,7 @@ import { json } from "@remix-run/node";
 import { ApiErrors } from "~/api/types/apiErrorsTypes";
 import { useActionData } from "@remix-run/react";
 import { handleRegister } from "~/actions/handleRegister";
+import AvatarSelector from "~/components/avatarSelector/avatarSelector";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
@@ -41,6 +42,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     lastName: data.lastname.toString(),
     email: data.email.toString(),
     password: data.password.toString(),
+    imageUrl: data.imageUrl.toString(),
   });
 };
 
@@ -136,6 +138,8 @@ export default function Register() {
           isRequired={true}
         />
       </div>
+      <Spacer y={5} />
+      <AvatarSelector />
       <Spacer y={5} />
       <div className="flex justify-end">
         <Button size="lg" color="primary" type="submit">
