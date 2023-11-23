@@ -79,7 +79,7 @@ function AwaitedProjectNavigationBar({
   const [name, setName] = useState<string | undefined>(project?.name);
 
   return (
-    <div className="overflow-y-auto">
+    <div className="w-56 overflow-y-auto">
       <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
         <ProjectNavigationList
           projects={projects}

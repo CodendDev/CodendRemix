@@ -23,7 +23,7 @@ export function ProjectNavigationActionsList({
           key={name.toLowerCase()}
           onClick={() => navigate(`/project/${projectId}/${redirectUrl}`)}
           startContent={icon}
-          className="w-full min-w-[120px]"
+          className="w-full"
         >
           {name}
         </ListboxItem>

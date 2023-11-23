@@ -56,7 +56,7 @@ export default function ProjectPage() {
         <NavigationBar />
       </NavigationBarContext.Provider>
       <div
-        className={`flex border-r-1 border-emerald-700 transition-[margin] duration-300 ease-in-out ${
+        className={`flex border-r-1 border-emerald-700 transition-[margin] duration-300 ease-out ${
           isMenuOpen ? "" : "-ml-56 overflow-hidden"
         }`}
       >

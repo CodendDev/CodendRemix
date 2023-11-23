@@ -20,7 +20,6 @@ export function ProjectNavigationList({
       <AccordionItem
         key="Projects"
         aria-label="Projects"
-        className="min-w-[200px]"
         title={<ProjectNavigationListTitle />}
       >
         <ProjectList
