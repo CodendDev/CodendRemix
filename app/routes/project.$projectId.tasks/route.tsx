@@ -1,5 +1,5 @@
-import { Outlet, useLoaderData } from "@remix-run/react";
-import ProjectBoardSprintSelector from "~/components/board/ProjectBoardSprintSelector";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
+import ProjectBoardHeader from "~/components/board/ProjectBoardHeader";
 import React from "react";
 import { loader as BoardLoader } from "~/routes/project.$projectId.board/route";
 
@@ -11,13 +11,22 @@ export default function TasksPage() {
   // @ts-ignore
   const { sprintsPromise, projectId } = loaderData;
 
+  // 💀
+  const regExp = new RegExp(/.tasks$/g);
+  const location = regExp.test(useLocation().pathname);
+
   return (
     <div className="flex h-full w-full flex-col">
-      <ProjectBoardSprintSelector
+      <ProjectBoardHeader
         sprintsPromise={sprintsPromise}
         route={`/project/${projectId}/tasks`}
-        noSprintsComponent={<>Select sprint to see tasks assigned to you.</>}
+        filterable
       />
+      {location && (
+        <div className="flex h-full items-center justify-center">
+          <>Select sprint to see tasks assigned to you.</>
+        </div>
+      )}
       <Outlet />
     </div>
   );
