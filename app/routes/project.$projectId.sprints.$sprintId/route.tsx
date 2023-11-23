@@ -103,7 +103,7 @@ export default function SprintPage() {
   const { projectId, sprint, assignableTasks } = loaderData;
 
   return (
-    <div className="max-h-[calc(98vh-1em-4px)] grow overflow-y-auto border-l-1 border-emerald-700">
+    <div className="grow overflow-y-auto border-l-1 border-emerald-700">
       <SideSprint
         sprintPromise={sprint}
         projectId={projectId}

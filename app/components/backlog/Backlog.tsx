@@ -73,7 +73,7 @@ function AwaitedBacklog({ backlogTasks }: { backlogTasks: BacklogTaskType[] }) {
           </Button>
         </div>
       </div>
-      <div className="flex max-h-[calc(98vh-6rem)] min-h-0 min-w-[10rem] flex-shrink-0 flex-col justify-between gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
+      <div className="flex min-h-0 min-w-[10rem] flex-shrink-0 flex-col justify-between gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
         {backlogTasks.map((task) => (
           <BacklogTask
             key={task.id}
