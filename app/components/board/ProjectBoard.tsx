@@ -1,13 +1,18 @@
-import type { Dispatch, SetStateAction } from "react";
 import React, { createContext, Suspense, useContext, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+
+import { Await, useParams } from "@remix-run/react";
+import type { BoardTask } from "~/api/types/baseEntitiesTypes";
+
 import ProjectTaskStatusContainer, {
   ProjectTaskStatusContainerLoading,
 } from "~/components/board/ProjectTaskStatusContainer";
-import type { BoardTask } from "~/api/types/baseEntitiesTypes";
-import { Await, useParams } from "@remix-run/react";
+
 import { Button, Tooltip, useDisclosure } from "@nextui-org/react";
 import { AiOutlinePlus } from "react-icons/ai/index.js";
 import { EditStatusModal } from "~/components/projectTaskStatus/EditStatusModal";
+
+import { BoardQueryContext } from "~/components/board/ProjectBoardFilter";
 import { StatusesContext } from "~/routes/project.$projectId/route";
 
 export const DragItemTypes = {
@@ -96,13 +101,15 @@ function AwaitedBoardContainer({
   const statuses = useContext(StatusesContext);
   const projectId = useParams().projectId!;
 
+  const queryContext = useContext(BoardQueryContext);
+  const queriedTasks = queryContext.filter(queryContext, boardTasks);
   const tasksForStatus = (statusId: string): BoardTask[] =>
-    boardTasks
+    queriedTasks
       .filter((task) => task.statusId === statusId)
       .sort((a, b) => a.position!.localeCompare(b.position!));
 
   return (
-    <div className="flex max-h-full w-full gap-6 overflow-x-auto scroll-smooth p-4">
+    <div className="flex h-full flex-row gap-6 p-4">
       {statuses
         .sort((a, b) => a.position!.localeCompare(b.position!))
         .map((status) => (

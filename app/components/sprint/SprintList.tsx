@@ -50,17 +50,19 @@ export function AwaitedSprintList({
 }: SprintsResponse & {
   projectId: string;
 }) {
-  const [sprint, setSprint] = useState<APISprintProps | undefined>(undefined);
+  const [sprint, setSprint] = useState<
+    Omit<APISprintProps, "sprintTasks"> | undefined
+  >(undefined);
   const [action, setAction] = useState<"NONE" | "DELETE" | "UPDATE">("NONE");
   const deleteModal = useDisclosure();
   const updateModal = useDisclosure();
 
-  const handleDelete = (sprint: APISprintProps) => {
+  const handleDelete = (sprint: Omit<APISprintProps, "sprintTasks">) => {
     setSprint(sprint);
     setAction("DELETE");
     deleteModal.onOpen();
   };
-  const handleUpdate = (sprint: APISprintProps) => {
+  const handleUpdate = (sprint: Omit<APISprintProps, "sprintTasks">) => {
     setSprint(sprint);
     setAction("UPDATE");
     updateModal.onOpen();

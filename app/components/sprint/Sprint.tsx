@@ -10,10 +10,10 @@ import { useNavigate } from "@remix-run/react";
 import type { SprintStatus } from "~/api/types/sprintTypes";
 import { sprintStatusToColorClass } from "~/components/utils/TypeToColor";
 
-interface SprintProps extends APISprintProps {
+interface SprintProps extends Omit<APISprintProps, "sprintTasks"> {
   projectId: string;
-  showUpdateModal: (sprint: APISprintProps) => void;
-  showDeleteModal: (sprint: APISprintProps) => void;
+  showUpdateModal: (sprint: Omit<APISprintProps, "sprintTasks">) => void;
+  showDeleteModal: (sprint: Omit<APISprintProps, "sprintTasks">) => void;
 }
 export function Sprint(sprint: SprintProps) {
   const navigation = useNavigate();

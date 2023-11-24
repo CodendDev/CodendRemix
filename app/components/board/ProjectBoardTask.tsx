@@ -12,11 +12,7 @@ import {
   typeToGradientColor,
   typeToOutlineColor,
 } from "~/components/utils/TypeToColor";
-import {
-  DragItemTypes,
-  SelectedProjectBoardTaskContext,
-} from "~/components/board/ProjectBoard";
-import { useDrag } from "react-dnd";
+import { SelectedProjectBoardTaskContext } from "~/components/board/ProjectBoard";
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
@@ -37,23 +33,6 @@ export function ProjectBoardTask({
   const { selectedProjectBoardTaskId, setSelectedProjectBoardTaskId } =
     useContext(SelectedProjectBoardTaskContext);
 
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: DragItemTypes.Task,
-    item: {
-      id,
-      name,
-      statusId,
-      priority,
-      taskType,
-      assigneeAvatar,
-      relatedTaskId,
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-      didDrop: monitor.didDrop(),
-    }),
-  }));
-
   const handleClick = () => {
     setSelectedProjectBoardTaskId(id);
     if (location.pathname.toLowerCase().includes("board")) {
@@ -73,11 +52,6 @@ export function ProjectBoardTask({
       ? relatedTypeToGradientColor[taskType]
       : typeToGradientColor[taskType];
 
-  const miniTaskSelected: string =
-    selectedProjectBoardTaskId === id
-      ? `outline ${typeToOutlineColor[taskType]} -outline-offset-1 outline-1`
-      : "";
-
   const dropdownOptions: OptionsDropdownItem[] = [
     {
       label: "Assign to me",
@@ -86,12 +60,15 @@ export function ProjectBoardTask({
     deleteOption(() => {}),
   ];
 
+  const projectBoardTaskSelected: string =
+    selectedProjectBoardTaskId === id
+      ? `outline ${typeToOutlineColor[taskType]} outline-offset-0 outline-1`
+      : "";
+
   return (
     <div
-      ref={drag}
-      className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg 
-        ${!isDragging && miniTaskSelected} ${isDragging && "hidden"}`}
       onClick={handleClick}
+      className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg ${projectBoardTaskSelected}`}
     >
       <div
         className={`flex w-full justify-between rounded-lg px-3 py-2 ${gradientColor}`}

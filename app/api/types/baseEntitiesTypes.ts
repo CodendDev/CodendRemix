@@ -41,7 +41,7 @@ export interface Sprint {
   startDate: string;
   endDate: string;
   goal?: string;
-  sprintTasks: { tasks: BacklogTaskType[] };
+  sprintTasks: BacklogTaskType[];
 }
 
 /**

@@ -1,70 +1,77 @@
 import React, { Suspense, useEffect, useState } from "react";
+
 import type { Sprint } from "~/api/types/baseEntitiesTypes";
+
 import { Await, useNavigate, useParams } from "@remix-run/react";
+
 import type { Selection } from "@nextui-org/react";
 import { Select, SelectItem, Skeleton } from "@nextui-org/react";
-import { ProjectBoardLoading } from "~/components/board/ProjectBoard";
-type ProjectBoardSprintSelectorProps = {
+import ProjectBoardFilter from "~/components/board/ProjectBoardFilter";
+
+type ProjectBoardHeaderProps = {
   sprintsPromise: Promise<Sprint[]>;
-  noSprintsComponent: React.ReactElement;
   route: string;
+  filterable?: boolean;
 };
-export function ProjectBoardSprintSelector(
-  props: ProjectBoardSprintSelectorProps
-) {
+export function ProjectBoardHeader(props: ProjectBoardHeaderProps) {
   const { sprintsPromise } = props;
   return (
-    <div className="flex flex-col">
-      <Suspense fallback={<ProjectBoardSprintSelectorLoading />}>
-        <Await resolve={sprintsPromise}>
-          {(sprints) => (
-            <AwaitedProjectBoardSprintSelector {...props} sprints={sprints} />
-          )}
-        </Await>
-      </Suspense>
-    </div>
+    <Suspense fallback={<ProjectBoardHeaderLoading />}>
+      <Await resolve={sprintsPromise}>
+        {(sprints) => (
+          <AwaitedProjectBoardHeader {...props} sprints={sprints} />
+        )}
+      </Await>
+    </Suspense>
   );
 }
 
-export default ProjectBoardSprintSelector;
+export default ProjectBoardHeader;
 
-export function ProjectBoardSprintSelectorLoading() {
+export function ProjectBoardHeaderLoading() {
   return (
-    <div className="flex w-full flex-col">
-      <div className="flex p-4">
-        <Skeleton className="ml-5 h-14 w-96 rounded-lg" />
-      </div>
-      <div className="flex">
-        <ProjectBoardLoading />
-      </div>
+    <div className="mx-3 flex items-center p-2">
+      <Skeleton className="w-full rounded-lg">
+        <ProjectBoardFilter />
+      </Skeleton>
     </div>
   );
 }
 
-interface AwaitedProjectBoardSprintSelectorProps
-  extends ProjectBoardSprintSelectorProps {
+interface AwaitedProjectBoardHeaderProps extends ProjectBoardHeaderProps {
   sprints: Sprint[];
 }
-function AwaitedProjectBoardSprintSelector({
+function AwaitedProjectBoardHeader({
   sprints,
-  noSprintsComponent,
   route,
-}: AwaitedProjectBoardSprintSelectorProps) {
+  filterable = false,
+}: AwaitedProjectBoardHeaderProps) {
   const [selectedValues, setSelectedValues] = useState<Selection>(
     sprints.length > 0 ? new Set([sprints[0].id]) : new Set([])
   );
   const navigate = useNavigate();
   const routeSprintId = useParams().sprintId;
-  const getSelectedSprint = () => {
+  const selectedSprintId = (() => {
     const arr = Array.from(selectedValues);
     return arr.length > 0 ? arr[0].toString() : null;
+  })();
+
+  const getSprintDatesString = ({
+    startDate,
+    endDate,
+  }: {
+    startDate: string;
+    endDate: string;
+  }) => {
+    return `${new Date(startDate).toLocaleDateString()} ${new Date(
+      endDate
+    ).toLocaleDateString()}`;
   };
 
   useEffect(() => {
     if (!routeSprintId) {
-      const selectedSprint = getSelectedSprint();
-      if (selectedSprint) {
-        navigate(`${route}/${selectedSprint}`);
+      if (selectedSprintId) {
+        navigate(`${route}/${selectedSprintId}`);
       }
     }
   }, [selectedValues, routeSprintId]);
@@ -77,26 +84,30 @@ function AwaitedProjectBoardSprintSelector({
       : navigate(`${route}`);
   };
 
-  const noSprintSelected =
-    selectedValues[Symbol.iterator]().next().done === true;
-
   // @ts-ignore
   // noinspection RequiredAttributes
   return (
-    <>
-      <div className="ml-3 flex flex-row items-center justify-start gap-10 p-2">
+    <div className="mx-3 flex w-full items-center justify-between overflow-auto p-2">
+      <div className="w-2/5 min-w-[20rem]">
         <Select
           items={sprints}
-          size="sm"
           variant="flat"
           label="Selected sprint:"
           labelPlacement="outside-left"
           placeholder="No active sprints."
-          className="w-96"
           classNames={{
-            label: "w-40 self-center text-sm text-ellipsis whitespace-nowrap",
+            label: "self-center whitespace-nowrap",
           }}
           selectedKeys={selectedValues}
+          endContent={
+            selectedSprintId && (
+              <span className="text-sm text-gray-500">
+                {getSprintDatesString(
+                  sprints.find((s) => s.id === selectedSprintId)!
+                )}
+              </span>
+            )
+          }
           disabledKeys={new Set(["archived"])}
           onSelectionChange={handleSelectionChange}
         >
@@ -106,13 +117,12 @@ function AwaitedProjectBoardSprintSelector({
             </SelectItem>
           )}
         </Select>
-        {noSprintSelected && noSprintsComponent}
       </div>
-      {noSprintSelected && (
-        <div>
-          <ProjectBoardLoading isLoaded={true} />
+      {filterable && (
+        <div className="mx-5 flex w-3/5 min-w-[20rem]">
+          <ProjectBoardFilter />
         </div>
       )}
-    </>
+    </div>
   );
 }

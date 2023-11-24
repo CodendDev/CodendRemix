@@ -5,8 +5,6 @@ import React from "react";
 import ProjectBoardTask, {
   ProjectBoardTaskLoading,
 } from "~/components/board/ProjectBoardTask";
-import { useDrop } from "react-dnd";
-import { DragItemTypes } from "~/components/board/ProjectBoard";
 import type { BoardTask } from "~/api/types/baseEntitiesTypes";
 import { useLocation, useNavigate, useParams } from "@remix-run/react";
 import EditStatusModal from "~/components/projectTaskStatus/EditStatusModal";
@@ -33,16 +31,6 @@ export function ProjectTaskStatusContainer({
   const editStatusModal = useDisclosure();
   const deleteStatusModal = useDisclosure();
   const location = useLocation();
-  const [{ isOver }, drop] = useDrop(
-    () => ({
-      accept: DragItemTypes.Task,
-      drop: () => {},
-      collect: (monitor) => ({
-        isOver: monitor.isOver(),
-      }),
-    }),
-    [tasks]
-  );
   const projectId = location.pathname
     .toLowerCase()
     .replace("/project/", "")
@@ -50,7 +38,7 @@ export function ProjectTaskStatusContainer({
 
   return (
     <>
-      <div className="flex h-full w-full min-w-[15rem] flex-col">
+      <div className="flex w-[100em] min-w-[20em] flex-col px-2">
         <StatusContainerHeader
           statusId={statusId}
           name={name}
@@ -58,7 +46,7 @@ export function ProjectTaskStatusContainer({
           onDelete={deleteStatusModal.onOpen}
           editable={editable}
         />
-        <Card className="flex h-full w-full flex-col gap-4 bg-gray-100 px-4 py-6 shadow-none">
+        <Card className="flex h-full flex-col gap-4 overflow-y-auto bg-gray-100 p-3">
           {tasks
             .sort((a, b) => a.position.localeCompare(b.position))
             .map((task) => (
