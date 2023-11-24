@@ -29,7 +29,7 @@ export function ProjectNavigationBar({
   const projectId = useParams().projectId;
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full w-56 flex-col overflow-y-auto">
       <Suspense fallback={<LoadingProjectNavigationBar />}>
         <Await
           resolve={projectsPromise}
@@ -81,7 +81,7 @@ function AwaitedProjectNavigationBar({
   const submit = useSubmit();
 
   return (
-    <div className="flex h-full w-56 flex-col overflow-y-auto">
+    <>
       <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
         <ProjectNavigationList
           projects={projects}
@@ -112,7 +112,7 @@ function AwaitedProjectNavigationBar({
           </Button>
         </div>
       </ProjectNavigationBarContext.Provider>
-    </div>
+    </>
   );
 }
 

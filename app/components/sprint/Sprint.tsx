@@ -54,7 +54,7 @@ export function Sprint(sprint: SprintProps) {
         sprintStatus !== "Archived" &&
           navigation(`/project/${sprint.projectId}/sprints/${sprint.id}`);
       }}
-      className={`flex flex-row items-center bg-gray-100 p-1 pl-2 first:rounded-t-lg last:rounded-b-lg
+      className={`flex min-w-[20rem] flex-row items-center bg-gray-100 p-1 pl-2 first:rounded-t-lg last:rounded-b-lg
       ${
         sprintStatus !== "Archived"
           ? "hover:cursor-pointer hover:bg-gray-200"
@@ -62,11 +62,11 @@ export function Sprint(sprint: SprintProps) {
       }`}
     >
       <div
-        className={`min-w-[5rem] font-bold ${sprintStatusToColorClass[sprintStatus]}`}
+        className={`mx-2 font-bold ${sprintStatusToColorClass[sprintStatus]}`}
       >
         {sprintStatus}
       </div>
-      <div className="flex w-unit-xl min-w-[15rem] grow flex-row">
+      <div className="flex w-unit-xl grow flex-row">
         <div className="truncate">{name}</div>
       </div>
       {sprintStatus === "Active" ? (

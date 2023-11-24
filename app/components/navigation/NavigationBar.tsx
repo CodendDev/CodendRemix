@@ -14,7 +14,7 @@ export function NavigationBar() {
   const { isOpen, setIsOpen } = useContext(NavigationBarContext);
 
   return (
-    <div className="z-10 flex flex-col bg-emerald-800 p-3 shadow-[inset_-4px_0_4px] shadow-emerald-900">
+    <div className="z-50 flex flex-col bg-emerald-800 p-3 shadow-[inset_-4px_0_4px] shadow-emerald-900">
       {isOpen ? (
         <AiOutlineClose
           className="cursor-pointer text-lg text-white hover:text-gray-400"

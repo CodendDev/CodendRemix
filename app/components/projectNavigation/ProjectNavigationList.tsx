@@ -26,7 +26,7 @@ export function ProjectNavigationList({
     <>
       <Accordion
         variant="bordered"
-        defaultExpandedKeys={["Projects"]}
+        defaultExpandedKeys={projects.length > 0 ? ["Projects"] : []}
         className="rounded-none border-none text-center"
       >
         <AccordionItem
@@ -136,7 +136,7 @@ function ProjectListItem({
         setSelect();
         nameContext.setProjectName(name);
       }}
-      className={`not-first:border-t-1 not-first:border-gray-200 flex cursor-pointer p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100
+      className={`flex cursor-pointer p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 not-first:border-t-1 not-first:border-gray-200
       ${
         selected
           ? "outline outline-1 -outline-offset-1 outline-emerald-500"
