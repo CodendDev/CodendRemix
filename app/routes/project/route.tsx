@@ -9,11 +9,16 @@ import {
   NavigationBar,
   NavigationBarContext,
 } from "~/components/navigation/NavigationBar";
+import handleLogout from "~/actions/handleLogout";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   if (!token) {
     return redirect("/user/login");
+  }
+
+  if (request.method === "POST") {
+    return await handleLogout({ url: "/" });
   }
 
   if (request.method !== "PUT") {

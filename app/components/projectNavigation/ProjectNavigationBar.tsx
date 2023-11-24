@@ -5,7 +5,7 @@ import ProjectNavigationList, {
 import ProjectNavigationActionsList, {
   LoadingProjectNavigationActionsList,
 } from "~/components/projectNavigation/ProjectNavigationActionsList";
-import { Await, useNavigate, useParams } from "@remix-run/react";
+import { Await, useNavigate, useParams, useSubmit } from "@remix-run/react";
 import React, { Suspense, useState } from "react";
 import ProjectNameDivider, {
   LoadingProjectNameDivider,
@@ -78,6 +78,8 @@ function AwaitedProjectNavigationBar({
   const project = projects.find((p) => p.id === projectId);
   const [name, setName] = useState<string | undefined>(project?.name);
 
+  const submit = useSubmit();
+
   return (
     <div className="flex h-full w-56 flex-col overflow-y-auto">
       <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
@@ -104,7 +106,7 @@ function AwaitedProjectNavigationBar({
             fullWidth
             endContent={<LuLogOut />}
             className="text-md font-bold"
-            onPress={() => {}}
+            onPress={() => submit({}, { method: "POST" })}
           >
             Log Out
           </Button>
