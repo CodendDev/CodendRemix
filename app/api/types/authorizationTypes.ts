@@ -22,6 +22,7 @@ export interface RegisterRequest {
   password: string;
   firstName: string;
   lastName: string;
+  imageUrl: string;
 }
 
 export interface RegisterResponse extends LoginResponse {}
