@@ -7,36 +7,73 @@ import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDro
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 import { useNavigate } from "@remix-run/react";
+import type { SprintStatus } from "~/api/types/sprintTypes";
+import { sprintStatusToColorClass } from "~/components/utils/TypeToColor";
 
-interface SprintProps extends APISprintProps {
+interface SprintProps extends Omit<APISprintProps, "sprintTasks"> {
   projectId: string;
-  showUpdateModal: (sprint: APISprintProps) => void;
-  showDeleteModal: (sprint: APISprintProps) => void;
+  showUpdateModal: (sprint: Omit<APISprintProps, "sprintTasks">) => void;
+  showDeleteModal: (sprint: Omit<APISprintProps, "sprintTasks">) => void;
 }
 export function Sprint(sprint: SprintProps) {
+  const navigation = useNavigate();
   const { name, showDeleteModal, showUpdateModal } = sprint;
 
-  const dropdownOptions: OptionsDropdownItem[] = [
+  const dropdownOptionsArchived: OptionsDropdownItem[] = [
     {
       label: "Edit",
       onPress: () => showUpdateModal(sprint),
     },
     deleteOption(() => showDeleteModal(sprint)),
   ];
+  const dropdownOptionsActive: OptionsDropdownItem[] = [
+    {
+      label: "Go to board",
+      onPress: () =>
+        navigation(`/project/${sprint.projectId}/board/${sprint.id}`),
+    },
+    ...dropdownOptionsArchived,
+  ];
 
-  const navigation = useNavigate();
+  const sprintStatus = ((): SprintStatus => {
+    const now = new Date();
+    const start = new Date(sprint.startDate);
+    const end = new Date(sprint.endDate);
+    if (end < now) {
+      return "Archived";
+    } else if (start < now && now < end) {
+      return "Active";
+    } else {
+      return "Future";
+    }
+  })();
 
   return (
     <div
       onClick={() => {
-        navigation(`/project/${sprint.projectId}/board/${sprint.id}`);
+        sprintStatus !== "Archived" &&
+          navigation(`/project/${sprint.projectId}/sprints/${sprint.id}`);
       }}
-      className="flex flex-row items-center bg-gray-100 p-1 pl-2 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200"
+      className={`flex flex-row items-center bg-gray-100 p-1 pl-2 first:rounded-t-lg last:rounded-b-lg
+      ${
+        sprintStatus !== "Archived"
+          ? "hover:cursor-pointer hover:bg-gray-200"
+          : "text-gray-400"
+      }`}
     >
+      <div
+        className={`min-w-[5rem] font-bold ${sprintStatusToColorClass[sprintStatus]}`}
+      >
+        {sprintStatus}
+      </div>
       <div className="flex w-unit-xl min-w-[15rem] grow flex-row">
         <div className="truncate">{name}</div>
       </div>
-      <OptionsDropdown options={dropdownOptions} />
+      {sprintStatus === "Active" ? (
+        <OptionsDropdown options={dropdownOptionsActive} />
+      ) : (
+        <OptionsDropdown options={dropdownOptionsArchived} />
+      )}
     </div>
   );
 }

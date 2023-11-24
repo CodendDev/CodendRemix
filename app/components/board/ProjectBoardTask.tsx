@@ -12,14 +12,11 @@ import {
   typeToGradientColor,
   typeToOutlineColor,
 } from "~/components/utils/TypeToColor";
-import {
-  DragItemTypes,
-  SelectedProjectBoardTaskContext,
-} from "~/components/board/ProjectBoard";
-import { useDrag } from "react-dnd";
+import { SelectedProjectBoardTaskContext } from "~/components/board/ProjectBoard";
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
+import { useLocation, useNavigate, useParams } from "@remix-run/react";
 
 export function ProjectBoardTask({
   id,
@@ -30,28 +27,23 @@ export function ProjectBoardTask({
   assigneeAvatar,
   relatedTaskId,
 }: BoardTask) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = useParams();
   const { selectedProjectBoardTaskId, setSelectedProjectBoardTaskId } =
     useContext(SelectedProjectBoardTaskContext);
 
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: DragItemTypes.Task,
-    item: {
-      id,
-      name,
-      statusId,
-      priority,
-      taskType,
-      assigneeAvatar,
-      relatedTaskId,
-    },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-      didDrop: monitor.didDrop(),
-    }),
-  }));
-
   const handleClick = () => {
     setSelectedProjectBoardTaskId(id);
+    if (location.pathname.toLowerCase().includes("board")) {
+      navigate(
+        `/project/${params.projectId!}/board/${params.sprintId!}/${id}/${taskType.toLowerCase()}`
+      );
+    } else {
+      navigate(
+        `/project/${params.projectId!}/tasks/${params.sprintId!}/${id}/${taskType.toLowerCase()}`
+      );
+    }
   };
   const type = taskType !== "Base" && taskType;
 
@@ -59,11 +51,6 @@ export function ProjectBoardTask({
     relatedTaskId !== null && relatedTaskId === selectedProjectBoardTaskId
       ? relatedTypeToGradientColor[taskType]
       : typeToGradientColor[taskType];
-
-  const miniTaskSelected: string =
-    selectedProjectBoardTaskId === id
-      ? `outline ${typeToOutlineColor[taskType]} -outline-offset-1 outline-1`
-      : "";
 
   const dropdownOptions: OptionsDropdownItem[] = [
     {
@@ -73,15 +60,18 @@ export function ProjectBoardTask({
     deleteOption(() => {}),
   ];
 
+  const projectBoardTaskSelected: string =
+    selectedProjectBoardTaskId === id
+      ? `outline ${typeToOutlineColor[taskType]} outline-offset-0 outline-1`
+      : "";
+
   return (
     <div
-      ref={drag}
-      className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg 
-        ${!isDragging && miniTaskSelected} ${isDragging && "hidden"}`}
       onClick={handleClick}
+      className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg ${projectBoardTaskSelected}`}
     >
       <div
-        className={`flex w-full justify-between rounded-lg px-5 py-3 ${gradientColor}`}
+        className={`flex w-full justify-between rounded-lg px-3 py-2 ${gradientColor}`}
       >
         <div>
           <div className="flex">
@@ -99,7 +89,7 @@ export function ProjectBoardTask({
           {assigneeAvatar && (
             <>
               <div className="flex justify-center ">
-                <Avatar src={assigneeAvatar} />
+                <Avatar src={assigneeAvatar} size="sm" />
               </div>
             </>
           )}
@@ -128,14 +118,14 @@ export function ProjectBoardTaskLoading({
 
 function ProjectBoardTaskType({ type }: { type: TaskType }) {
   const colorClass = taskTypeToColorClass[type];
-  return <div className={`${colorClass} font-semibold underline`}>{type}</div>;
+  return <div className={`${colorClass} font-bold underline`}>{type}</div>;
 }
 
 function ProjectBoardTaskPriority({ priority }: { priority: Priority }) {
   const colorClass = priorityToColorClass[priority];
 
   return (
-    <div className={`${colorClass} font-semibold`}>
+    <div className={`${colorClass} font-bold`}>
       {priority.replace(/Very/, "Very ")}
     </div>
   );

@@ -1,6 +1,5 @@
 import React from "react";
 
-import { Outlet } from "@remix-run/react";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { GiSprint } from "~/components/projectNavigation/icons";
 import { CreateSprintModal } from "~/components/sprint/SprintFormModals";
@@ -15,7 +14,7 @@ export function ProjectSprints({ projectId, sprints }: ProjectSprintsProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className="grow flex-col">
+    <div className="grow flex-col overflow-y-auto">
       <div className="p-2">
         <div className="ml-10 flex flex-row gap-3">
           <span className="flex items-center text-lg text-gray-700">
@@ -40,7 +39,6 @@ export function ProjectSprints({ projectId, sprints }: ProjectSprintsProps) {
       <div>
         <SprintList projectId={projectId} sprintsPromise={sprints} />
       </div>
-      <Outlet />
     </div>
   );
 }

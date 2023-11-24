@@ -3,7 +3,7 @@ import { GiSprint } from "~/components/projectNavigation/icons";
 import React from "react";
 
 export const CreateSprintTip = ({ projectId }: { projectId: string }) => (
-  <div className="flex flex-row gap-3">
+  <div className="flex flex-col gap-3">
     <span className="flex items-center text-lg text-gray-700">
       No active sprints? Create a new one now!
     </span>

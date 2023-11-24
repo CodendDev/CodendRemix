@@ -1,19 +1,21 @@
 import React, { Suspense, useState } from "react";
-import type { BacklogType } from "~/api/types/baseEntitiesTypes";
-import { Await } from "@remix-run/react";
+import type { BacklogTaskType } from "~/api/types/baseEntitiesTypes";
+import { Await, useNavigate, useParams } from "@remix-run/react";
 import BacklogTask, {
   BacklogTaskLoading,
 } from "~/components/backlog/BacklogTask";
+import { MdAddCircleOutline } from "react-icons/md/index.js";
+import { Button } from "@nextui-org/react";
 
 type BacklogProps = {
-  backlogPromise: Promise<BacklogType>;
+  backlogTasksPromise: Promise<BacklogTaskType[]>;
 };
 
-export function Backlog({ backlogPromise }: BacklogProps) {
+export function Backlog({ backlogTasksPromise }: BacklogProps) {
   return (
     <Suspense fallback={<BacklogLoading />}>
-      <Await resolve={backlogPromise}>
-        {(backlog) => AwaitedBacklog({ backlog })}
+      <Await resolve={backlogTasksPromise}>
+        {(backlog) => AwaitedBacklog({ backlogTasks: backlog })}
       </Await>
     </Suspense>
   );
@@ -39,21 +41,40 @@ function BacklogLoading() {
   );
 }
 
-function AwaitedBacklog({ backlog }: { backlog: BacklogType }) {
+function AwaitedBacklog({ backlogTasks }: { backlogTasks: BacklogTaskType[] }) {
   const [selectedBacklogTaskId, setSelectedBacklogTaskId] = useState<
     string | undefined
   >(undefined);
+  const navigate = useNavigate();
+  const params = useParams();
+
+  const handlePress = () => {
+    navigate(`/project/${params.projectId!}/backlog/create`);
+  };
 
   return (
-    <div className="w-full flex-grow">
-      <div className="px-6 pb-2 font-bold text-gray-700">
-        Backlog
-        <span className="ml-1 font-normal text-gray-400">
-          ({backlog.tasks.length} tasks)
-        </span>
+    <div className="w-full overflow-x-auto px-6 py-1">
+      <div className="flex w-full flex-row gap-1">
+        <div className="py-2 pl-6 font-bold text-gray-700">
+          Backlog
+          <span className="ml-1 font-normal text-gray-400">
+            ({backlogTasks.length} tasks)
+          </span>
+        </div>
+        <div className="flex items-center">
+          <Button
+            isIconOnly
+            radius="full"
+            size="sm"
+            variant="light"
+            onPress={handlePress}
+          >
+            <MdAddCircleOutline className="text-2xl text-primary-500" />
+          </Button>
+        </div>
       </div>
-      <div className="flex max-h-[calc(100vh-6rem)] min-h-0 min-w-[10rem] flex-shrink-0 flex-col justify-between gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
-        {backlog.tasks.map((task) => (
+      <div className="flex min-h-0 min-w-[10rem] flex-shrink-0 flex-col justify-between gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
+        {backlogTasks.map((task) => (
           <BacklogTask
             key={task.id}
             {...task}

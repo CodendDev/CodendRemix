@@ -2,13 +2,14 @@ import type {
   PagedProjectRequest,
   ProjectBacklogRequest,
   ProjectBoardRequest,
-  ProjectBoardResponse,
   ProjectRequest,
   ProjectActiveSprintsRequest,
+  isFavouriteProjectRequest,
 } from "~/api/types/projectTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 import type {
-  BacklogType,
+  BacklogTaskType,
+  BoardTask,
   PagedResponse,
   Project,
   Sprint,
@@ -20,7 +21,7 @@ export async function getBoard({
   sprintId,
   token,
   assigneeId,
-}: ProjectBoardRequest): Promise<ProjectBoardResponse | undefined> {
+}: ProjectBoardRequest): Promise<BoardTask[] | undefined> {
   const axios = getAxiosInstance(token);
 
   try {
@@ -28,7 +29,7 @@ export async function getBoard({
       `/api/projects/${projectId}/board/${sprintId}
       ${assigneeId ? `?assigneeId=${assigneeId}` : ""}`
     );
-    return { board: response.data };
+    return response.data.tasks;
   } catch (err) {
     return undefined;
   }
@@ -91,12 +92,12 @@ export async function getActiveSprints({
 export async function getBacklog({
   projectId,
   token,
-}: ProjectBacklogRequest): Promise<BacklogType | undefined> {
+}: ProjectBacklogRequest): Promise<BacklogTaskType[] | undefined> {
   const axios = getAxiosInstance(token);
 
   try {
     const response = await axios.get(`/api/projects/${projectId}/backlog`);
-    return response.data;
+    return response.data.tasks;
   } catch (err) {
     return undefined;
   }
@@ -110,6 +111,23 @@ export async function getMembers({
 
   try {
     const response = await axios.get(`/api/projects/${projectId}/members`);
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function setIsFavourite({
+  projectId,
+  token,
+  isFavourite,
+}: isFavouriteProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.put(`/api/projects/${projectId}/favourite`, {
+      isFavourite,
+    });
     return response.data;
   } catch (err) {
     return undefined;

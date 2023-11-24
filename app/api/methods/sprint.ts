@@ -4,6 +4,8 @@ import type {
   CreateSprintRequest,
   DeleteSprintRequest,
   UpdateSprintRequest,
+  SprintRequest,
+  SprintAssignTasksRequest,
 } from "~/api/types/sprintTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 
@@ -16,6 +18,36 @@ export async function getSprints({
   try {
     const response = await axios.get(`/api/projects/${projectId}/sprints`);
     return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getSprint({ sprintId, projectId, token }: SprintRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(
+      `/api/projects/${projectId}/sprints/${sprintId}`
+    );
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function getAssignableToSprintTasks({
+  sprintId,
+  projectId,
+  token,
+}: SprintRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get(
+      `/api/projects/${projectId}/sprints/${sprintId}/assignable`
+    );
+    return response.data.tasks;
   } catch (err) {
     return undefined;
   }
@@ -73,6 +105,58 @@ export async function updateSprint(request: UpdateSprintRequest) {
     const response = await axios.put(
       `/api/projects/${projectId}/sprints/${sprintId}`,
       apiRequest
+    );
+    return response.data;
+  } catch (err) {
+    return getApiErrorsFromError(err);
+  }
+}
+
+export async function sprintRemoveTasks({
+  token,
+  projectId,
+  sprintId,
+  tasks,
+}: SprintAssignTasksRequest) {
+  const axios = getAxiosInstance(token);
+
+  const body = tasks
+    .filter(({ state }) => state === "DELETED")
+    .map(({ id, taskType }) => ({
+      id,
+      type: taskType,
+    }));
+
+  try {
+    const response = await axios.post(
+      `/api/projects/${projectId}/sprints/${sprintId}/tasks/delete`,
+      { tasks: body }
+    );
+    return response.data;
+  } catch (err) {
+    return getApiErrorsFromError(err);
+  }
+}
+
+export async function sprintAssignTasks({
+  token,
+  projectId,
+  sprintId,
+  tasks,
+}: SprintAssignTasksRequest) {
+  const axios = getAxiosInstance(token);
+
+  const body = tasks
+    .filter(({ state }) => state === "NEW")
+    .map(({ id, taskType }) => ({
+      id,
+      type: taskType,
+    }));
+
+  try {
+    const response = await axios.post(
+      `/api/projects/${projectId}/sprints/${sprintId}/tasks/assign`,
+      { tasks: body }
     );
     return response.data;
   } catch (err) {

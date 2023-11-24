@@ -2,7 +2,7 @@ import { Avatar, Select, SelectItem, Skeleton } from "@nextui-org/react";
 import { BsFillClipboardDataFill } from "react-icons/bs/index.js";
 import React, { Suspense } from "react";
 import {
-  BacklogType,
+  MinimalProjectTask,
   Priority,
   ProjectTaskStatus,
   TaskType,
@@ -17,6 +17,53 @@ import { useOutletContext } from "react-router";
 import { TbSubtask } from "react-icons/tb/index.js";
 import { Await } from "@remix-run/react";
 import { CustomInputProps } from "~/components/taskSidebar/TaskDetailsInputs";
+
+const taskTypeList: TaskType[] = ["Base", "Bugfix", "Story", "Epic"];
+
+interface TaskTypeInputProps
+  extends Omit<CustomInputProps<string>, "handleInputChange"> {}
+
+export function TaskTypeInput({
+  name,
+  value,
+  label,
+  handleSelectChange,
+  propPack,
+}: TaskTypeInputProps) {
+  return (
+    <div>
+      <Select
+        required
+        name={name}
+        value={value}
+        onChange={handleSelectChange}
+        aria-label={label}
+        placeholder="Select type"
+        disallowEmptySelection={true}
+        isInvalid={!value}
+        errorMessage={!value && "Type is required"}
+        selectedKeys={value ? [value] : []}
+        {...propPack}
+        size="lg"
+        className={`min-w-[7rem] ${
+          value ? taskTypeToColorClass[value as unknown as TaskType] : ""
+        }`}
+        radius="full"
+        variant="faded"
+      >
+        {taskTypeList.map((taskType) => (
+          <SelectItem
+            key={taskType}
+            value={taskType}
+            className={taskTypeToColorClass[taskType]}
+          >
+            {taskType}
+          </SelectItem>
+        ))}
+      </Select>
+    </div>
+  );
+}
 
 interface StatusInputProps
   extends Omit<CustomInputProps<string>, "handleInputChange"> {
@@ -35,12 +82,12 @@ export function StatusInput({
     <div className="flex-grow">
       <Select
         required
-        unselectable="off"
         name={name}
         value={value}
         onChange={handleSelectChange}
         aria-label={label}
         placeholder="Select status"
+        disallowEmptySelection={true}
         isInvalid={!value}
         errorMessage={!value && "Status is required"}
         items={statuses}
@@ -79,6 +126,7 @@ export function PriorityInput({
         onChange={handleSelectChange}
         label={label}
         placeholder={"Select priority"}
+        disallowEmptySelection={true}
         isInvalid={!value}
         errorMessage={!value && "Status is required"}
         selectedKeys={value ? [value] : []}
@@ -120,7 +168,7 @@ export function AssigneeInput({
     <div>
       <Select
         name={name}
-        value={value ?? ""}
+        value={value}
         onChange={handleSelectChange}
         label={label}
         items={projectMembers}
@@ -135,6 +183,10 @@ export function AssigneeInput({
           />
         }
         {...propPack}
+        classNames={{
+          label: "min-w-unit-24",
+          mainWrapper: "min-w-[14rem]",
+        }}
       >
         {(member) => (
           <SelectItem
@@ -170,7 +222,7 @@ export function RelatedTaskInput({
   propPack,
   taskType,
 }: RelatedTaskInputProps) {
-  const backlogPromise: Promise<BacklogType> = useOutletContext();
+  const tasksPromise: Promise<MinimalProjectTask[]> = useOutletContext();
   return (
     <div>
       <Suspense
@@ -193,10 +245,10 @@ export function RelatedTaskInput({
           </Select>
         }
       >
-        <Await resolve={backlogPromise}>
-          {(backlog) => (
+        <Await resolve={tasksPromise}>
+          {(tasks) => (
             <AwaitedRelatedTaskInput
-              backlog={backlog}
+              tasks={tasks}
               name={name}
               value={value}
               handleSelectChange={handleSelectChange}
@@ -212,7 +264,7 @@ export function RelatedTaskInput({
 }
 
 interface AwaitedRelatedTaskInputProps extends RelatedTaskInputProps {
-  backlog: BacklogType;
+  tasks: MinimalProjectTask[];
 }
 
 function AwaitedRelatedTaskInput({
@@ -222,13 +274,13 @@ function AwaitedRelatedTaskInput({
   label,
   propPack,
   taskType,
-  backlog,
+  tasks,
 }: AwaitedRelatedTaskInputProps) {
   const getTasksAccordingToType = () => {
     if (taskType === "Story") {
-      return backlog.tasks.filter((task) => task.taskType === "Epic");
+      return tasks.filter((task) => task.taskType === "Epic");
     }
-    return backlog.tasks.filter((task) => task.taskType === "Story");
+    return tasks.filter((task) => task.taskType === "Story");
   };
 
   return (
@@ -243,7 +295,7 @@ function AwaitedRelatedTaskInput({
       startContent={
         <>
           <TbSubtask />
-          {value && <TaskTypeWithColor taskId={value} backlog={backlog} />}
+          {value && <TaskTypeWithColor taskId={value} tasks={tasks} />}
         </>
       }
       {...propPack}
@@ -268,12 +320,12 @@ function AwaitedRelatedTaskInput({
 
 function TaskTypeWithColor({
   taskId,
-  backlog,
+  tasks,
 }: {
   taskId: string;
-  backlog: BacklogType;
+  tasks: MinimalProjectTask[];
 }) {
-  const task = backlog.tasks.find((task) => task.id === taskId)!;
+  const task = tasks.find((task) => task.id === taskId)!;
   return (
     <span
       className={`text-sm ${

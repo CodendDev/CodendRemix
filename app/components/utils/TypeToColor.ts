@@ -1,4 +1,5 @@
 import { Priority, TaskType } from "~/api/types/baseEntitiesTypes";
+import { SprintStatus } from "~/api/types/sprintTypes";
 
 export const typeToGradientColor: Record<TaskType, string> = {
   Base: "",
@@ -34,4 +35,10 @@ export const priorityToColorClass: Record<Priority, string> = {
   Normal: "text-yellow-500",
   Low: "text-sky-500",
   VeryLow: "text-blue-500",
+};
+
+export const sprintStatusToColorClass: Record<SprintStatus, string> = {
+  Archived: "text-gray-400",
+  Active: "text-primary-500",
+  Future: "text-cyan-500",
 };

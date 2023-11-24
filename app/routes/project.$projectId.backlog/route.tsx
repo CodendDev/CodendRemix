@@ -7,12 +7,13 @@ import Backlog from "~/components/backlog/Backlog";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
+  const projectId = params.projectId!;
   if (!token) {
     return redirect("/user/login");
   }
   const backlogPromise = getBacklog({
-    projectId: params.projectId!,
-    token: token!,
+    projectId: projectId,
+    token,
   });
 
   return defer({ backlogPromise });
@@ -24,11 +25,9 @@ export default function BacklogPage() {
   const { backlogPromise } = loaderData;
 
   return (
-    <>
-      <div className="flex w-full flex-row gap-6 px-6 py-6">
-        <Backlog backlogPromise={backlogPromise} />
-      </div>
+    <div className="flex w-full flex-shrink overflow-x-auto">
+      <Backlog backlogTasksPromise={backlogPromise} />
       <Outlet context={backlogPromise} />
-    </>
+    </div>
   );
 }

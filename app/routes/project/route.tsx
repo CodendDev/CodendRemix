@@ -4,9 +4,31 @@ import ProjectNavigationBar from "~/components/projectNavigation/ProjectNavigati
 import getToken from "~/actions/getToken";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { defer, redirect } from "@remix-run/node";
-import { getPagedProjects } from "~/api/methods/project";
-import { RxRows } from "react-icons/rx/index.js";
-import { AiOutlineClose } from "react-icons/ai/index.js";
+import { getPagedProjects, setIsFavourite } from "~/api/methods/project";
+import {
+  NavigationBar,
+  NavigationBarContext,
+} from "~/components/navigation/NavigationBar";
+
+export const action = async ({ request }: LoaderFunctionArgs) => {
+  const token = await getToken(request);
+  if (!token) {
+    return redirect("/user/login");
+  }
+
+  if (request.method !== "PUT") {
+    return undefined;
+  }
+
+  const formData = Object.fromEntries(await request.formData());
+  await setIsFavourite({
+    projectId: formData.projectId.toString(),
+    isFavourite: formData.isFavourite.toString() === "true",
+    token,
+  });
+
+  return redirect(formData.location.toString());
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -27,31 +49,20 @@ export default function ProjectPage() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(true);
 
   return (
-    <div className="flex h-full flex-col">
-      <div>
-        <div
-          className="flex basis-10 flex-col bg-emerald-800 p-3 shadow-sm shadow-emerald-700"
-          onClick={() => setIsMenuOpen((prev) => !prev)}
-        >
-          {isMenuOpen ? (
-            <AiOutlineClose className="text-gray-300" />
-          ) : (
-            <RxRows className="text-gray-300" />
-          )}
-        </div>
+    <div className="flex h-full grow flex-row">
+      <NavigationBarContext.Provider
+        value={{ isOpen: isMenuOpen, setIsOpen: setIsMenuOpen }}
+      >
+        <NavigationBar />
+      </NavigationBarContext.Provider>
+      <div
+        className={`flex border-r-1 border-emerald-700 transition-[margin] duration-300 ease-in-out ${
+          isMenuOpen ? "" : "-ml-56 overflow-hidden"
+        }`}
+      >
+        <ProjectNavigationBar projectsPromise={projects} />
       </div>
-      <div className="flex h-full flex-row">
-        <div
-          className={`flex flex-shrink-0 flex-grow-0 basis-56 border-r-1 border-emerald-700 transition-[margin] duration-300 ease-in-out ${
-            isMenuOpen ? "" : "-ml-56 overflow-hidden"
-          }`}
-        >
-          <ProjectNavigationBar projectsPromise={projects} />
-        </div>
-        <div className="flex h-full w-full min-w-0 flex-shrink flex-grow">
-          <Outlet />
-        </div>
-      </div>
+      <Outlet />
     </div>
   );
 }

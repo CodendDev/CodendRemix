@@ -1,23 +1,16 @@
-import {
-  ProjectTask,
-  ProjectTaskStatus,
-  UserDetails,
-} from "~/api/types/baseEntitiesTypes";
+import { ProjectTask } from "~/api/types/baseEntitiesTypes";
 import { Suspense } from "react";
 import { Await } from "@remix-run/react";
 import { Skeleton } from "@nextui-org/react";
 import TaskDetails from "~/components/taskSidebar/TaskDetails";
-import { ProjectTaskStatusesResponse } from "~/api/types/projectTaskStatusesTypes";
 
 type TaskSidebarProps = {
   projectTaskPromise: Promise<ProjectTask>;
-  projectTaskStatusesResponse: ProjectTaskStatusesResponse;
-  projectMembers: UserDetails[];
+  actionRouteRoot: string;
 };
 export function TaskSidebar({
   projectTaskPromise,
-  projectTaskStatusesResponse,
-  projectMembers,
+  actionRouteRoot,
 }: TaskSidebarProps) {
   return (
     <Suspense fallback={<TaskSidebarLoading />}>
@@ -25,8 +18,7 @@ export function TaskSidebar({
         {(projectTask) => (
           <AwaitedTaskSidebar
             task={projectTask}
-            statuses={projectTaskStatusesResponse.projectTaskStatuses}
-            projectMembers={projectMembers}
+            actionRouteRoot={actionRouteRoot}
           />
         )}
       </Await>
@@ -38,7 +30,7 @@ export default TaskSidebar;
 
 export function TaskSidebarLoading() {
   return (
-    <div className="flex h-full w-[40rem] flex-col gap-3 px-4 py-3">
+    <div className="flex h-full w-[15rem] flex-col gap-3 px-4 py-3 md:w-[25rem] xl:w-[30rem] 2xl:w-[35rem]">
       <div className="flex flex-row gap-3">
         <Skeleton className="h-12 w-36 rounded-lg" />
         <Skeleton className="h-12 w-full rounded-lg" />
@@ -57,21 +49,20 @@ export function TaskSidebarLoading() {
 
 function AwaitedTaskSidebar({
   task,
-  statuses,
-  projectMembers,
+  actionRouteRoot,
 }: {
   task: ProjectTask;
-  statuses: ProjectTaskStatus[];
-  projectMembers: UserDetails[];
+  actionRouteRoot: string;
 }) {
   return (
-    <div className="w-min-[25rem] flex h-full w-[40rem] flex-col overflow-x-auto border-l-1 border-emerald-700">
-      <TaskDetails
-        projectTask={task}
-        statuses={statuses}
-        projectMembers={projectMembers}
-        formType="PUT"
-      />
+    <div>
+      <div className="flex h-full w-[15rem] flex-col overflow-x-auto border-l-1 border-emerald-700 md:w-[25rem] xl:w-[30rem] 2xl:w-[35rem]">
+        <TaskDetails
+          projectTask={task}
+          formType="PUT"
+          actionRouteRoot={actionRouteRoot}
+        />
+      </div>
     </div>
   );
 }

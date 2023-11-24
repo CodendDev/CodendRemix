@@ -8,8 +8,15 @@ export const handleRegister = async ({
   lastName,
   email,
   password,
+  imageUrl,
 }: RegisterRequest) => {
-  const response = await register({ firstName, lastName, email, password });
+  const response = await register({
+    firstName,
+    lastName,
+    email,
+    password,
+    imageUrl,
+  });
 
   if (!response || response?.errors) {
     return json({ errors: response?.errors ?? [] });

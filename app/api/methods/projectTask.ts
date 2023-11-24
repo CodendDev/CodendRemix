@@ -97,11 +97,15 @@ export async function createProjectTask(request: CreateProjectTaskRequest) {
     priority: request.priority,
     statusId: request.statusId,
     description: request.description,
-    dueDate: `${request.dueDate}T23:59:00.000Z`,
+    dueDate:
+      request.dueDate?.length === 0
+        ? undefined
+        : `${request.dueDate}T23:59:00.000Z`,
     storyPoints: request.storyPoints,
     estimatedTime: request.estimatedTime,
     assigneeId: request.assigneeId,
     storyId: request.storyId,
+    sprintId: request.sprintId,
   };
 
   try {

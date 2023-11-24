@@ -1,7 +1,3 @@
-//
-// Base entities
-//
-
 import type { WithErrorsResponse } from "~/api/types/authorizationTypes";
 
 /**
@@ -12,6 +8,7 @@ export interface Project {
   name: string;
   description?: string;
   ownerId: string;
+  isFavourite: boolean;
 }
 
 /**
@@ -36,37 +33,25 @@ export interface Story {
 }
 
 /**
- * Represents baseProjectTask entity.
+ * Represents Sprint entity.
  */
-export interface BaseProjectTask {
+export interface Sprint {
   id: string;
-  taskType: TaskType;
   name: string;
-  priority: Priority;
-  statusId: string;
-  description?: string;
-  dueDate?: string;
-  estimatedTime?: EstimatedTime;
-  storyPoints?: number;
-  assigneeId?: string;
-  storyId?: string;
+  startDate: string;
+  endDate: string;
+  goal?: string;
+  sprintTasks: BacklogTaskType[];
 }
 
 /**
- * Represents bugfixProjectTask entity.
+ * Represents Sprint assignable task
  */
-export interface BugfixProjectTask {
+export interface SprintAssignableTask {
   id: string;
-  taskType: TaskType;
   name: string;
-  priority: Priority;
-  statusId: string;
-  description?: string;
-  dueDate?: string;
-  estimatedTime?: EstimatedTime;
-  storyPoints?: number;
-  assigneeId?: string;
-  storyId?: string;
+  taskType: TaskType;
+  statusName: string;
 }
 
 /**
@@ -89,62 +74,16 @@ export interface UserDetails {
   imageUrl: string;
 }
 
-//
-// Board entities
-//
-
-/**
- * Represents board entity.
- */
-export interface Board {
-  tasks: BoardTask[];
-}
-
-/**
- * Represents boardProjectTask entity.
- */
-export interface BoardTask {
-  id: string;
-  taskType: TaskType;
-  name: string;
-  statusId: string;
-  relatedTaskId: string;
-  priority: Priority;
-  assigneeAvatar: string;
-  position: string;
-}
-
-export interface Sprint {
-  id: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  goal?: string;
-}
-
-/**
- * Represents backlogTask entity.
- */
-export interface BacklogTaskType {
+export interface MinimalProjectTask {
   id: string;
   name: string;
   taskType: TaskType;
-  statusName: string;
-  assigneeAvatar?: string;
-  createdOn: Date;
 }
 
 /**
- * Represents backlog entity.
+ * Represents ProjectTask
  */
-export interface BacklogType {
-  tasks: BacklogTaskType[];
-}
-
-export interface ProjectTask {
-  id: string;
-  taskType?: TaskType;
-  name: string;
+export interface ProjectTask extends MinimalProjectTask {
   priority?: Priority;
   statusId: string;
   description?: string;
@@ -154,6 +93,26 @@ export interface ProjectTask {
   assigneeId?: string;
   storyId?: string;
   epicId?: string;
+}
+
+/**
+ * Represents boardProjectTask entity.
+ */
+export interface BoardTask extends MinimalProjectTask {
+  statusId: string;
+  relatedTaskId: string;
+  priority: Priority;
+  assigneeAvatar: string;
+  position: string;
+}
+
+/**
+ * Represents backlogTask entity.
+ */
+export interface BacklogTaskType extends MinimalProjectTask {
+  statusName: string;
+  assigneeAvatar?: string;
+  createdOn: Date;
 }
 
 //

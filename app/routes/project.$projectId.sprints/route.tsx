@@ -1,7 +1,7 @@
 import React from "react";
 import { defer, json, redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { createSprint, getSprints } from "~/api/methods/sprint";
 import getToken from "~/actions/getToken";
 import ProjectSprints from "~/components/sprint/ProjectSprints";
@@ -35,21 +35,28 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   if (token === undefined) {
-    redirect("/user/login");
+    return redirect("/user/login");
   }
 
   const projectId = params.projectId!;
 
   const sprints = getSprints({
     projectId: projectId,
-    token: token!,
+    token: token,
   });
 
-  return defer({ projectId: projectId, sprints });
+  return defer({ projectId, sprints });
 };
 
 export default function SprintsPage() {
   const loaderData = useLoaderData<typeof loader>();
+  // @ts-ignore
+  const { projectId, sprints } = loaderData;
 
-  return <ProjectSprints {...loaderData} />;
+  return (
+    <>
+      <ProjectSprints projectId={projectId} sprints={sprints} />
+      <Outlet />
+    </>
+  );
 }

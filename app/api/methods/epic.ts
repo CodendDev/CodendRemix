@@ -5,7 +5,6 @@ import {
   GetEpicRequest,
   UpdateEpicRequest,
 } from "~/api/types/epicTypes";
-import { CreateStoryRequest, UpdateStoryRequest } from "~/api/types/storyTypes";
 
 export async function getEpic({
   projectId,
@@ -47,6 +46,7 @@ export async function createEpic(request: CreateEpicRequest) {
     name: request.name,
     description: request.description,
     statusId: request.statusId,
+    sprintId: request.sprintId,
   };
 
   try {
