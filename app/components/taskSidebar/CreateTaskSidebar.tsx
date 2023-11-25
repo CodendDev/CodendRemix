@@ -13,15 +13,13 @@ export function CreateTaskSidebar({
   cancelRoute = actionRouteRoot,
 }: CreateTaskSidebarProps) {
   return (
-    <div>
-      <div className="flex h-full w-[15rem] flex-col overflow-x-auto border-l-1 border-emerald-700 md:w-[25rem] xl:w-[30rem] 2xl:w-[35rem]">
-        <TaskDetails
-          projectTask={emptyTask}
-          formType="POST"
-          actionRouteRoot={actionRouteRoot}
-          cancelRoute={cancelRoute}
-        />
-      </div>
+    <div className="min-w-[20em] flex-shrink-0">
+      <TaskDetails
+        projectTask={emptyTask}
+        formType="POST"
+        actionRouteRoot={actionRouteRoot}
+        cancelRoute={cancelRoute}
+      />
     </div>
   );
 }

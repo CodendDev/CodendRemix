@@ -58,7 +58,7 @@ export function BacklogTask({
     >
       <div className="flex flex-row items-center">
         <div
-          className={`${taskTypeToColorClass[taskType]}  min-w-unit-20 text-center font-bold`}
+          className={`${taskTypeToColorClass[taskType]} mx-3 text-center font-bold`}
         >
           {taskType.replace(/Base/, "Task")}
         </div>

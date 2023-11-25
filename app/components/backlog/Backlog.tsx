@@ -15,7 +15,7 @@ export function Backlog({ backlogTasksPromise }: BacklogProps) {
   return (
     <Suspense fallback={<BacklogLoading />}>
       <Await resolve={backlogTasksPromise}>
-        {(backlog) => AwaitedBacklog({ backlogTasks: backlog })}
+        {(backlog) => <AwaitedBacklog backlogTasks={backlog} />}
       </Await>
     </Suspense>
   );
@@ -53,7 +53,7 @@ function AwaitedBacklog({ backlogTasks }: { backlogTasks: BacklogTaskType[] }) {
   };
 
   return (
-    <div className="w-full overflow-x-auto px-6 py-1">
+    <div className="px-6 py-1">
       <div className="flex w-full flex-row gap-1">
         <div className="py-2 pl-6 font-bold text-gray-700">
           Backlog
@@ -73,7 +73,7 @@ function AwaitedBacklog({ backlogTasks }: { backlogTasks: BacklogTaskType[] }) {
           </Button>
         </div>
       </div>
-      <div className="flex min-h-0 min-w-[10rem] flex-shrink-0 flex-col justify-between gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
+      <div className="flex min-w-fit flex-col gap-1 overflow-auto rounded-lg p-1 outline-dashed outline-1 outline-offset-1 outline-gray-400">
         {backlogTasks.map((task) => (
           <BacklogTask
             key={task.id}

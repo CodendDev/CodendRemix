@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData, useParams } from "@remix-run/react";
+import { useLoaderData, useParams } from "@remix-run/react";
 import React from "react";
 import TaskSidebar from "~/components/taskSidebar/TaskSidebar";
 import {
@@ -25,12 +25,9 @@ export default function BacklogTaskSidebar() {
   const { projectTaskPromise } = loaderData;
 
   return (
-    <>
-      <TaskSidebar
-        projectTaskPromise={projectTaskPromise}
-        actionRouteRoot={`/project/${params.projectId!}/backlog`}
-      />
-      <Outlet />
-    </>
+    <TaskSidebar
+      projectTaskPromise={projectTaskPromise}
+      actionRouteRoot={`/project/${params.projectId!}/backlog`}
+    />
   );
 }

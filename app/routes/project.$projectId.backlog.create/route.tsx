@@ -14,12 +14,9 @@ export default function BacklogTaskSidebarCreate() {
   const params = useParams();
 
   return (
-    <>
-      <CreateTaskSidebar
-        emptyTask={emptyTask()}
-        actionRouteRoot={`/project/${params.projectId!}/backlog`}
-      />
-      <Outlet />
-    </>
+    <CreateTaskSidebar
+      emptyTask={emptyTask()}
+      actionRouteRoot={`/project/${params.projectId!}/backlog`}
+    />
   );
 }
