@@ -122,7 +122,7 @@ const AwaitedBacklog = () => {
   };
 
   return (
-    <div className="h-full bg-gray-50">
+    <div className="bg-gray-50">
       <div className="flex items-center justify-between p-4">
         <div>Chose tasks that you want to add to the sprint</div>
         <Button
