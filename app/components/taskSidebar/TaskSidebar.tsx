@@ -15,17 +15,19 @@ export function TaskSidebar({
   cancelRoute = actionRouteRoot,
 }: TaskSidebarProps) {
   return (
-    <Suspense fallback={<TaskSidebarLoading />}>
-      <Await resolve={projectTaskPromise}>
-        {(projectTask) => (
-          <AwaitedTaskSidebar
-            task={projectTask}
-            actionRouteRoot={actionRouteRoot}
-            cancelRoute={cancelRoute}
-          />
-        )}
-      </Await>
-    </Suspense>
+    <div className="min-w-[20em] flex-shrink-0">
+      <Suspense fallback={<TaskSidebarLoading />}>
+        <Await resolve={projectTaskPromise}>
+          {(projectTask) => (
+            <AwaitedTaskSidebar
+              task={projectTask}
+              actionRouteRoot={actionRouteRoot}
+              cancelRoute={cancelRoute}
+            />
+          )}
+        </Await>
+      </Suspense>
+    </div>
   );
 }
 
@@ -60,15 +62,11 @@ function AwaitedTaskSidebar({
   cancelRoute: string;
 }) {
   return (
-    <div>
-      <div className="flex h-full w-[15rem] flex-col overflow-x-auto border-l-1 border-emerald-700 md:w-[25rem] xl:w-[30rem] 2xl:w-[35rem]">
-        <TaskDetails
-          projectTask={task}
-          formType="PUT"
-          actionRouteRoot={actionRouteRoot}
-          cancelRoute={cancelRoute}
-        />
-      </div>
-    </div>
+    <TaskDetails
+      projectTask={task}
+      formType="PUT"
+      actionRouteRoot={actionRouteRoot}
+      cancelRoute={cancelRoute}
+    />
   );
 }

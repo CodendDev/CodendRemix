@@ -27,9 +27,11 @@ export default function BoardTaskSidebar() {
   const { projectTaskPromise } = loaderData;
 
   return (
-    <TaskSidebar
-      projectTaskPromise={projectTaskPromise}
-      actionRouteRoot={`/project/${params.projectId!}/board/${params.sprintId!}`}
-    />
+    <div className="border-l-1 border-emerald-700">
+      <TaskSidebar
+        projectTaskPromise={projectTaskPromise}
+        actionRouteRoot={`/project/${params.projectId!}/board/${params.sprintId!}`}
+      />
+    </div>
   );
 }

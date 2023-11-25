@@ -69,7 +69,9 @@ export default function ProjectPage() {
           <ProjectNavigationBar projectsPromise={projects} />
         </div>
       </div>
-      <Outlet />
+      <div className="grow overflow-y-auto">
+        <Outlet />
+      </div>
     </div>
   );
 }

@@ -38,7 +38,7 @@ export function ProjectTaskStatusContainer({
 
   return (
     <>
-      <div className="flex w-[100em] min-w-[20em] flex-col px-2">
+      <div className="flex w-full min-w-[20em] flex-col px-2">
         <StatusContainerHeader
           statusId={statusId}
           name={name}

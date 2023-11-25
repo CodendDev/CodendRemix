@@ -26,8 +26,8 @@ export default function SelectedSprintBoardPage() {
   const { boardPromise, backlogPromise } = loaderData;
 
   return (
-    <div className="flex h-full grow overflow-y-auto border-t-1 border-emerald-700">
-      <div className="h-full overflow-x-auto">
+    <div className="flex grow">
+      <div className="overflow-x-auto">
         <ProjectBoard boardPromise={boardPromise} />
       </div>
       <Outlet context={backlogPromise} />

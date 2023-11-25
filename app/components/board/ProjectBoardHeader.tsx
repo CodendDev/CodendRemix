@@ -87,7 +87,7 @@ function AwaitedProjectBoardHeader({
   // @ts-ignore
   // noinspection RequiredAttributes
   return (
-    <div className="mx-3 flex w-full min-w-[40rem] items-center justify-between overflow-x-auto overflow-y-hidden p-2">
+    <div className="flex w-full min-w-[40rem] items-center justify-between border-b-1 border-emerald-700 p-2">
       <div className="w-2/5">
         <Select
           items={sprints}
