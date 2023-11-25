@@ -44,8 +44,8 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-screen max-h-screen w-screen max-w-[100vw] overflow-y-auto overflow-x-hidden">
-        <NextUIProvider className="h-screen">
+      <body>
+        <NextUIProvider>
           <Outlet />
           <ScrollRestoration />
           <Scripts />

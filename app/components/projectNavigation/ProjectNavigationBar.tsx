@@ -29,21 +29,19 @@ export function ProjectNavigationBar({
   const projectId = useParams().projectId;
 
   return (
-    <div className="flex h-full w-56 flex-col overflow-y-auto">
-      <Suspense fallback={<LoadingProjectNavigationBar />}>
-        <Await
-          resolve={projectsPromise}
-          errorElement={<ErrorProjectNavigationBar />}
-        >
-          {(projects) => (
-            <AwaitedProjectNavigationBar
-              projects={projects.data!.items}
-              projectId={projectId}
-            />
-          )}
-        </Await>
-      </Suspense>
-    </div>
+    <Suspense fallback={<LoadingProjectNavigationBar />}>
+      <Await
+        resolve={projectsPromise}
+        errorElement={<ErrorProjectNavigationBar />}
+      >
+        {(projects) => (
+          <AwaitedProjectNavigationBar
+            projects={projects.data!.items}
+            projectId={projectId}
+          />
+        )}
+      </Await>
+    </Suspense>
   );
 }
 
@@ -81,14 +79,14 @@ function AwaitedProjectNavigationBar({
   const submit = useSubmit();
 
   return (
-    <>
+    <div className="flex min-w-fit flex-col overflow-y-auto">
       <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
         <ProjectNavigationList
           projects={projects}
           selectedProjectId={projectId}
         />
         <ProjectNameDivider name={name} />
-        <ProjectNavigationActionsList projectId={projectId} />{" "}
+        <ProjectNavigationActionsList projectId={projectId} />
         <div className="mb-2 mt-auto flex flex-col gap-2 px-3">
           <User
             name="Your account"
@@ -112,7 +110,7 @@ function AwaitedProjectNavigationBar({
           </Button>
         </div>
       </ProjectNavigationBarContext.Provider>
-    </>
+    </div>
   );
 }
 

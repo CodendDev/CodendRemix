@@ -54,18 +54,20 @@ export default function ProjectPage() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(true);
 
   return (
-    <div className="flex h-full grow flex-row">
-      <NavigationBarContext.Provider
-        value={{ isOpen: isMenuOpen, setIsOpen: setIsMenuOpen }}
-      >
-        <NavigationBar />
-      </NavigationBarContext.Provider>
-      <div
-        className={`flex border-r-1 border-emerald-700 transition-[margin] duration-300 ease-out ${
-          isMenuOpen ? "" : "-ml-56 overflow-hidden"
-        }`}
-      >
-        <ProjectNavigationBar projectsPromise={projects} />
+    <div className="flex h-screen">
+      <div className="flex">
+        <NavigationBarContext.Provider
+          value={{ isOpen: isMenuOpen, setIsOpen: setIsMenuOpen }}
+        >
+          <NavigationBar />
+        </NavigationBarContext.Provider>
+        <div
+          className={`flex overflow-hidden border-r-1 border-emerald-700 duration-300 ease-in-out ${
+            isMenuOpen ? "w-full" : "w-0"
+          }`}
+        >
+          <ProjectNavigationBar projectsPromise={projects} />
+        </div>
       </div>
       <Outlet />
     </div>

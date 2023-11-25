@@ -102,7 +102,7 @@ function ProjectList({
   return (
     <ScrollShadow
       hideScrollBar
-      className="-mt-2 flex max-h-44 min-w-full flex-col rounded-lg border-1 border-gray-200"
+      className="-mt-2 flex flex-col rounded-lg border-1 border-gray-200"
     >
       {projects.map((project) => (
         <ProjectListItem
@@ -136,15 +136,14 @@ function ProjectListItem({
         setSelect();
         nameContext.setProjectName(name);
       }}
-      className={`flex cursor-pointer p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 not-first:border-t-1 not-first:border-gray-200
+      className={`flex cursor-pointer whitespace-nowrap p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 not-first:border-t-1 not-first:border-gray-200
       ${
         selected
           ? "outline outline-1 -outline-offset-1 outline-emerald-500"
           : ""
       }`}
     >
-      <ProjectStar isFavourite={isFavourite} projectId={id} />
-      <div className="w-full grow">{name}</div>
+      <ProjectStar isFavourite={isFavourite} projectId={id} /> {name}
     </div>
   );
 }
