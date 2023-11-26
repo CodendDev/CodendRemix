@@ -15,7 +15,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const sprintId = params.sprintId!;
 
   const boardPromise = getBoard({ projectId, sprintId, token });
-  const backlogPromise = getBacklog({ projectId, token: token! });
+  const backlogPromise = getBacklog({ projectId, token });
 
   return defer({ boardPromise, backlogPromise });
 };
@@ -27,7 +27,7 @@ export default function SelectedSprintBoardPage() {
 
   return (
     <div className="flex grow">
-      <div className="overflow-x-auto">
+      <div className="grow overflow-x-auto">
         <ProjectBoard boardPromise={boardPromise} />
       </div>
       <Outlet context={backlogPromise} />
