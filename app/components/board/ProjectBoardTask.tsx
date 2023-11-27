@@ -16,7 +16,12 @@ import { SelectedProjectBoardTaskContext } from "~/components/board/ProjectBoard
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
-import { useLocation, useNavigate, useParams } from "@remix-run/react";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSubmit,
+} from "@remix-run/react";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
 
 export function ProjectBoardTask({
@@ -49,8 +54,12 @@ export function ProjectBoardTask({
       ? relatedTypeToGradientColor[taskType]
       : typeToGradientColor[taskType];
 
+  const submit = useSubmit();
   const taskDropdownOptions: OptionsDropdownItem[] = [
-    { label: "Assign to me" },
+    {
+      label: "Assign to me",
+      onClick: () => submit({ id }, { method: "put" }),
+    },
   ];
 
   const deleteModal = useDisclosure();
