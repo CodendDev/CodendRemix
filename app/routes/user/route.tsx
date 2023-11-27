@@ -22,7 +22,7 @@ export default function User() {
   if (location === "login" || location === "register") {
     return (
       <div
-        className="bg- flex flex-col justify-center bg-[url('/login-background.svg')] bg-cover align-middle"
+        className="flex flex-col justify-center bg-[url('/login-background.svg')] bg-cover align-middle"
         style={{ height: "100dvh" }}
       >
         <div className="">
