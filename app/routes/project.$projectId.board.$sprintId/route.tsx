@@ -28,7 +28,6 @@ export default function SelectedSprintBoardPage({
   const loaderData = useLoaderData<typeof loader>();
   // @ts-ignore
   const { boardPromise, backlogPromise } = loaderData;
-  console.log(editable);
 
   return (
     <div className="flex grow">
