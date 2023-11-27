@@ -15,7 +15,7 @@ export function TaskSidebar({
   cancelRoute = actionRouteRoot,
 }: TaskSidebarProps) {
   return (
-    <div className="min-w-[20em] flex-shrink-0">
+    <div className="min-w-[20em] flex-shrink-0 md:min-w-[25em] xl:min-w-[30em] 2xl:min-w-[35em]">
       <Suspense fallback={<TaskSidebarLoading />}>
         <Await resolve={projectTaskPromise}>
           {(projectTask) => (
@@ -35,7 +35,7 @@ export default TaskSidebar;
 
 export function TaskSidebarLoading() {
   return (
-    <div className="flex h-full w-[15rem] flex-col gap-3 px-4 py-3 md:w-[25rem] xl:w-[30rem] 2xl:w-[35rem]">
+    <div className="flex h-full w-[20em] flex-col gap-3 px-4 py-3 md:w-[25em] xl:w-[30em] 2xl:w-[35em]">
       <div className="flex flex-row gap-3">
         <Skeleton className="h-12 w-36 rounded-lg" />
         <Skeleton className="h-12 w-full rounded-lg" />

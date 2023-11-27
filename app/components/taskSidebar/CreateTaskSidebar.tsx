@@ -13,7 +13,7 @@ export function CreateTaskSidebar({
   cancelRoute = actionRouteRoot,
 }: CreateTaskSidebarProps) {
   return (
-    <div className="min-w-[20em] flex-shrink-0">
+    <div className="min-w-[20em] flex-shrink-0 md:min-w-[25em] xl:min-w-[30em] 2xl:min-w-[35em]">
       <TaskDetails
         projectTask={emptyTask}
         formType="POST"

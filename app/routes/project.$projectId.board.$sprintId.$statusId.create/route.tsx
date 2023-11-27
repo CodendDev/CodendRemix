@@ -16,13 +16,12 @@ export default function BoardTaskSidebarCreate() {
   const params = useParams();
 
   return (
-    <>
+    <div className="border-l-1 border-emerald-700">
       <CreateTaskSidebar
         emptyTask={emptyTask(params.statusId!)}
         actionRouteRoot={`/project/${params.projectId!}/board/${params.sprintId!}/${params.statusId!}`}
         cancelRoute={`/project/${params.projectId!}/board/${params.sprintId!}`}
       />
-      <Outlet />
-    </>
+    </div>
   );
 }
