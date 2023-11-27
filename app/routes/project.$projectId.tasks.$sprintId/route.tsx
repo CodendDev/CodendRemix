@@ -21,4 +21,4 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return defer({ boardPromise, backlogPromise });
 };
 
-export default SelectedSprintBoardPage;
+export default () => <SelectedSprintBoardPage editable={false} />;

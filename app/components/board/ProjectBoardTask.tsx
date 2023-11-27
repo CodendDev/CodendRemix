@@ -3,7 +3,7 @@ import type {
   Priority,
   TaskType,
 } from "~/api/types/baseEntitiesTypes";
-import { Avatar, Spacer, Skeleton } from "@nextui-org/react";
+import { Avatar, Spacer, Skeleton, useDisclosure } from "@nextui-org/react";
 import React, { useContext } from "react";
 import {
   priorityToColorClass,
@@ -16,12 +16,17 @@ import { SelectedProjectBoardTaskContext } from "~/components/board/ProjectBoard
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
-import { useLocation, useNavigate, useParams } from "@remix-run/react";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSubmit,
+} from "@remix-run/react";
+import DeleteModal from "~/components/shared/modals/DeleteModal";
 
 export function ProjectBoardTask({
   id,
   name,
-  statusId,
   priority,
   taskType,
   assigneeAvatar,
@@ -33,31 +38,34 @@ export function ProjectBoardTask({
   const { selectedProjectBoardTaskId, setSelectedProjectBoardTaskId } =
     useContext(SelectedProjectBoardTaskContext);
 
+  // 💀
+  const path = location.pathname.toLowerCase().includes("board")
+    ? `/project/${params.projectId!}/board/${params.sprintId!}/${id}/${taskType.toLowerCase()}`
+    : `/project/${params.projectId!}/tasks/${params.sprintId!}/${id}/${taskType.toLowerCase()}`;
   const handleClick = () => {
     setSelectedProjectBoardTaskId(id);
-    if (location.pathname.toLowerCase().includes("board")) {
-      navigate(
-        `/project/${params.projectId!}/board/${params.sprintId!}/${id}/${taskType.toLowerCase()}`
-      );
-    } else {
-      navigate(
-        `/project/${params.projectId!}/tasks/${params.sprintId!}/${id}/${taskType.toLowerCase()}`
-      );
-    }
+    navigate(path);
   };
   const type = taskType !== "Base" && taskType;
+  const typeName = !type ? "task" : taskType.toLowerCase();
 
   const gradientColor =
     relatedTaskId !== null && relatedTaskId === selectedProjectBoardTaskId
       ? relatedTypeToGradientColor[taskType]
       : typeToGradientColor[taskType];
 
-  const dropdownOptions: OptionsDropdownItem[] = [
+  const submit = useSubmit();
+  const taskDropdownOptions: OptionsDropdownItem[] = [
     {
       label: "Assign to me",
+      onClick: () => submit({ id }, { method: "put" }),
     },
-    { label: "Edit" },
-    deleteOption(() => {}),
+  ];
+
+  const deleteModal = useDisclosure();
+  const dropdownOptions: OptionsDropdownItem[] = [
+    { label: "Edit", onClick: handleClick },
+    deleteOption(deleteModal.onOpen),
   ];
 
   const projectBoardTaskSelected: string =
@@ -66,39 +74,54 @@ export function ProjectBoardTask({
       : "";
 
   return (
-    <div
-      onClick={handleClick}
-      className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg ${projectBoardTaskSelected}`}
-    >
+    <>
       <div
-        className={`flex w-full justify-between rounded-lg px-3 py-2 ${gradientColor}`}
+        onClick={handleClick}
+        className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg ${projectBoardTaskSelected} cursor-pointer`}
       >
-        <div>
-          <div className="flex">
-            {type && <ProjectBoardTaskType type={taskType} />}
-            {priority && (
+        <div
+          className={`flex w-full justify-between rounded-lg px-3 py-2 ${gradientColor}`}
+        >
+          <div>
+            <div className="flex">
+              {type && <ProjectBoardTaskType type={taskType} />}
+              {priority && (
+                <>
+                  {type && <Spacer x={2} />}
+                  <ProjectBoardTaskPriority priority={priority} />
+                </>
+              )}
+            </div>
+            <div>{name}</div>
+          </div>
+          <div className="flex min-w-unit-10 flex-col items-center justify-center gap-1">
+            {assigneeAvatar && (
               <>
-                {type && <Spacer x={2} />}
-                <ProjectBoardTaskPriority priority={priority} />
+                <div className="flex justify-center ">
+                  <Avatar src={assigneeAvatar} size="sm" />
+                </div>
               </>
             )}
-          </div>
-          <div>{name}</div>
-        </div>
-        <div className="flex min-w-unit-10 flex-col items-center justify-center gap-1">
-          {assigneeAvatar && (
-            <>
-              <div className="flex justify-center ">
-                <Avatar src={assigneeAvatar} size="sm" />
-              </div>
-            </>
-          )}
-          <div className="flex justify-center">
-            <OptionsDropdown options={dropdownOptions} />
+            <div className="flex justify-center">
+              <OptionsDropdown
+                options={
+                  taskType !== "Epic" && taskType !== "Story"
+                    ? [...taskDropdownOptions, ...dropdownOptions]
+                    : dropdownOptions
+                }
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <DeleteModal
+        deleteHeader={`Delete ${typeName}`}
+        deleteName={name}
+        isOpen={deleteModal.isOpen}
+        onOpenChange={deleteModal.onOpenChange}
+        actionRoute={path}
+      />
+    </>
   );
 }
 
