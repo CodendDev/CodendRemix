@@ -7,7 +7,7 @@ import {
   Skeleton,
 } from "@nextui-org/react";
 import React, { useContext, useState } from "react";
-import { useLocation, useNavigate, useSubmit } from "@remix-run/react";
+import { Link, useLocation, useNavigate, useSubmit } from "@remix-run/react";
 import { AiOutlineFileSearch } from "react-icons/ai/index.js";
 import { ProjectNavigationBarContext } from "~/components/projectNavigation/ProjectNavigationBar";
 import { FaStar, FaRegStar } from "react-icons/fa/index.js";
@@ -56,6 +56,8 @@ export function ProjectNavigationList({
           fullWidth
           startContent={<AiOutlinePlus />}
           className="text-lg"
+          as={Link}
+          to="/project/create"
         >
           New project
         </Button>
