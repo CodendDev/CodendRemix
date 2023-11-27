@@ -85,7 +85,10 @@ const actionPut = async ({ params, request }: LoaderFunctionArgs) => {
       data.estimatedTimeString?.toString()
     )!,
     storyPoints: +data.storyPoints?.toString(),
-    assigneeId: data.assigneeId?.toString(),
+    assigneeId:
+      data.assigneeId?.toString().length === 0
+        ? undefined
+        : data.assigneeId?.toString(),
     storyId: data.storyId?.toString(),
     epicId: data.epicId?.toString(),
   };

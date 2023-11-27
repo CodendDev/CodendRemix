@@ -212,6 +212,7 @@ export function TaskDetails({
               label={getLabelFor("assigneeId")}
               propPack={propPack}
             />
+            <input type="hidden" value={task.assigneeId} name="assigneeId" />
           </>
         )}
         {task.taskType !== "Epic" && (
