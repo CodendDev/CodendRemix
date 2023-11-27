@@ -38,7 +38,7 @@ export function ProjectTaskStatusContainer({
 
   return (
     <>
-      <div className="flex w-[30em] flex-shrink-0 flex-col px-2">
+      <div className="flex w-[20em] flex-shrink-0 flex-col px-2">
         <StatusContainerHeader
           statusId={statusId}
           name={name}
@@ -86,7 +86,7 @@ export function ProjectTaskStatusContainerLoading({
   isLoaded?: boolean;
 }) {
   return (
-    <div className="flex h-full w-full min-w-[15rem] grow flex-col">
+    <div className="flex w-[20em] flex-shrink-0 flex-col px-2">
       {name ? (
         <StatusContainerHeader
           name={name}
@@ -101,7 +101,7 @@ export function ProjectTaskStatusContainerLoading({
           </div>
         </Skeleton>
       )}
-      <Card className="flex h-full flex-col gap-4 bg-gray-100 px-4 py-6 shadow-none">
+      <Card className="flex h-full flex-col gap-4 overflow-y-auto bg-gray-100 p-3">
         <ProjectBoardTaskLoading isLoaded={isLoaded} />
         <ProjectBoardTaskLoading isLoaded={isLoaded} />
         <ProjectBoardTaskLoading isLoaded={isLoaded} />

@@ -1,4 +1,4 @@
-import { Outlet, useParams } from "@remix-run/react";
+import { useParams } from "@remix-run/react";
 import React from "react";
 import { action as ProjectTaskAction } from "~/routes/api/projectTask/projectTaskCreateAction";
 import CreateTaskSidebar from "~/components/taskSidebar/CreateTaskSidebar";
