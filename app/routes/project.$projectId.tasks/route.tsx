@@ -1,17 +1,16 @@
-import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
-import ProjectBoardHeader from "~/components/board/ProjectBoardHeader";
 import React, { useState } from "react";
 import { loader as BoardLoader } from "~/routes/project.$projectId.board/route";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import {
   BoardQueryContext,
   queryFilterBoardTasks,
 } from "~/components/board/ProjectBoardFilter";
+import ProjectBoardHeader from "~/components/board/ProjectBoardHeader";
 
 export const loader = BoardLoader;
 
 export default function TasksPage() {
   const loaderData = useLoaderData<typeof loader>();
-
   const [query, setQuery] = useState("");
 
   // @ts-ignore
@@ -22,7 +21,7 @@ export default function TasksPage() {
   const location = regExp.test(useLocation().pathname);
 
   return (
-    <div className="flex w-full grow flex-col overflow-x-clip">
+    <div className="flex h-full flex-col">
       <BoardQueryContext.Provider
         value={{ query, setQuery, filter: queryFilterBoardTasks }}
       >
@@ -31,12 +30,13 @@ export default function TasksPage() {
           sprintsPromise={sprintsPromise}
           filterable
         />
-        {location && (
+        {location ? (
           <div className="flex h-full items-center justify-center">
             <>Select sprint to see tasks assigned to you.</>
           </div>
+        ) : (
+          <Outlet />
         )}
-        <Outlet />
       </BoardQueryContext.Provider>
     </div>
   );

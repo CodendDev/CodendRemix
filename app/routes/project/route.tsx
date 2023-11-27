@@ -9,11 +9,16 @@ import {
   NavigationBar,
   NavigationBarContext,
 } from "~/components/navigation/NavigationBar";
+import handleLogout from "~/actions/handleLogout";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
   if (!token) {
     return redirect("/user/login");
+  }
+
+  if (request.method === "POST") {
+    return await handleLogout({ url: "/" });
   }
 
   if (request.method !== "PUT") {
@@ -49,20 +54,24 @@ export default function ProjectPage() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(true);
 
   return (
-    <div className="flex h-full grow flex-row">
-      <NavigationBarContext.Provider
-        value={{ isOpen: isMenuOpen, setIsOpen: setIsMenuOpen }}
-      >
-        <NavigationBar />
-      </NavigationBarContext.Provider>
-      <div
-        className={`flex border-r-1 border-emerald-700 transition-[margin] duration-300 ease-in-out ${
-          isMenuOpen ? "" : "-ml-56 overflow-hidden"
-        }`}
-      >
-        <ProjectNavigationBar projectsPromise={projects} />
+    <div className="flex h-screen">
+      <div className="flex">
+        <NavigationBarContext.Provider
+          value={{ isOpen: isMenuOpen, setIsOpen: setIsMenuOpen }}
+        >
+          <NavigationBar />
+        </NavigationBarContext.Provider>
+        <div
+          className={`flex w-full overflow-hidden border-r-1 border-emerald-700 duration-300 ease-in-out ${
+            isMenuOpen ? "ml-0" : "-ml-56"
+          }`}
+        >
+          <ProjectNavigationBar projectsPromise={projects} />
+        </div>
       </div>
-      <Outlet />
+      <div className="grow overflow-y-auto">
+        <Outlet />
+      </div>
     </div>
   );
 }

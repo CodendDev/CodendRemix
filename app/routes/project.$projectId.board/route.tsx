@@ -38,7 +38,7 @@ export default function BoardPage() {
   const location = regExp.test(useLocation().pathname);
 
   return (
-    <div className="flex w-full grow flex-col overflow-x-clip">
+    <div className="flex h-full flex-col">
       <BoardQueryContext.Provider
         value={{ query, setQuery, filter: queryFilterBoardTasks }}
       >
@@ -47,12 +47,13 @@ export default function BoardPage() {
           sprintsPromise={sprintsPromise}
           filterable
         />
-        {location && (
+        {location ? (
           <div className="flex h-full items-center justify-center">
             {CreateSprintTip({ projectId })}
           </div>
+        ) : (
+          <Outlet />
         )}
-        <Outlet />
       </BoardQueryContext.Provider>
     </div>
   );

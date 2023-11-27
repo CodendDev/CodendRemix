@@ -14,14 +14,17 @@ export function NavigationBar() {
   const { isOpen, setIsOpen } = useContext(NavigationBarContext);
 
   return (
-    <div
-      className="z-10 flex flex-col bg-emerald-800 p-3"
-      onClick={() => setIsOpen((prev) => !prev)}
-    >
+    <div className="z-50 flex flex-col bg-emerald-800 p-3 shadow-[inset_-4px_0_4px] shadow-emerald-900">
       {isOpen ? (
-        <AiOutlineClose className="text-white" />
+        <AiOutlineClose
+          className="cursor-pointer text-lg text-white hover:text-gray-400"
+          onClick={() => setIsOpen((prev) => !prev)}
+        />
       ) : (
-        <RxRows className="text-gray-100" />
+        <RxRows
+          className="cursor-pointer text-lg text-white hover:text-gray-400"
+          onClick={() => setIsOpen((prev) => !prev)}
+        />
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 const { nextui } = require("@nextui-org/react");
 
@@ -39,6 +40,9 @@ export default {
           },
         },
       },
+    }),
+    plugin(function ({ addVariant }) {
+      addVariant("not-first", "&:not(:first-child)");
     }),
   ],
 } satisfies Config;

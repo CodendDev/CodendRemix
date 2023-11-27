@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData, useParams } from "@remix-run/react";
+import { useLoaderData, useParams } from "@remix-run/react";
 import {
   action as ProjectTaskAction,
   loader as ProjectTaskLoader,
@@ -19,7 +19,11 @@ export const action = async (args: ActionFunctionArgs) => {
 
 export const loader = ProjectTaskLoader;
 
-export default function BoardTaskSidebar() {
+export default function BoardTaskSidebar({
+  route = "board",
+}: {
+  route?: string;
+}) {
   const loaderData = useLoaderData<typeof loader>();
   const params = useParams();
 
@@ -27,12 +31,11 @@ export default function BoardTaskSidebar() {
   const { projectTaskPromise } = loaderData;
 
   return (
-    <>
+    <div className="border-l-1 border-emerald-700">
       <TaskSidebar
         projectTaskPromise={projectTaskPromise}
-        actionRouteRoot={`/project/${params.projectId!}/board/${params.sprintId!}`}
+        actionRouteRoot={`/project/${params.projectId!}/${route}/${params.sprintId!}`}
       />
-      <Outlet />
-    </>
+    </div>
   );
 }

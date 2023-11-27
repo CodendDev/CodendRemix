@@ -92,6 +92,10 @@ export function DescriptionInput({
         minRows={10}
         maxRows={10}
         {...propPack}
+        classNames={{
+          label: "min-w-unit-24",
+          helperWrapper: "w-0 p-0",
+        }}
       />
     </div>
   );

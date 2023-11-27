@@ -25,17 +25,20 @@ import {
   MembersContext,
   StatusesContext,
 } from "~/routes/project.$projectId/route";
+import { IoIosCloseCircle } from "react-icons/io/index.js";
 
 interface TaskDetailsProps {
   projectTask?: ProjectTask;
   formType: "PUT" | "POST";
   actionRouteRoot: string;
+  cancelRoute: string;
 }
 
 export function TaskDetails({
   projectTask = emptyTask(),
   formType,
   actionRouteRoot,
+  cancelRoute,
 }: TaskDetailsProps) {
   const [task, setTask] = useState({ ...projectTask });
   const [isFormInvalid, setIsFormInvalid] = useState(false);
@@ -123,7 +126,15 @@ export function TaskDetails({
       className={"h-full"}
     >
       <div className="flex h-full flex-col gap-3 px-4 py-3">
-        <div className="flex w-full flex-row gap-3">
+        <div className="flex w-full flex-row items-center gap-3">
+          <div
+            className="flex h-fit w-fit cursor-pointer rounded-lg text-4xl text-danger hover:text-foreground"
+            onClick={() => {
+              navigate(cancelRoute);
+            }}
+          >
+            <IoIosCloseCircle />
+          </div>
           {formType == "PUT" ? (
             <TaskTypeBadge taskType={task.taskType} />
           ) : (
@@ -233,7 +244,7 @@ export function TaskDetails({
               className="font-bold"
               variant="solid"
               onPress={() => {
-                navigate(actionRouteRoot);
+                navigate(cancelRoute);
               }}
             >
               Cancel
@@ -270,7 +281,7 @@ export default TaskDetails;
 function TaskTypeBadge({ taskType }: { taskType?: TaskType }) {
   return (
     <div
-      className={`my-1 flex w-32 items-center justify-center rounded-full border-2 border-gray-200 bg-gray-100 px-6 text-xl font-bold shadow ${
+      className={`flex h-12 w-[7rem] items-center justify-center rounded-full border-2 border-gray-200 bg-gray-100 px-6 text-xl font-bold ${
         taskTypeToColorClass[taskType!]
       }`}
     >

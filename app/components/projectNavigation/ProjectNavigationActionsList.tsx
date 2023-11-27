@@ -12,18 +12,24 @@ import {
 export function ProjectNavigationActionsList({
   projectId,
 }: {
-  projectId: string;
+  projectId: string | undefined;
 }) {
   const navigate = useNavigate();
 
   return (
-    <Listbox label="Project actions">
-      {actions().map(({ name, redirectUrl, icon }, index) => (
+    <Listbox
+      label="Project actions"
+      disabledKeys={
+        !projectId ? actions().map((action) => action.name.toLowerCase()) : []
+      }
+    >
+      {actions().map(({ name, redirectUrl, icon }) => (
         <ListboxItem
           key={name.toLowerCase()}
           onClick={() => navigate(`/project/${projectId}/${redirectUrl}`)}
           startContent={icon}
-          className="w-full min-w-[120px]"
+          className="w-full rounded-lg px-3 text-xl"
+          classNames={{ title: "text-lg ml-2" }}
         >
           {name}
         </ListboxItem>
