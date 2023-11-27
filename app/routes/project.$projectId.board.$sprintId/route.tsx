@@ -20,15 +20,20 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return defer({ boardPromise, backlogPromise });
 };
 
-export default function SelectedSprintBoardPage() {
+export default function SelectedSprintBoardPage({
+  editable = true,
+}: {
+  editable?: boolean;
+}) {
   const loaderData = useLoaderData<typeof loader>();
   // @ts-ignore
   const { boardPromise, backlogPromise } = loaderData;
+  console.log(editable);
 
   return (
     <div className="flex grow">
       <div className="grow overflow-x-auto">
-        <ProjectBoard boardPromise={boardPromise} />
+        <ProjectBoard boardPromise={boardPromise} editable={editable} />
       </div>
       <Outlet context={backlogPromise} />
     </div>

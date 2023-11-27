@@ -37,7 +37,7 @@ type ProjectBoardProps = {
 
 export function ProjectBoard({
   boardPromise,
-  editable = true,
+  editable = false,
 }: ProjectBoardProps) {
   const [selectedProjectBoardTaskId, setSelectedProjectBoardTaskId] = useState<
     string | null
