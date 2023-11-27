@@ -8,7 +8,7 @@ import {
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
-import { useNavigate, useParams } from "@remix-run/react";
+import { useNavigate, useParams, useSubmit } from "@remix-run/react";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
 
 type backlogTaskProps = Omit<BacklogTaskType, "createdOn"> & {
@@ -44,10 +44,11 @@ export function BacklogTask({
     navigate(`/project/${projectId}/backlog/${id}/${taskType.toLowerCase()}`);
   };
 
+  const submit = useSubmit();
   const taskDropdownOptions: OptionsDropdownItem[] = [
     {
       label: "Assign to me",
-      onClick: () => {},
+      onClick: () => submit({ id }, { method: "put" }),
     },
   ];
 
