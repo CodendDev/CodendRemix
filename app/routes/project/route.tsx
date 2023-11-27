@@ -62,8 +62,8 @@ export default function ProjectPage() {
           <NavigationBar />
         </NavigationBarContext.Provider>
         <div
-          className={`flex overflow-hidden border-r-1 border-emerald-700 duration-300 ease-in-out ${
-            isMenuOpen ? "w-full" : "w-0"
+          className={`flex w-full overflow-hidden border-r-1 border-emerald-700 duration-300 ease-in-out ${
+            isMenuOpen ? "ml-0" : "-ml-56"
           }`}
         >
           <ProjectNavigationBar projectsPromise={projects} />

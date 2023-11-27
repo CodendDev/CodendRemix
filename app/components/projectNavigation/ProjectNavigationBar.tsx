@@ -79,7 +79,7 @@ function AwaitedProjectNavigationBar({
   const submit = useSubmit();
 
   return (
-    <div className="flex min-w-fit flex-col overflow-y-auto">
+    <div className="flex w-56 flex-col overflow-y-auto">
       <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
         <ProjectNavigationList
           projects={projects}
@@ -92,7 +92,7 @@ function AwaitedProjectNavigationBar({
             name="Your account"
             description="user@email.tododawdwadwadawawda"
             avatarProps={{ src: "/avatars/1.png" }}
-            className="cursor-pointer py-1 hover:bg-gray-300"
+            className="cursor-pointer p-1 hover:bg-gray-300"
             classNames={{ description: "overflow-hidden text-ellipsis w-36" }}
             onClick={() => {
               navigate("/project/account");

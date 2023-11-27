@@ -34,12 +34,18 @@ export function ProjectNavigationList({
           aria-label="Projects"
           title={<ProjectNavigationListTitle />}
         >
-          <ProjectList
-            projects={projects.sort(
-              (a, b) => Number(b.isFavourite) - Number(a.isFavourite)
-            )}
-            selectedProjectId={selectedProjectId}
-          />
+          {projects.length > 0 ? (
+            <ProjectList
+              projects={projects.sort(
+                (a, b) => Number(b.isFavourite) - Number(a.isFavourite)
+              )}
+              selectedProjectId={selectedProjectId}
+            />
+          ) : (
+            <div className="flex justify-center text-lg text-gray-600">
+              You don't have any projects.
+            </div>
+          )}
         </AccordionItem>
       </Accordion>
       <div className="flex flex-row px-4">
