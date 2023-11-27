@@ -21,7 +21,6 @@ import { useLocation, useNavigate, useParams } from "@remix-run/react";
 export function ProjectBoardTask({
   id,
   name,
-  statusId,
   priority,
   taskType,
   assigneeAvatar,
@@ -56,7 +55,7 @@ export function ProjectBoardTask({
     {
       label: "Assign to me",
     },
-    { label: "Edit" },
+    { label: "Edit", onClick: handleClick },
     deleteOption(() => {}),
   ];
 
