@@ -212,19 +212,27 @@ export function TaskDetails({
               label={getLabelFor("assigneeId")}
               propPack={propPack}
             />
+            <input type="hidden" value={task.assigneeId} name="assigneeId" />
           </>
         )}
         {task.taskType !== "Epic" && (
-          <RelatedTaskInput
-            taskType={task.taskType!}
-            name={projectTaskFieldStringFor(
-              task.taskType === "Story" ? "epicId" : "storyId"
-            )}
-            value={task.taskType === "Story" ? task.epicId : task.storyId}
-            handleSelectChange={handleSelectChange}
-            label="Related task"
-            propPack={propPack}
-          />
+          <>
+            <RelatedTaskInput
+              taskType={task.taskType!}
+              name={projectTaskFieldStringFor(
+                task.taskType === "Story" ? "epicId" : "storyId"
+              )}
+              value={task.taskType === "Story" ? task.epicId : task.storyId}
+              handleSelectChange={handleSelectChange}
+              label="Related task"
+              propPack={propPack}
+            />
+            <input
+              type="hidden"
+              value={task.taskType === "Story" ? task.epicId : task.storyId}
+              name={task.taskType === "Story" ? "epicId" : "storyId"}
+            />
+          </>
         )}
         <div className="mt-auto flex flex-row justify-end gap-3">
           {formType === "PUT" ? (
