@@ -51,10 +51,11 @@ export function ProjectBoardTask({
       ? relatedTypeToGradientColor[taskType]
       : typeToGradientColor[taskType];
 
+  const taskDropdownOptions: OptionsDropdownItem[] = [
+    { label: "Assign to me" },
+  ];
+
   const dropdownOptions: OptionsDropdownItem[] = [
-    {
-      label: "Assign to me",
-    },
     { label: "Edit", onClick: handleClick },
     deleteOption(() => {}),
   ];
@@ -67,7 +68,7 @@ export function ProjectBoardTask({
   return (
     <div
       onClick={handleClick}
-      className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg ${projectBoardTaskSelected}`}
+      className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg ${projectBoardTaskSelected} cursor-pointer`}
     >
       <div
         className={`flex w-full justify-between rounded-lg px-3 py-2 ${gradientColor}`}
@@ -93,7 +94,13 @@ export function ProjectBoardTask({
             </>
           )}
           <div className="flex justify-center">
-            <OptionsDropdown options={dropdownOptions} />
+            <OptionsDropdown
+              options={
+                taskType !== "Epic" && taskType !== "Story"
+                  ? [...taskDropdownOptions, ...dropdownOptions]
+                  : dropdownOptions
+              }
+            />
           </div>
         </div>
       </div>
