@@ -45,9 +45,10 @@ export function TaskTypeInput({
         selectedKeys={value ? [value] : []}
         {...propPack}
         size="lg"
-        className={`min-w-[7rem] ${
+        className={`w-[7rem] ${
           value ? taskTypeToColorClass[value as unknown as TaskType] : ""
         }`}
+        classNames={{ value: "text-lg font-bold" }}
         radius="full"
         variant="faded"
       >
@@ -89,7 +90,6 @@ export function StatusInput({
         placeholder="Select status"
         disallowEmptySelection={true}
         isInvalid={!value}
-        errorMessage={!value && "Status is required"}
         items={statuses}
         selectedKeys={value ? [value] : []}
         startContent={<BsFillClipboardDataFill />}

@@ -281,7 +281,7 @@ export default TaskDetails;
 function TaskTypeBadge({ taskType }: { taskType?: TaskType }) {
   return (
     <div
-      className={`flex h-full w-32 items-center justify-center rounded-full border-2 border-gray-200 bg-gray-100 px-6 text-xl font-bold shadow ${
+      className={`flex h-12 w-[7rem] items-center justify-center rounded-full border-2 border-gray-200 bg-gray-100 px-6 text-xl font-bold ${
         taskTypeToColorClass[taskType!]
       }`}
     >
