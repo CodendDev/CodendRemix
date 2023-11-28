@@ -10,28 +10,31 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import { FaUserEdit } from "react-icons/fa/index.js";
-import { Form } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import AvatarSelector from "~/components/avatarSelector/avatarSelector";
+import { useContext } from "react";
+import { UserDetailsContext } from "~/routes/project/route";
 
 export function AccountDetails({ editable = false }: { editable?: boolean }) {
-  const user: UserDetails = useOutletContext();
+  const { userDetails } = useContext(UserDetailsContext);
+  const navigate = useNavigate();
 
   return (
-    <Form action="/user/account/edit" method="POST">
+    <Form action={"/user/account/edit"} method="PUT">
       <div className="flex w-[20em] min-w-[20em] flex-col justify-center py-4 md:w-[30em]">
         <div className="p-2 text-3xl text-emerald-800">Account details</div>
-        <AvatarCard imageUrl={user.imageUrl} editable={editable} />
+        <AvatarCard imageUrl={userDetails.imageUrl} editable={editable} />
         <Spacer y={4} />
-        <DetailsCard user={user} editable={editable} />
+        <DetailsCard user={userDetails} editable={editable} />
         {editable && (
           <div className="flex justify-end gap-2 pt-4">
             <Button
               as={Link}
-              href="/user/account/details"
               color="danger"
               variant="solid"
               size="lg"
               className="font-bold"
+              onPress={() => navigate("/user/account/details")}
             >
               Cancel
             </Button>
@@ -57,6 +60,7 @@ function AvatarCard({
   imageUrl: string;
   editable: boolean;
 }) {
+  const navigate = useNavigate();
   return (
     <>
       <div className="px-2 py-2 text-lg">Your avatar</div>
@@ -64,7 +68,10 @@ function AvatarCard({
         <CardBody className="flex h-60 flex-row items-center justify-center py-4">
           {editable ? (
             <div className="p-1">
-              <AvatarSelector borderColor="border-emerald-500" />
+              <AvatarSelector
+                borderColor="border-emerald-500"
+                currentAvatar={imageUrl}
+              />
             </div>
           ) : (
             <>
@@ -76,9 +83,9 @@ function AvatarCard({
                 radius="full"
               />
               <Link
-                href="/user/account/edit"
                 isBlock
-                className="ml-2 mt-auto cursor-pointer whitespace-nowrap px-2 py-1 text-sm italic text-emerald-800"
+                className="mt-auto cursor-pointer whitespace-nowrap px-2 py-1 text-sm italic text-emerald-800"
+                onPress={() => navigate("/user/account/edit")}
               >
                 Change avatar
               </Link>
@@ -97,6 +104,8 @@ function DetailsCard({
   user: UserDetails;
   editable: boolean;
 }) {
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="flex flex-row items-center justify-between">
@@ -104,12 +113,12 @@ function DetailsCard({
         {!editable && (
           <Button
             as={Link}
-            href={"/user/account/edit"}
             size="sm"
             color="primary"
             variant="light"
             className="text-lg"
             startContent={<FaUserEdit />}
+            onPress={() => navigate("/user/account/edit")}
           >
             Edit
           </Button>
@@ -160,26 +169,17 @@ function DetailsDiv({
   return (
     <>
       <div className="text-md px-2 py-1 text-emerald-800">{label}</div>
-      {editable ? (
-        <Input
-          name={name}
-          aria-label={label}
-          required
-          variant="bordered"
-          defaultValue={value}
-          minLength={1}
-          maxLength={30}
-          isReadOnly={readOnly}
-          classNames={{ input: "text-lg" }}
-        />
-      ) : (
-        <Card
-          radius="md"
-          className="w-full border-2 border-gray-200 px-3 py-1 shadow-none"
-        >
-          <div className="text-lg">{value}</div>
-        </Card>
-      )}
+      <Input
+        name={name}
+        aria-label={label}
+        required
+        variant="bordered"
+        defaultValue={value}
+        minLength={1}
+        maxLength={30}
+        isReadOnly={readOnly || !editable}
+        classNames={{ input: "text-lg" }}
+      />
     </>
   );
 }

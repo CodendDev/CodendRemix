@@ -74,7 +74,7 @@ export async function UpdateUserDetails(request: UpdateUserRequest) {
   };
 
   try {
-    const response = await axios.post("/api/user");
+    const response = await axios.put("/api/user", userData);
     return response.status;
   } catch (err) {
     return undefined;

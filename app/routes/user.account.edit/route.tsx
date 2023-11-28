@@ -1,7 +1,6 @@
 import { AccountDetails } from "~/components/accountDetails/AccountDetails";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import getToken from "~/actions/getToken";
-import { setIsFavourite } from "~/api/methods/project";
 import { UpdateUserDetails } from "~/api/methods/user";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
@@ -10,7 +9,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
     return redirect("/user/login");
   }
 
-  if (request.method !== "POST") {
+  if (request.method !== "PUT") {
     return undefined;
   }
 
