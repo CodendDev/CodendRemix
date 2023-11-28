@@ -21,7 +21,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const token = await getToken(request);
   if (!token) {
-    return undefined;
+    return redirect("/user/login");
   }
 
   if (request.method !== "PUT") {
