@@ -41,7 +41,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return redirect("/user/login");
   }
 
-  const projects = getPagedProjects({ pageIndex: 1, pageSize: 10, token });
+  const projects = getPagedProjects({ pageIndex: 1, pageSize: 100, token });
 
   return defer({ projects });
 };
