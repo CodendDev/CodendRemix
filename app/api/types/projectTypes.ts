@@ -25,7 +25,11 @@ export interface isFavouriteProjectRequest extends ProjectRequest {
   isFavourite: boolean;
 }
 
-export interface UpdateProjectRequest extends ProjectRequest {
+export interface CreateProjectRequest extends WithTokenRequest {
   name: string;
   description: string;
 }
+
+export interface UpdateProjectRequest
+  extends CreateProjectRequest,
+    ProjectRequest {}

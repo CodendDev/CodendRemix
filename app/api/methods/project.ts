@@ -15,7 +15,10 @@ import type {
   Sprint,
   UserDetails,
 } from "~/api/types/baseEntitiesTypes";
-import { UpdateProjectRequest } from "~/api/types/projectTypes";
+import {
+  CreateProjectRequest,
+  UpdateProjectRequest,
+} from "~/api/types/projectTypes";
 
 export async function getBoard({
   projectId,
@@ -155,6 +158,22 @@ export async function updateProject({
     const response = await axios.put(`/api/projects/${projectId}`, apiRequest);
     return response.data;
   } catch (err) {
+    return undefined;
+  }
+}
+
+export async function createProject({
+  token,
+  name,
+  description,
+}: CreateProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.post(`/api/projects`, { name, description });
+    return response.data;
+  } catch (err) {
+    console.log(err);
     return undefined;
   }
 }
