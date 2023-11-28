@@ -10,25 +10,31 @@ const avatarList = (() => {
   return avatarList;
 })();
 
-export function AvatarSelector() {
+export function AvatarSelector({ borderColor }: { borderColor?: string }) {
   const [selectedAvatar, setSelectedAvatar] = useState(`/avatars/1.png`);
 
   const isSelected = (avatar: string) => selectedAvatar === avatar;
 
   return (
     <>
-      <input value={selectedAvatar} type="hidden" name="imageUrl" />
+      <input required value={selectedAvatar} type="hidden" name="imageUrl" />
       <ScrollShadow
         hideScrollBar
-        className="flex h-44 w-full flex-wrap justify-evenly gap-3 overflow-y-auto rounded-lg border-2 border-gray-300 p-2"
+        size={0}
+        className={`flex h-44 w-full flex-wrap justify-evenly gap-3 overflow-y-auto rounded-lg border-2  p-2 ${
+          borderColor ?? "border-gray-300"
+        }`}
       >
         {avatarList.map((avatar, index) => (
           <Avatar
             key={index}
             isBordered
             src={avatar}
-            color={isSelected(avatar) ? "primary" : "default"}
-            className="h-20 w-20 cursor-pointer hover:outline-gray-400"
+            className={`h-20 w-20  ${
+              isSelected(avatar)
+                ? "outline-3 outline-emerald-500"
+                : "cursor-pointer hover:outline-gray-400"
+            }`}
             onClick={() => setSelectedAvatar(avatar)}
           />
         ))}
