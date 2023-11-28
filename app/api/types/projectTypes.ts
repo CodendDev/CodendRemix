@@ -24,3 +24,8 @@ export interface ProjectActiveSprintsRequest extends WithTokenRequest {
 export interface isFavouriteProjectRequest extends ProjectRequest {
   isFavourite: boolean;
 }
+
+export interface UpdateProjectRequest extends ProjectRequest {
+  name: string;
+  description: string;
+}
