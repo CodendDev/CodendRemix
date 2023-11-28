@@ -15,7 +15,7 @@ export function ProjectNameDivider({ name }: { name: string | undefined }) {
 
 export function LoadingProjectNameDivider() {
   return (
-    <Skeleton className="m-2 w-3/4 rounded-lg">
+    <Skeleton className="m-2 w-[90%] rounded-lg">
       <div className="h-5"></div>
     </Skeleton>
   );

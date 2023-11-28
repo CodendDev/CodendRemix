@@ -144,14 +144,17 @@ function ProjectListItem({
         setSelect();
         nameContext.setProjectName(name);
       }}
-      className={`flex cursor-pointer whitespace-nowrap p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 not-first:border-t-1 not-first:border-gray-200
+      className={`flex cursor-pointer flex-row p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 not-first:border-t-1 not-first:border-gray-200
       ${
         selected
           ? "outline outline-1 -outline-offset-1 outline-emerald-500"
           : ""
       }`}
     >
-      <ProjectStar isFavourite={isFavourite} projectId={id} /> {name}
+      <ProjectStar isFavourite={isFavourite} projectId={id} />
+      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-start">
+        {name}
+      </span>
     </div>
   );
 }

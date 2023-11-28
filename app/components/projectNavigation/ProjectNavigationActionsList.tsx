@@ -29,7 +29,9 @@ export function ProjectNavigationActionsList({
           onClick={() => navigate(`/project/${projectId}/${redirectUrl}`)}
           startContent={icon}
           className="w-full rounded-lg px-3 text-xl"
-          classNames={{ title: "text-lg ml-2" }}
+          classNames={{
+            title: "ml-2 text-lg",
+          }}
         >
           {name}
         </ListboxItem>
@@ -40,7 +42,7 @@ export function ProjectNavigationActionsList({
 
 export function LoadingProjectNavigationActionsList() {
   return [...Array(5)].map((e, i) => (
-    <Skeleton key={i} className="m-2 w-2/4 rounded-lg">
+    <Skeleton key={i} className="m-2 w-44 rounded-lg">
       <div className="h-6 w-0.5"></div>
     </Skeleton>
   ));
