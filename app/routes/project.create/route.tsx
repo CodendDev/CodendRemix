@@ -25,9 +25,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function CreateProjectPage() {
   return (
-    <div>
-      <div>Create project</div>
-      <ProjectEditor />
+    <div className="flex h-full flex-col items-center">
+      <div className="w-full border-b-1 border-emerald-700 p-10 text-2xl">
+        Create new project
+      </div>
+      <div className="flex h-full w-1/2 items-center justify-center">
+        <ProjectEditor />
+      </div>
     </div>
   );
 }

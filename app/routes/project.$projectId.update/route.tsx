@@ -29,9 +29,13 @@ export default function UpdateProjectPage() {
   const { projectPromise } = useOutletContext();
 
   return (
-    <div>
-      <div>Update project</div>
-      <ProjectEditor projectPromise={projectPromise} />
+    <div className="flex h-full flex-col items-center overflow-x-scroll">
+      <div className="w-full border-b-1 border-emerald-700 p-10 text-2xl">
+        Update project
+      </div>
+      <div className="flex h-full w-1/2 items-center justify-center">
+        <ProjectEditor projectPromise={projectPromise} />
+      </div>
     </div>
   );
 }
