@@ -173,7 +173,6 @@ export async function createProject({
     const response = await axios.post(`/api/projects`, { name, description });
     return response.data;
   } catch (err) {
-    console.log(err);
     return undefined;
   }
 }
