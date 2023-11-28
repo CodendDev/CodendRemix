@@ -156,7 +156,7 @@ export async function updateProject({
 
   try {
     const response = await axios.put(`/api/projects/${projectId}`, apiRequest);
-    return response.data;
+    return response.status;
   } catch (err) {
     return undefined;
   }
