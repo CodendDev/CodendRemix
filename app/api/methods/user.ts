@@ -7,6 +7,7 @@ import type {
   WithTokenRequest,
 } from "~/api/types/authorizationTypes";
 import { UserDetails } from "~/api/types/baseEntitiesTypes";
+import { UpdateUserRequest } from "~/api/types/userTypes";
 
 /**
  * Less code for same methods 💀
@@ -57,6 +58,24 @@ export async function getUserDetails({
   try {
     const response = await axios.get("/api/user");
     return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function UpdateUserDetails(request: UpdateUserRequest) {
+  const { token, firstName, lastName, imageUrl } = request;
+  const axios = getAxiosInstance(token);
+
+  const userData = {
+    firstName: firstName.trim(),
+    lastName: lastName.trim(),
+    imageUrl: imageUrl.trim(),
+  };
+
+  try {
+    const response = await axios.post("/api/user");
+    return response.status;
   } catch (err) {
     return undefined;
   }

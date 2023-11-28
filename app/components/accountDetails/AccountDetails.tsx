@@ -17,7 +17,7 @@ export function AccountDetails({ editable = false }: { editable?: boolean }) {
   const user: UserDetails = useOutletContext();
 
   return (
-    <Form>
+    <Form action="/user/account/edit" method="POST">
       <div className="flex w-[20em] min-w-[20em] flex-col justify-center py-4 md:w-[30em]">
         <div className="p-2 text-3xl text-emerald-800">Account details</div>
         <AvatarCard imageUrl={user.imageUrl} editable={editable} />
