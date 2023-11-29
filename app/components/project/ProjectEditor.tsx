@@ -62,8 +62,10 @@ function AwaitedProjectEditor({ project }: AwaitedProjectEditorProps) {
         <Card>
           <CardBody>
             <fetcher.Form method={project ? "PUT" : "POST"} action={action}>
-              {inputs.map((i) => (
-                <div className="py-2">{i}</div>
+              {inputs.map((i, index) => (
+                <div className="py-2" key={index}>
+                  {i}
+                </div>
               ))}
               <div className="flex justify-end">
                 <Button color="primary" type="submit" size="lg">

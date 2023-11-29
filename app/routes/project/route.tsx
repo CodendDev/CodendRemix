@@ -1,4 +1,9 @@
-import React from "react";
+import React, {
+  createContext,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import ProjectNavigationBar from "~/components/projectNavigation/ProjectNavigationBar";
 import getToken from "~/actions/getToken";
@@ -10,6 +15,8 @@ import {
   NavigationBarContext,
 } from "~/components/navigation/NavigationBar";
 import handleLogout from "~/actions/handleLogout";
+import { getUserDetails } from "~/api/methods/user";
+import { UserDetails } from "~/api/types/baseEntitiesTypes";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -41,17 +48,33 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return redirect("/user/login");
   }
 
+  const userDetailsResponse = await getUserDetails({ token });
   const projects = getPagedProjects({ pageIndex: 1, pageSize: 100, token });
 
-  return defer({ projects });
+  return defer({ projects, userDetailsResponse });
 };
+
+export interface UserDetailsContextProps {
+  userDetails: UserDetails;
+  setUserDetails: React.Dispatch<SetStateAction<UserDetails>>;
+}
+
+export const UserDetailsContext = createContext<UserDetailsContextProps>({
+  userDetails: { firstName: "", lastName: "", email: "", imageUrl: "", id: "" },
+  setUserDetails: () => {},
+});
 
 export default function ProjectPage() {
   const loaderData = useLoaderData<typeof loader>();
   // @ts-ignore
-  const { projects } = loaderData;
+  const { projects, userDetailsResponse } = loaderData;
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(true);
+  const [userDetails, setUserDetails] = useState(userDetailsResponse);
+
+  useEffect(() => {
+    setUserDetails(userDetailsResponse);
+  }, [userDetailsResponse]);
 
   return (
     <div className="flex h-screen">
@@ -66,11 +89,16 @@ export default function ProjectPage() {
             isMenuOpen ? "ml-0" : "-ml-56"
           }`}
         >
-          <ProjectNavigationBar projectsPromise={projects} />
+          <ProjectNavigationBar
+            projectsPromise={projects}
+            userDetails={userDetails}
+          />
         </div>
       </div>
       <div className="grow overflow-y-auto">
-        <Outlet />
+        <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>
+          <Outlet />
+        </UserDetailsContext.Provider>
       </div>
     </div>
   );

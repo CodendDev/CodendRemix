@@ -1,4 +1,8 @@
-import type { PagedResponse, Project } from "~/api/types/baseEntitiesTypes";
+import type {
+  PagedResponse,
+  Project,
+  UserDetails,
+} from "~/api/types/baseEntitiesTypes";
 import ProjectNavigationList, {
   LoadingProjectNavigationList,
 } from "~/components/projectNavigation/ProjectNavigationList";
@@ -15,6 +19,7 @@ import { Button, User } from "@nextui-org/react";
 
 type ProjectNavigationBarProps = {
   projectsPromise: Promise<PagedResponse<Project>>;
+  userDetails: UserDetails;
 };
 
 export const ProjectNavigationBarContext = React.createContext<{
@@ -25,6 +30,7 @@ export const ProjectNavigationBarContext = React.createContext<{
 
 export function ProjectNavigationBar({
   projectsPromise,
+  userDetails,
 }: ProjectNavigationBarProps) {
   const projectId = useParams().projectId;
 
@@ -38,6 +44,7 @@ export function ProjectNavigationBar({
           <AwaitedProjectNavigationBar
             projects={projects.data!.items}
             projectId={projectId}
+            userDetails={userDetails}
           />
         )}
       </Await>
@@ -47,30 +54,32 @@ export function ProjectNavigationBar({
 
 function ErrorProjectNavigationBar() {
   return (
-    <>
+    <div className="flex w-56 flex-col">
       <LoadingProjectNavigationList error />
       <LoadingProjectNameDivider />
       <LoadingProjectNavigationActionsList />
-    </>
+    </div>
   );
 }
 
 function LoadingProjectNavigationBar() {
   return (
-    <>
+    <div className="flex w-56 flex-col">
       <LoadingProjectNavigationList />
       <LoadingProjectNameDivider />
       <LoadingProjectNavigationActionsList />
-    </>
+    </div>
   );
 }
 
 function AwaitedProjectNavigationBar({
   projectId,
   projects,
+  userDetails,
 }: {
   projectId: string | undefined;
   projects: Project[];
+  userDetails: UserDetails;
 }) {
   const navigate = useNavigate();
   const project = projects.find((p) => p.id === projectId);
@@ -91,13 +100,13 @@ function AwaitedProjectNavigationBar({
         <ProjectNavigationActionsList projectId={projectId} />
         <div className="mb-2 mt-auto flex flex-col gap-2 px-3">
           <User
-            name="Your account"
-            description="user@email.tododawdwadwadawawda"
-            avatarProps={{ src: "/avatars/1.png" }}
+            name={`${userDetails.firstName} ${userDetails.lastName}`}
+            description={userDetails.email}
+            avatarProps={{ src: userDetails.imageUrl }}
             className="cursor-pointer p-1 hover:bg-gray-300"
             classNames={{ description: "overflow-hidden text-ellipsis w-36" }}
             onClick={() => {
-              navigate("/project/account");
+              navigate("/user/account/details");
             }}
           />
           <Button
