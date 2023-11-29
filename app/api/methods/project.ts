@@ -15,6 +15,10 @@ import type {
   Sprint,
   UserDetails,
 } from "~/api/types/baseEntitiesTypes";
+import {
+  CreateProjectRequest,
+  UpdateProjectRequest,
+} from "~/api/types/projectTypes";
 
 export async function getBoard({
   projectId,
@@ -128,6 +132,45 @@ export async function setIsFavourite({
     const response = await axios.put(`/api/projects/${projectId}/favourite`, {
       isFavourite,
     });
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function updateProject({
+  projectId,
+  token,
+  name,
+  description,
+}: UpdateProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  const apiRequest = {
+    name,
+    description: {
+      shouldUpdate: true,
+      value: description,
+    },
+  };
+
+  try {
+    const response = await axios.put(`/api/projects/${projectId}`, apiRequest);
+    return response.status;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function createProject({
+  token,
+  name,
+  description,
+}: CreateProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.post(`/api/projects`, { name, description });
     return response.data;
   } catch (err) {
     return undefined;

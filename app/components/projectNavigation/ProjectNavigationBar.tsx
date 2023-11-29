@@ -81,10 +81,12 @@ function AwaitedProjectNavigationBar({
   return (
     <div className="flex w-56 flex-col overflow-y-auto">
       <ProjectNavigationBarContext.Provider value={{ setProjectName: setName }}>
-        <ProjectNavigationList
-          projects={projects}
-          selectedProjectId={projectId}
-        />
+        <div className="max-h-1/2 overflow-y-auto">
+          <ProjectNavigationList
+            projects={projects}
+            selectedProjectId={projectId}
+          />
+        </div>
         <ProjectNameDivider name={name} />
         <ProjectNavigationActionsList projectId={projectId} />
         <div className="mb-2 mt-auto flex flex-col gap-2 px-3">
