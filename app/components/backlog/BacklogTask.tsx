@@ -1,6 +1,6 @@
 import type { BacklogTaskType } from "~/api/types/baseEntitiesTypes";
 import React from "react";
-import { Avatar, Skeleton } from "@nextui-org/react";
+import { Avatar, Skeleton, useDisclosure } from "@nextui-org/react";
 import {
   taskTypeToColorClass,
   typeToOutlineColor,
@@ -8,7 +8,8 @@ import {
 import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDropdown";
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
-import { useNavigate, useParams } from "@remix-run/react";
+import { useNavigate, useParams, useSubmit } from "@remix-run/react";
+import DeleteModal from "~/components/shared/modals/DeleteModal";
 
 type backlogTaskProps = Omit<BacklogTaskType, "createdOn"> & {
   selectedBacklogTaskId: string | undefined;
@@ -34,52 +35,73 @@ export function BacklogTask({
       ? `outline ${typeToOutlineColor[taskType]} outline-offset-0 outline-1`
       : "";
 
+  const type = taskType !== "Base" && taskType;
+  const typeName = !type ? "task" : taskType.toLowerCase();
+  const path = `/project/${params.projectId!}/backlog/${id}/${taskType}`;
+
   const handleClick = () => {
     setSelectedBacklogTaskId(id);
     navigate(`/project/${projectId}/backlog/${id}/${taskType.toLowerCase()}`);
   };
 
-  const dropDownOptions: OptionsDropdownItem[] = [
+  const submit = useSubmit();
+  const taskDropdownOptions: OptionsDropdownItem[] = [
     {
       label: "Assign to me",
-      onClick: () => {},
+      onClick: () => submit({ id }, { method: "put" }),
     },
-    {
-      label: "Edit",
-      onClick: () => {},
-    },
-    deleteOption(() => {}),
+  ];
+
+  const deleteModal = useDisclosure();
+  const dropdownOptions: OptionsDropdownItem[] = [
+    { label: "Edit", onClick: handleClick },
+    deleteOption(deleteModal.onOpen),
   ];
 
   return (
-    <div
-      className={`flex justify-between bg-gray-100 p-1 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200 ${backlogTaskSelected}`}
-      onClick={handleClick}
-    >
-      <div className="flex flex-row items-center">
-        <div
-          className={`${taskTypeToColorClass[taskType]} mx-3 text-center font-bold`}
-        >
-          {taskType.replace(/Base/, "Task")}
+    <>
+      <div
+        className={`flex justify-between bg-gray-100 p-1 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200 ${backlogTaskSelected}`}
+        onClick={handleClick}
+      >
+        <div className="flex flex-row items-center">
+          <div
+            className={`${taskTypeToColorClass[taskType]} mx-3 text-center font-bold`}
+          >
+            {taskType.replace(/Base/, "Task")}
+          </div>
+          <div className="truncate">{name}</div>
         </div>
-        <div className="truncate">{name}</div>
-      </div>
-      <div className="flex flex-row items-center">
-        <div className="mx-2">{statusName}</div>
-        <div className="mx-1">
-          {
-            <Avatar
-              className={!assigneeAvatar ? "invisible" : ""}
-              src={assigneeAvatar}
-              size="sm"
+        <div className="flex flex-row items-center">
+          <div className="mx-2">{statusName}</div>
+          <div className="mx-1">
+            {
+              <Avatar
+                className={!assigneeAvatar ? "invisible" : ""}
+                src={assigneeAvatar}
+                size="sm"
+              />
+            }
+          </div>
+          <div className="mx-1">
+            <OptionsDropdown
+              options={
+                taskType !== "Epic" && taskType !== "Story"
+                  ? [...taskDropdownOptions, ...dropdownOptions]
+                  : dropdownOptions
+              }
             />
-          }
-        </div>
-        <div className="mx-1">
-          <OptionsDropdown options={dropDownOptions} />
+          </div>
         </div>
       </div>
-    </div>
+      <DeleteModal
+        deleteHeader={`Delete ${typeName}`}
+        deleteName={name}
+        isOpen={deleteModal.isOpen}
+        onOpenChange={deleteModal.onOpenChange}
+        actionRoute={path}
+      />
+    </>
   );
 }
 
