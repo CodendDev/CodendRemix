@@ -1,5 +1,4 @@
 import { UserDetails } from "~/api/types/baseEntitiesTypes";
-import { useOutletContext } from "react-router";
 import {
   Button,
   Card,

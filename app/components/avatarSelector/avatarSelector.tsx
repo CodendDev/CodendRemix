@@ -10,8 +10,14 @@ const avatarList = (() => {
   return avatarList;
 })();
 
-export function AvatarSelector({ borderColor }: { borderColor?: string }) {
-  const [selectedAvatar, setSelectedAvatar] = useState(`/avatars/1.png`);
+export function AvatarSelector({
+  borderColor,
+  currentAvatar = "/avatars/1.png",
+}: {
+  borderColor?: string;
+  currentAvatar?: string;
+}) {
+  const [selectedAvatar, setSelectedAvatar] = useState(currentAvatar);
 
   const isSelected = (avatar: string) => selectedAvatar === avatar;
 
