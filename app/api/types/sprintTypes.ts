@@ -40,3 +40,11 @@ export type SprintStatus = "Archived" | "Active" | "Future";
 export interface SprintAssignTasksRequest extends SprintRequest {
   tasks: SprintTask[];
 }
+
+export interface MoveProjectTaskRequest extends SprintRequest {
+  prev: string;
+  next: string;
+  taskId: string;
+  taskType: string;
+  statusId: string;
+}
