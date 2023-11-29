@@ -1,7 +1,7 @@
 import React, { createContext, Suspense, useContext, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-import { Await, useFetcher, useParams, useSubmit } from "@remix-run/react";
+import { Await, useFetcher, useParams } from "@remix-run/react";
 import type { BoardTask } from "~/api/types/baseEntitiesTypes";
 
 import ProjectTaskStatusContainer, {
