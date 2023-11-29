@@ -1,7 +1,7 @@
 import React, { createContext, Suspense, useContext, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-import { Await, useParams } from "@remix-run/react";
+import { Await, useFetcher, useParams, useSubmit } from "@remix-run/react";
 import type { BoardTask } from "~/api/types/baseEntitiesTypes";
 
 import ProjectTaskStatusContainer, {
@@ -15,8 +15,11 @@ import { EditStatusModal } from "~/components/projectTaskStatus/EditStatusModal"
 import { BoardQueryContext } from "~/components/board/ProjectBoardFilter";
 import { StatusesContext } from "~/routes/project.$projectId/route";
 
-export const DragItemTypes = {
-  Task: "TASK",
+import { DragDropContext, OnDragEndResponder } from "react-beautiful-dnd";
+
+export const DroppableType = {
+  statusContainer: "StatusContainer",
+  boardContainer: "BoardContainer",
 };
 
 interface SelectedProjectBoardTaskContextType {
@@ -99,29 +102,70 @@ function AwaitedBoardContainer({
 }) {
   const createStatusModal = useDisclosure();
   const statuses = useContext(StatusesContext);
-  const projectId = useParams().projectId!;
+  const params = useParams();
+  const fetcher = useFetcher();
 
   const queryContext = useContext(BoardQueryContext);
   const queriedTasks = queryContext.filter(queryContext, boardTasks);
+  const projectId = params.projectId!;
+  const sprintId = params.sprintId!;
   const tasksForStatus = (statusId: string): BoardTask[] =>
     queriedTasks
       .filter((task) => task.statusId === statusId)
       .sort((a, b) => a.position!.localeCompare(b.position!));
 
+  const handleDragDrop: OnDragEndResponder = (result, provided) => {
+    const { source, destination } = result;
+    if (!destination) return;
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    )
+      return;
+
+    if (result.type === DroppableType.statusContainer) {
+      const draggedTask = boardTasks.find(
+        (task) => task.id === result.draggableId
+      )!;
+      const destinationTasks = tasksForStatus(destination.droppableId);
+      const prev =
+        destination.index - 1 < 0
+          ? ""
+          : destinationTasks[destination.index - 1].position;
+      const next =
+        destination.index + 1 > destinationTasks.length - 1
+          ? ""
+          : destinationTasks[destination.index + 1].position;
+      const statusId =
+        source.droppableId === destination.droppableId
+          ? ""
+          : destination.droppableId;
+      fetcher.submit(
+        { prev, next, statusId },
+        {
+          method: "POST",
+          action: `/api/project/${projectId}/sprints/${sprintId}/task/${result.draggableId}/${draggedTask.taskType}/move`,
+        }
+      );
+    }
+  };
+
   return (
     <div className="flex h-full flex-row gap-6 p-4">
-      {statuses
-        .sort((a, b) => a.position!.localeCompare(b.position!))
-        .map((status) => (
-          <ProjectTaskStatusContainer
-            key={status.id}
-            statusId={status.id}
-            name={status.name}
-            position={status.position}
-            tasks={tasksForStatus(status.id)}
-            editable={editable}
-          />
-        ))}
+      <DragDropContext onDragEnd={handleDragDrop}>
+        {statuses
+          .sort((a, b) => a.position!.localeCompare(b.position!))
+          .map((status) => (
+            <ProjectTaskStatusContainer
+              key={status.id}
+              statusId={status.id}
+              name={status.name}
+              position={status.position}
+              tasks={tasksForStatus(status.id)}
+              editable={editable}
+            />
+          ))}
+      </DragDropContext>
       {editable && (
         <>
           <div className="p-1">

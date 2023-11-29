@@ -12,6 +12,8 @@ import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDro
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
+import { Draggable, Droppable } from "react-beautiful-dnd";
+import { DroppableType } from "~/components/board/ProjectBoard";
 
 type BoardStatusContainerProps = {
   name: string;
@@ -46,13 +48,32 @@ export function ProjectTaskStatusContainer({
           onDelete={deleteStatusModal.onOpen}
           editable={editable}
         />
-        <Card className="flex h-full flex-col gap-4 overflow-y-auto bg-gray-100 p-3">
-          {tasks
-            .sort((a, b) => a.position.localeCompare(b.position))
-            .map((task) => (
-              <ProjectBoardTask {...task} key={task.id} />
-            ))}
-        </Card>
+        <Droppable droppableId={statusId} type={DroppableType.statusContainer}>
+          {(provided) => (
+            <Card
+              className="flex h-[calc(100vh-8.5rem)] flex-col gap-4 overflow-y-auto bg-gray-100 p-3"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {tasks
+                .sort((a, b) => a.position.localeCompare(b.position))
+                .map((task, index) => (
+                  <Draggable draggableId={task.id} key={task.id} index={index}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <ProjectBoardTask {...task} key={task.id} />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+              {provided.placeholder}
+            </Card>
+          )}
+        </Droppable>
       </div>
       {editable && (
         <>
