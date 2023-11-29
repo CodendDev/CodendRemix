@@ -4,7 +4,9 @@ import type {
   LoginRequest,
   RegisterRequest,
   RegisterResponse,
+  WithTokenRequest,
 } from "~/api/types/authorizationTypes";
+import { UserDetails } from "~/api/types/baseEntitiesTypes";
 
 /**
  * Less code for same methods 💀
@@ -46,3 +48,16 @@ export const register = async (
   request: RegisterRequest
 ): Promise<RegisterResponse | undefined> =>
   handleLoginRegister({ data: request, endpoint: "/api/register" });
+
+export async function getUserDetails({
+  token,
+}: WithTokenRequest): Promise<UserDetails | undefined> {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get("/api/user");
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
