@@ -182,7 +182,7 @@ export async function moveProjectTask(request: MoveProjectTaskRequest) {
       `/api/projects/${request.projectId}/sprints/${request.sprintId}/tasks/move`,
       requestData
     );
-    return response.status;
+    return response.data;
   } catch (err) {
     return undefined;
   }
