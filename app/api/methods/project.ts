@@ -17,6 +17,7 @@ import type {
 } from "~/api/types/baseEntitiesTypes";
 import {
   CreateProjectRequest,
+  RemoveMemberProjectRequest,
   UpdateProjectRequest,
 } from "~/api/types/projectTypes";
 
@@ -171,6 +172,33 @@ export async function createProject({
 
   try {
     const response = await axios.post(`/api/projects`, { name, description });
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+/**
+ * Remove a member from a project.
+ *
+ * @param {RemoveMemberProjectRequest} request - The request object containing the token, projectId, and memberId.
+ * @param {string} request.token - The access token for authentication.
+ * @param {string} request.projectId - The ID of the project.
+ * @param {string} request.memberId - The ID of the member to be removed.
+ *
+ * @return {Promise<Object|undefined>} - A Promise that resolves to the response data if the member is successfully removed, or undefined if there was an error.
+ */
+export async function removeMember({
+  token,
+  projectId,
+  memberId,
+}: RemoveMemberProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.delete(
+      `/api/projects/${projectId}/members/${memberId}`
+    );
     return response.data;
   } catch (err) {
     return undefined;

@@ -33,3 +33,7 @@ export interface CreateProjectRequest extends WithTokenRequest {
 export interface UpdateProjectRequest
   extends CreateProjectRequest,
     ProjectRequest {}
+
+export interface RemoveMemberProjectRequest extends ProjectRequest {
+  memberId: string;
+}
