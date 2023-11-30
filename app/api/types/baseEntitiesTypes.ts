@@ -74,6 +74,8 @@ export interface UserDetails {
   imageUrl: string;
 }
 
+export type UserRole = "Owner" | "Member";
+
 export interface MinimalProjectTask {
   id: string;
   name: string;
