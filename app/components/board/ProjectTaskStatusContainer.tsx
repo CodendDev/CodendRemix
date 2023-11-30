@@ -18,7 +18,6 @@ import { DroppableType } from "~/components/board/ProjectBoard";
 type BoardStatusContainerProps = {
   name: string;
   statusId: string;
-  position?: string;
   tasks: BoardTask[];
   editable: boolean;
 };
@@ -26,7 +25,6 @@ type BoardStatusContainerProps = {
 export function ProjectTaskStatusContainer({
   name,
   statusId,
-  position,
   tasks,
   editable,
 }: BoardStatusContainerProps) {
@@ -48,29 +46,48 @@ export function ProjectTaskStatusContainer({
           onDelete={deleteStatusModal.onOpen}
           editable={editable}
         />
-        <Droppable droppableId={statusId} type={DroppableType.statusContainer}>
-          {(provided) => (
+        <Droppable
+          droppableId={statusId}
+          type={DroppableType.statusContainer}
+          isDropDisabled={!editable}
+        >
+          {(droppableProvided, droppableSnapshot) => (
             <Card
-              className="flex h-[calc(100vh-8.5rem)] flex-col gap-4 overflow-y-auto bg-gray-100 p-3"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
+              className={`
+                flex h-[calc(100vh-8.5rem)] flex-col overflow-y-auto bg-gray-100 ${
+                  droppableSnapshot.draggingOverWith
+                    ? "outline-2 -outline-offset-1 outline-emerald-500"
+                    : droppableSnapshot.draggingFromThisWith
+                    ? "outline-dashed outline-2 -outline-offset-1 outline-emerald-500"
+                    : ""
+                } p-3
+              `}
+              ref={droppableProvided.innerRef}
+              {...droppableProvided.droppableProps}
             >
-              {tasks
-                .sort((a, b) => a.position.localeCompare(b.position))
-                .map((task, index) => (
-                  <Draggable draggableId={task.id} key={task.id} index={index}>
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <ProjectBoardTask {...task} key={task.id} />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-              {provided.placeholder}
+              {tasks.map((task, index) => (
+                <Draggable
+                  draggableId={task.id}
+                  key={task.id}
+                  index={index}
+                  isDragDisabled={!editable}
+                >
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <ProjectBoardTask
+                        {...task}
+                        key={task.id}
+                        isDragged={snapshot.isDragging}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {droppableProvided.placeholder}
             </Card>
           )}
         </Droppable>
