@@ -28,7 +28,6 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function UpdateProjectPage() {
   // @ts-ignore
-  const { projectPromise } = useOutletContext();
-
-  return <ProjectEditor projectPromise={projectPromise} />;
+  const { project } = useOutletContext();
+  return <ProjectEditor projectPromise={project} />;
 }

@@ -22,9 +22,9 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     projectTaskStatusesPromise,
     projectMembersPromise,
   ]);
-  const projectPromise = getProject({ projectId, token });
+  const project = await getProject({ projectId, token });
 
-  return defer({ projectTaskStatuses, projectMembers, projectPromise });
+  return defer({ projectTaskStatuses, projectMembers, project });
 };
 
 export const StatusesContext = createContext<ProjectTaskStatus[]>([]);
@@ -32,13 +32,13 @@ export const MembersContext = createContext<UserDetails[]>([]);
 
 export default function ProjectPage() {
   // @ts-ignore
-  const { projectTaskStatuses, projectMembers, projectPromise } =
+  const { projectTaskStatuses, projectMembers, project } =
     useLoaderData<typeof loader>();
 
   return (
     <MembersContext.Provider value={projectMembers}>
       <StatusesContext.Provider value={projectTaskStatuses}>
-        <Outlet context={{ projectPromise }} />
+        <Outlet context={{ project }} />
       </StatusesContext.Provider>
     </MembersContext.Provider>
   );
