@@ -37,3 +37,7 @@ export interface UpdateProjectRequest
 export interface RemoveMemberProjectRequest extends ProjectRequest {
   memberId: string;
 }
+
+export interface AddMemberProjectRequest extends ProjectRequest {
+  memberEmail: string;
+}

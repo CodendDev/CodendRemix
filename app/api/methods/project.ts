@@ -16,6 +16,7 @@ import type {
   UserDetails,
 } from "~/api/types/baseEntitiesTypes";
 import {
+  AddMemberProjectRequest,
   CreateProjectRequest,
   RemoveMemberProjectRequest,
   UpdateProjectRequest,
@@ -198,6 +199,39 @@ export async function removeMember({
   try {
     const response = await axios.delete(
       `/api/projects/${projectId}/members/${memberId}`
+    );
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+/**
+ * Add a member to a project.
+ *
+ * @param {RemoveMemberProjectRequest} request - The request object containing the token, projectId, and memberEmail.
+ * @param {string} request.token - The authentication token.
+ * @param {string} request.projectId - The ID of the project.
+ * @param {string} request.memberEmail - The email address of the member to be added.
+ *
+ * @return {Promise<Object|undefined>} - A promise that resolves to the response data when the member is added successfully, or undefined if an error occurs.
+ */
+export async function addMember({
+  token,
+  projectId,
+  memberEmail,
+}: AddMemberProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.post(
+      `/api/projects/${projectId}/members`,
+      null,
+      {
+        params: {
+          email: memberEmail,
+        },
+      }
     );
     return response.data;
   } catch (err) {
