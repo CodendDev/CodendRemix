@@ -4,7 +4,7 @@ import { useOutletContext } from "react-router";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import getToken from "~/actions/getToken";
 import { removeMember } from "~/api/methods/project";
-import { ProjectMembers } from "~/components/project/members/ProjectMembers";
+import { ProjectMembers } from "~/components/members/ProjectMembers";
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   const token = await getToken(request);

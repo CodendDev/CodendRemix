@@ -1,6 +1,6 @@
 import { UserDetails } from "~/api/types/baseEntitiesTypes";
 import { Card } from "@nextui-org/card";
-import ProjectMembersList from "~/components/project/members/ProjectMembersList";
+import ProjectMembersList from "~/components/members/ProjectMembersList";
 
 interface ProjectMembersProps {
   members: UserDetails[];
