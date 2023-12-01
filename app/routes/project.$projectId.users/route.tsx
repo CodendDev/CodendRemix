@@ -3,7 +3,7 @@ import { MembersContext } from "~/routes/project.$projectId/route";
 import { useOutletContext } from "react-router";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import getToken from "~/actions/getToken";
-import { removeMember } from "~/api/methods/project";
+import { addMember, removeMember } from "~/api/methods/project";
 import { ProjectMembers } from "~/components/members/ProjectMembers";
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
@@ -12,10 +12,20 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
     return redirect("/user/login");
   }
 
-  const projectId = params.projectId!;
-  const memberId = Object.fromEntries(await request.formData()).id.toString();
+  if (request.method === "DELETE") {
+    const projectId = params.projectId!;
+    const memberId = Object.fromEntries(await request.formData()).id.toString();
+    return removeMember({ token, projectId, memberId });
+  }
 
-  return removeMember({ token, projectId, memberId });
+  if (request.method === "POST") {
+    const projectId = params.projectId!;
+    const email = Object.fromEntries(await request.formData()).email.toString();
+    await addMember({ token, projectId, memberEmail: email });
+    return {};
+  }
+
+  return undefined;
 };
 
 export default function UsersPage() {
