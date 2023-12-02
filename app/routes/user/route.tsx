@@ -9,8 +9,11 @@ export const loader = async ({ request }: ActionFunctionArgs) => {
 
   // redirect to login page if user is not logged in
   const userRegex = new RegExp("^\\/user\\/?$");
-  if (!token && userRegex.test(new URL(request.url).pathname)) {
-    return redirect("/user/login");
+  if (userRegex.test(new URL(request.url).pathname)) {
+    if (!token) {
+      return redirect("/user/login");
+    }
+    return redirect("/user/account/details");
   }
 
   return null;
