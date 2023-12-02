@@ -2,7 +2,10 @@ import React from "react";
 import { UserDetails } from "~/api/types/baseEntitiesTypes";
 import { Button, Card, CardBody, Spacer } from "@nextui-org/react";
 import { FaUserEdit } from "react-icons/fa/index.js";
-import { DetailsInput } from "~/components/accountDetails/DetailsField";
+import {
+  DetailsInput,
+  DetailsNotifications,
+} from "~/components/accountDetails/DetailsField";
 import { Link } from "@remix-run/react";
 
 export function DetailsCard({
@@ -53,6 +56,8 @@ export function DetailsCard({
             editable={editable}
             readOnly={true}
           />
+          <Spacer y={5} />
+          <DetailsNotifications />
         </CardBody>
       </Card>
     </>

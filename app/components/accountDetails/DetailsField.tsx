@@ -1,5 +1,6 @@
 import React from "react";
-import { Input } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
+import { useSubmit } from "@remix-run/react";
 
 export function DetailsField({
   label,
@@ -13,6 +14,37 @@ export function DetailsField({
       <div className="text-md px-2 py-1 text-emerald-800">{label}</div>
       {item}
     </>
+  );
+}
+
+export function DetailsNotifications() {
+  const submit = useSubmit();
+
+  const handleNotifications = (shouldBeEnabled: boolean) => {
+    submit(
+      { notifications: shouldBeEnabled },
+      { action: "/user/account/edit", method: "post" }
+    );
+  };
+
+  return (
+    <DetailsField
+      label="Notifications"
+      item={
+        <div className="flex w-full flex-row pt-2">
+          <div className="flex w-full justify-center">
+            <Button color="secondary" onPress={() => handleNotifications(true)}>
+              Enable all notifications
+            </Button>
+          </div>
+          <div className="flex w-full justify-center">
+            <Button color="warning" onPress={() => handleNotifications(false)}>
+              Disable all notifications
+            </Button>
+          </div>
+        </div>
+      }
+    />
   );
 }
 
