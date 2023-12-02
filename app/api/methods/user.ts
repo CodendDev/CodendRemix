@@ -80,3 +80,42 @@ export async function UpdateUserDetails(request: UpdateUserRequest) {
     return undefined;
   }
 }
+
+/**
+ * Enables all user notifications.
+ *
+ * @param {Object} request - The request object.
+ * @param {string} request.token - The user token used for authorization.
+ *
+ * @return {Promise<number | undefined>} - The HTTP status code of the response if successful, otherwise undefined.
+ */
+export async function enableAllUserNotifications({ token }: WithTokenRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.post("/api/user/notifications/enable");
+    return response.status;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+/**
+ * Disables all user notifications.
+ *
+ * @param {object} request - The request object containing the token.
+ * @param {string} request.token - The user token used for authentication.
+ *
+ * @return {Promise<number|undefined>} A promise that resolves with the response status code
+ * if the request is successful, or undefined if there is an error.
+ */
+export async function disableAllUserNotifications({ token }: WithTokenRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.post("/api/user/notifications/disable");
+    return response.status;
+  } catch (err) {
+    return undefined;
+  }
+}
