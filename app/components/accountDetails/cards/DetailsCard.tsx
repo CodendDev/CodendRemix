@@ -1,13 +1,9 @@
 import React from "react";
 import { UserDetails } from "~/api/types/baseEntitiesTypes";
-import { useNavigate } from "@remix-run/react";
-import { Button, Card, CardBody, Link, Spacer } from "@nextui-org/react";
+import { Button, Card, CardBody, Spacer } from "@nextui-org/react";
 import { FaUserEdit } from "react-icons/fa/index.js";
-import {
-  DetailsField,
-  DetailsInput,
-} from "~/components/accountDetails/DetailsField";
-import { Switch } from "@nextui-org/switch";
+import { DetailsInput } from "~/components/accountDetails/DetailsField";
+import { Link } from "@remix-run/react";
 
 export function DetailsCard({
   user,
@@ -16,8 +12,6 @@ export function DetailsCard({
   user: UserDetails;
   editable: boolean;
 }) {
-  const navigate = useNavigate();
-
   return (
     <>
       <div className="flex flex-row items-center justify-between">
@@ -30,7 +24,7 @@ export function DetailsCard({
             variant="light"
             className="text-lg"
             startContent={<FaUserEdit />}
-            onPress={() => navigate("/user/account/edit")}
+            to="/user/account/edit"
           >
             Edit
           </Button>
@@ -59,8 +53,6 @@ export function DetailsCard({
             editable={editable}
             readOnly={true}
           />
-          <Spacer y={5} />
-          <DetailsField label="Notifications" item={<Switch />} />
         </CardBody>
       </Card>
     </>
