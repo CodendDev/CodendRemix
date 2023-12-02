@@ -1,18 +1,9 @@
-import { UserDetails } from "~/api/types/baseEntitiesTypes";
-import {
-  Button,
-  Card,
-  CardBody,
-  Image,
-  Input,
-  Link,
-  Spacer,
-} from "@nextui-org/react";
-import { FaUserEdit } from "react-icons/fa/index.js";
+import React, { useContext } from "react";
+import { Button, Link, Spacer } from "@nextui-org/react";
 import { Form, useNavigate } from "@remix-run/react";
-import AvatarSelector from "~/components/avatarSelector/avatarSelector";
-import { useContext } from "react";
 import { UserDetailsContext } from "~/routes/project/route";
+import { AvatarCard } from "~/components/accountDetails/cards/AvatarCard";
+import { DetailsCard } from "~/components/accountDetails/cards/DetailsCard";
 
 export function AccountDetails({ editable = false }: { editable?: boolean }) {
   const { userDetails } = useContext(UserDetailsContext);
@@ -49,136 +40,5 @@ export function AccountDetails({ editable = false }: { editable?: boolean }) {
         )}
       </div>
     </Form>
-  );
-}
-
-function AvatarCard({
-  imageUrl,
-  editable,
-}: {
-  imageUrl: string;
-  editable: boolean;
-}) {
-  const navigate = useNavigate();
-  return (
-    <>
-      <div className="px-2 py-2 text-lg">Your avatar</div>
-      <Card className="bg-[url('/login-background.svg')] bg-cover">
-        <CardBody className="flex h-60 flex-row items-center justify-center py-4">
-          {editable ? (
-            <div className="p-1">
-              <AvatarSelector
-                borderColor="border-emerald-500"
-                currentAvatar={imageUrl}
-              />
-            </div>
-          ) : (
-            <>
-              <Image
-                alt="User avatar"
-                className="border-3 border-emerald-500 object-cover"
-                src={imageUrl}
-                height={200}
-                radius="full"
-              />
-              <Link
-                isBlock
-                className="mt-auto cursor-pointer whitespace-nowrap px-2 py-1 text-sm italic text-emerald-800"
-                onPress={() => navigate("/user/account/edit")}
-              >
-                Change avatar
-              </Link>
-            </>
-          )}
-        </CardBody>
-      </Card>
-    </>
-  );
-}
-
-function DetailsCard({
-  user,
-  editable,
-}: {
-  user: UserDetails;
-  editable: boolean;
-}) {
-  const navigate = useNavigate();
-
-  return (
-    <>
-      <div className="flex flex-row items-center justify-between">
-        <div className="p-2 text-lg">About you</div>
-        {!editable && (
-          <Button
-            as={Link}
-            size="sm"
-            color="primary"
-            variant="light"
-            className="text-lg"
-            startContent={<FaUserEdit />}
-            onPress={() => navigate("/user/account/edit")}
-          >
-            Edit
-          </Button>
-        )}
-      </div>
-      <Card className="p-2">
-        <CardBody className="flex flex-col items-start justify-center pb-4 pt-2">
-          <DetailsDiv
-            label="First name"
-            name="firstName"
-            value={user.firstName}
-            editable={editable}
-          />
-          <Spacer y={5} />
-          <DetailsDiv
-            label="Last name"
-            name="lastName"
-            value={user.lastName}
-            editable={editable}
-          />
-          <Spacer y={5} />
-          <DetailsDiv
-            label="Email"
-            name="email"
-            value={user.email}
-            editable={editable}
-            readOnly={true}
-          />
-        </CardBody>
-      </Card>
-    </>
-  );
-}
-
-function DetailsDiv({
-  label,
-  name,
-  value,
-  editable,
-  readOnly = false,
-}: {
-  label: string;
-  name: string;
-  value: string;
-  editable: boolean;
-  readOnly?: boolean;
-}) {
-  return (
-    <>
-      <div className="text-md px-2 py-1 text-emerald-800">{label}</div>
-      <Input
-        name={name}
-        aria-label={label}
-        required
-        variant="bordered"
-        defaultValue={value}
-        minLength={1}
-        maxLength={30}
-        isReadOnly={readOnly || !editable}
-        classNames={{ input: "text-lg" }}
-      />
-    </>
   );
 }
