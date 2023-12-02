@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Input } from "@nextui-org/react";
-import { useSubmit } from "@remix-run/react";
+import { useFetcher, useLocation } from "@remix-run/react";
 
 export function DetailsField({
   label,
@@ -18,11 +18,12 @@ export function DetailsField({
 }
 
 export function DetailsNotifications() {
-  const submit = useSubmit();
+  const path = useLocation().pathname;
+  const fetcher = useFetcher();
 
   const handleNotifications = (shouldBeEnabled: boolean) => {
-    submit(
-      { notifications: shouldBeEnabled },
+    fetcher.submit(
+      { notifications: shouldBeEnabled, returnUrl: path },
       { action: "/user/account/edit", method: "post" }
     );
   };
@@ -33,12 +34,20 @@ export function DetailsNotifications() {
       item={
         <div className="flex w-full flex-row pt-2">
           <div className="flex w-full justify-center">
-            <Button color="secondary" onPress={() => handleNotifications(true)}>
+            <Button
+              color="secondary"
+              onPress={() => handleNotifications(true)}
+              isLoading={fetcher.state !== "idle"}
+            >
               Enable all notifications
             </Button>
           </div>
           <div className="flex w-full justify-center">
-            <Button color="warning" onPress={() => handleNotifications(false)}>
+            <Button
+              color="warning"
+              onPress={() => handleNotifications(false)}
+              isLoading={fetcher.state !== "idle"}
+            >
               Disable all notifications
             </Button>
           </div>

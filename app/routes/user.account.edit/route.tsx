@@ -29,14 +29,17 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
   }
   // user notifications
   if (request.method === "POST") {
-    const notifications =
-      Object.fromEntries(await request.formData()).notifications === "true";
+    const formData = Object.fromEntries(await request.formData());
+    const notifications = formData.notifications === "true";
+    const returnUrl = formData.returnUrl.toString();
 
     if (notifications) {
-      return enableAllUserNotifications({ token });
+      enableAllUserNotifications({ token });
     } else {
-      return disableAllUserNotifications({ token });
+      disableAllUserNotifications({ token });
     }
+
+    return redirect(returnUrl);
   }
 
   return undefined;
