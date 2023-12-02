@@ -2,6 +2,8 @@ import { AccountDetails } from "~/components/accountDetails/AccountDetails";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import getToken from "~/actions/getToken";
 import { UpdateUserDetails } from "~/api/methods/user";
+import { UserDetails } from "~/api/types/baseEntitiesTypes";
+import { useOutletContext } from "react-router";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -27,13 +29,15 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
     return undefined;
   }
 
-  return redirect("/user/account/details");
+  return {};
 };
 
 export default function UserAccountDetailsPage() {
+  const { userDetails }: { userDetails: UserDetails } = useOutletContext();
+
   return (
     <div className="flex grow justify-center">
-      <AccountDetails editable={true} />
+      <AccountDetails editable userDetails={userDetails} />
     </div>
   );
 }
