@@ -14,6 +14,10 @@ export default {
         "api/project/:projectId/sprints/:sprintId/task/:taskId/:taskType/move",
         "routes/api/projectTask/projectTaskMoveAction.tsx"
       );
+      route(
+        "api/project/:projectId/task-statuses/:statusId/move",
+        "routes/api/projectTaskStatus/projectTaskStatusMoveAction.tsx"
+      );
     });
   },
   ignoredRouteFiles: ["**/.*"],
