@@ -13,7 +13,7 @@ import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
 import { Draggable, Droppable } from "react-beautiful-dnd";
-import { DroppableType } from "~/components/board/ProjectBoard";
+import { DroppableType } from "~/components/board/ProjectBoardDnd";
 
 type BoardStatusContainerProps = {
   name: string;
