@@ -7,6 +7,7 @@ import { StatusesContext } from "~/routes/project.$projectId/route";
 import {
   DragDropContext,
   DraggableLocation,
+  Droppable,
   DropResult,
   OnDragEndResponder,
 } from "react-beautiful-dnd";
@@ -164,15 +165,36 @@ export function ProjectBoardDnd({
 
   return (
     <DragDropContext onDragEnd={handleDragDrop}>
-      {statusesWithTasks.map(({ status, tasks }) => (
-        <ProjectTaskStatusContainer
-          key={status.id}
-          statusId={status.id}
-          name={status.name}
-          tasks={tasks}
-          editable={editable}
-        />
-      ))}
+      <Droppable
+        droppableId="board"
+        type={DroppableType.boardContainer}
+        isDropDisabled={!editable}
+        direction="horizontal"
+      >
+        {(droppableProvided, droppableSnapshot) => (
+          <div
+            ref={droppableProvided.innerRef}
+            {...droppableProvided.droppableProps}
+            className={`flex h-full flex-row rounded-lg ${
+              droppableSnapshot.draggingOverWith
+                ? "outline outline-2 outline-offset-4 outline-emerald-700"
+                : ""
+            }`}
+          >
+            {statusesWithTasks.map(({ status, tasks }, index) => (
+              <ProjectTaskStatusContainer
+                key={status.id}
+                statusId={status.id}
+                name={status.name}
+                tasks={tasks}
+                editable={editable}
+                index={index}
+              />
+            ))}
+            {droppableProvided.placeholder}
+          </div>
+        )}
+      </Droppable>
     </DragDropContext>
   );
 }
