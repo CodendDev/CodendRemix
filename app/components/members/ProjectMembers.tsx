@@ -13,7 +13,7 @@ export function ProjectMembers(props: ProjectMembersProps) {
 
   return (
     <>
-      <div className="w-full p-5 text-3xl text-emerald-800">
+      <div className="w-3/4 py-5 pl-5 text-3xl text-emerald-800">
         Project <span className="text-lg">({membersCount})</span>
       </div>
       <Card className="w-3/4 min-w-fit">
