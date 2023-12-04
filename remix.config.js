@@ -10,6 +10,10 @@ export default {
         "api/project/:projectId/projectTaskStatus/:statusId",
         "routes/api/projectTaskStatus/projectTaskStatusEditDeleteAction.tsx"
       );
+      route(
+        "api/project/:projectId/sprints/:sprintId/task/:taskId/:taskType/move",
+        "routes/api/projectTask/projectTaskMoveAction.tsx"
+      );
     });
   },
   ignoredRouteFiles: ["**/.*"],

@@ -31,7 +31,8 @@ export function ProjectBoardTask({
   taskType,
   assigneeAvatar,
   relatedTaskId,
-}: BoardTask) {
+  isDragged,
+}: BoardTask & { isDragged: boolean }) {
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
@@ -77,7 +78,9 @@ export function ProjectBoardTask({
     <>
       <div
         onClick={handleClick}
-        className={`rounded-lg bg-white text-start shadow-md hover:shadow-lg ${projectBoardTaskSelected} cursor-pointer`}
+        className={`mb-3 rounded-lg bg-white text-start shadow-md hover:shadow-lg ${projectBoardTaskSelected} ${
+          isDragged ? "drop-shadow-xl" : ""
+        } cursor-pointer`}
       >
         <div
           className={`flex w-full justify-between rounded-lg px-3 py-2 ${gradientColor}`}

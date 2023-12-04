@@ -6,6 +6,7 @@ import type {
   UpdateSprintRequest,
   SprintRequest,
   SprintAssignTasksRequest,
+  MoveProjectTaskRequest,
 } from "~/api/types/sprintTypes";
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 
@@ -161,5 +162,28 @@ export async function sprintAssignTasks({
     return response.data;
   } catch (err) {
     return getApiErrorsFromError(err);
+  }
+}
+
+export async function moveProjectTask(request: MoveProjectTaskRequest) {
+  const axios = getAxiosInstance(request.token);
+  const requestData = {
+    prev: request.prev.length === 0 ? undefined : request.prev,
+    next: request.next.length === 0 ? undefined : request.next,
+    taskRequest: {
+      Id: request.taskId,
+      Type: request.taskType,
+    },
+    statusId: request.statusId.length === 0 ? undefined : request.statusId,
+  };
+
+  try {
+    const response = await axios.post(
+      `/api/projects/${request.projectId}/sprints/${request.sprintId}/tasks/move`,
+      requestData
+    );
+    return response.data;
+  } catch (err) {
+    return undefined;
   }
 }
