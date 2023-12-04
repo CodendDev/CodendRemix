@@ -12,18 +12,26 @@ import {
 export function ProjectNavigationActionsList({
   projectId,
 }: {
-  projectId: string;
+  projectId: string | undefined;
 }) {
   const navigate = useNavigate();
 
   return (
-    <Listbox label="Project actions">
-      {actions().map(({ name, redirectUrl, icon }, index) => (
+    <Listbox
+      label="Project actions"
+      disabledKeys={
+        !projectId ? actions().map((action) => action.name.toLowerCase()) : []
+      }
+    >
+      {actions().map(({ name, redirectUrl, icon }) => (
         <ListboxItem
           key={name.toLowerCase()}
           onClick={() => navigate(`/project/${projectId}/${redirectUrl}`)}
           startContent={icon}
-          className="w-full min-w-[120px]"
+          className="w-full rounded-lg px-3 text-xl"
+          classNames={{
+            title: "ml-2 text-lg",
+          }}
         >
           {name}
         </ListboxItem>
@@ -34,7 +42,7 @@ export function ProjectNavigationActionsList({
 
 export function LoadingProjectNavigationActionsList() {
   return [...Array(5)].map((e, i) => (
-    <Skeleton key={i} className="m-2 w-2/4 rounded-lg">
+    <Skeleton key={i} className="m-2 w-44 rounded-lg">
       <div className="h-6 w-0.5"></div>
     </Skeleton>
   ));

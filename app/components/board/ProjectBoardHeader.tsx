@@ -87,8 +87,8 @@ function AwaitedProjectBoardHeader({
   // @ts-ignore
   // noinspection RequiredAttributes
   return (
-    <div className="mx-3 flex w-full items-center justify-between overflow-auto p-2">
-      <div className="w-2/5 min-w-[20rem]">
+    <div className="flex w-full min-w-[40rem] items-center justify-between border-b-1 border-emerald-700 p-2">
+      <div className="w-2/5">
         <Select
           items={sprints}
           variant="flat"
@@ -119,7 +119,7 @@ function AwaitedProjectBoardHeader({
         </Select>
       </div>
       {filterable && (
-        <div className="mx-5 flex w-3/5 min-w-[20rem]">
+        <div className="mx-5 flex w-3/5">
           <ProjectBoardFilter />
         </div>
       )}

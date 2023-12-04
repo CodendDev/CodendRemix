@@ -1,6 +1,8 @@
 import type { AxiosInstance } from "axios";
 import axios, { isAxiosError } from "axios";
 import type { ApiErrorResponse } from "~/api/types/apiErrorsTypes";
+import * as https from "https";
+import * as process from "process";
 
 export function getAxiosInstance(token?: string): AxiosInstance {
   const url = process.env.API_SERVER;
@@ -14,9 +16,15 @@ export function getAxiosInstance(token?: string): AxiosInstance {
       }
     : {};
 
+  const httpsAgent =
+    process.env.SETTINGS === "DEVELOPMENT"
+      ? new https.Agent({ rejectUnauthorized: false })
+      : undefined;
+
   return axios.create({
     baseURL: url,
     timeout: 20000,
+    httpsAgent,
     headers: {
       ...authorizationHeaders,
       "Content-Type": "application/json",

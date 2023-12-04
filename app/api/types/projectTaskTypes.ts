@@ -37,3 +37,7 @@ export interface CreateProjectTaskRequest extends ProjectRequest {
 export interface UpdateProjectTaskRequest
   extends CreateProjectTaskRequest,
     ProjectTaskRequest {}
+
+export interface AssignProjectTask extends ProjectTaskRequest {
+  assigneeId: string;
+}

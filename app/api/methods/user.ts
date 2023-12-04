@@ -4,7 +4,10 @@ import type {
   LoginRequest,
   RegisterRequest,
   RegisterResponse,
+  WithTokenRequest,
 } from "~/api/types/authorizationTypes";
+import { UserDetails } from "~/api/types/baseEntitiesTypes";
+import { UpdateUserRequest } from "~/api/types/userTypes";
 
 /**
  * Less code for same methods 💀
@@ -46,3 +49,34 @@ export const register = async (
   request: RegisterRequest
 ): Promise<RegisterResponse | undefined> =>
   handleLoginRegister({ data: request, endpoint: "/api/register" });
+
+export async function getUserDetails({
+  token,
+}: WithTokenRequest): Promise<UserDetails | undefined> {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.get("/api/user");
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function UpdateUserDetails(request: UpdateUserRequest) {
+  const { token, firstName, lastName, imageUrl } = request;
+  const axios = getAxiosInstance(token);
+
+  const userData = {
+    firstName: firstName.trim(),
+    lastName: lastName.trim(),
+    imageUrl: imageUrl.trim(),
+  };
+
+  try {
+    const response = await axios.put("/api/user", userData);
+    return response.status;
+  } catch (err) {
+    return undefined;
+  }
+}

@@ -1,5 +1,6 @@
 import { getApiErrorsFromError, getAxiosInstance } from "~/api/axios";
 import {
+  AssignProjectTask,
   CreateProjectTaskRequest,
   ProjectTaskRequest,
   UpdateProjectTaskRequest,
@@ -112,6 +113,23 @@ export async function createProjectTask(request: CreateProjectTaskRequest) {
     const response = await axios.post(
       `/api/projects/${projectId}/tasks/${request.taskType.toLowerCase()}`,
       apiRequest
+    );
+    return response.status;
+  } catch (err) {
+    return getApiErrorsFromError(err);
+  }
+}
+
+export async function assignProjectTask({
+  projectId,
+  projectTaskId,
+  assigneeId,
+  token,
+}: AssignProjectTask) {
+  const axios = getAxiosInstance(token);
+  try {
+    const response = await axios.post(
+      `/api/projects/${projectId}/tasks/${projectTaskId}/assign/${assigneeId}`
     );
     return response.status;
   } catch (err) {

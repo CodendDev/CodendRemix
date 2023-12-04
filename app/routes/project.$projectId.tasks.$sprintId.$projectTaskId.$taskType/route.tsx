@@ -1,11 +1,10 @@
-import { Outlet, useLoaderData, useParams } from "@remix-run/react";
 import {
   action as ProjectTaskAction,
   loader as ProjectTaskLoader,
 } from "~/routes/api/projectTask/projectTaskGetDeletePutAction";
-import TaskSidebar from "~/components/taskSidebar/TaskSidebar";
 import React from "react";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import BoardTaskSidebar from "~/routes/project.$projectId.board.$sprintId.$projectTaskId.$taskType/route";
 
 export const action = async (args: ActionFunctionArgs) => {
   const response = await ProjectTaskAction(args);
@@ -20,19 +19,5 @@ export const action = async (args: ActionFunctionArgs) => {
 export const loader = ProjectTaskLoader;
 
 export default function TasksTaskSidebar() {
-  const loaderData = useLoaderData<typeof loader>();
-  const params = useParams();
-
-  // @ts-ignore
-  const { projectTaskPromise } = loaderData;
-
-  return (
-    <>
-      <TaskSidebar
-        projectTaskPromise={projectTaskPromise}
-        actionRouteRoot={`/project/${params.projectId!}/tasks/${params.sprintId!}`}
-      />
-      <Outlet />
-    </>
-  );
+  return <BoardTaskSidebar route="tasks" />;
 }

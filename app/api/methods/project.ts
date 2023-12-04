@@ -15,6 +15,12 @@ import type {
   Sprint,
   UserDetails,
 } from "~/api/types/baseEntitiesTypes";
+import {
+  AddMemberProjectRequest,
+  CreateProjectRequest,
+  RemoveMemberProjectRequest,
+  UpdateProjectRequest,
+} from "~/api/types/projectTypes";
 
 export async function getBoard({
   projectId,
@@ -128,6 +134,105 @@ export async function setIsFavourite({
     const response = await axios.put(`/api/projects/${projectId}/favourite`, {
       isFavourite,
     });
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function updateProject({
+  projectId,
+  token,
+  name,
+  description,
+}: UpdateProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  const apiRequest = {
+    name,
+    description: {
+      shouldUpdate: true,
+      value: description,
+    },
+  };
+
+  try {
+    const response = await axios.put(`/api/projects/${projectId}`, apiRequest);
+    return response.status;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+export async function createProject({
+  token,
+  name,
+  description,
+}: CreateProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.post(`/api/projects`, { name, description });
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+/**
+ * Remove a member from a project.
+ *
+ * @param {RemoveMemberProjectRequest} request - The request object containing the token, projectId, and memberId.
+ * @param {string} request.token - The access token for authentication.
+ * @param {string} request.projectId - The ID of the project.
+ * @param {string} request.memberId - The ID of the member to be removed.
+ *
+ * @return {Promise<Object|undefined>} - A Promise that resolves to the response data if the member is successfully removed, or undefined if there was an error.
+ */
+export async function removeMember({
+  token,
+  projectId,
+  memberId,
+}: RemoveMemberProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.delete(
+      `/api/projects/${projectId}/members/${memberId}`
+    );
+    return response.data;
+  } catch (err) {
+    return undefined;
+  }
+}
+
+/**
+ * Add a member to a project.
+ *
+ * @param {RemoveMemberProjectRequest} request - The request object containing the token, projectId, and memberEmail.
+ * @param {string} request.token - The authentication token.
+ * @param {string} request.projectId - The ID of the project.
+ * @param {string} request.memberEmail - The email address of the member to be added.
+ *
+ * @return {Promise<Object|undefined>} - A promise that resolves to the response data when the member is added successfully, or undefined if an error occurs.
+ */
+export async function addMember({
+  token,
+  projectId,
+  memberEmail,
+}: AddMemberProjectRequest) {
+  const axios = getAxiosInstance(token);
+
+  try {
+    const response = await axios.post(
+      `/api/projects/${projectId}/members`,
+      null,
+      {
+        params: {
+          email: memberEmail,
+        },
+      }
+    );
     return response.data;
   } catch (err) {
     return undefined;

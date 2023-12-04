@@ -24,3 +24,20 @@ export interface ProjectActiveSprintsRequest extends WithTokenRequest {
 export interface isFavouriteProjectRequest extends ProjectRequest {
   isFavourite: boolean;
 }
+
+export interface CreateProjectRequest extends WithTokenRequest {
+  name: string;
+  description: string;
+}
+
+export interface UpdateProjectRequest
+  extends CreateProjectRequest,
+    ProjectRequest {}
+
+export interface RemoveMemberProjectRequest extends ProjectRequest {
+  memberId: string;
+}
+
+export interface AddMemberProjectRequest extends ProjectRequest {
+  memberEmail: string;
+}

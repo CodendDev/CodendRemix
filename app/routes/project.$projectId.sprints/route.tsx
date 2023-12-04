@@ -8,7 +8,7 @@ import ProjectSprints from "~/components/sprint/ProjectSprints";
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const token = await getToken(request);
-  if (token === undefined) {
+  if (!token) {
     return null;
   }
   const projectId = params.projectId!;
@@ -25,7 +25,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     projectId,
   });
 
-  if (res === undefined || res.errors !== undefined) {
+  if (!res || res.errors) {
     return json({ errors: res?.errors ?? [] });
   }
 
@@ -34,16 +34,12 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
-  if (token === undefined) {
+  if (!token) {
     return redirect("/user/login");
   }
 
   const projectId = params.projectId!;
-
-  const sprints = getSprints({
-    projectId: projectId,
-    token: token,
-  });
+  const sprints = getSprints({ projectId, token });
 
   return defer({ projectId, sprints });
 };
@@ -54,9 +50,9 @@ export default function SprintsPage() {
   const { projectId, sprints } = loaderData;
 
   return (
-    <>
+    <div className="flex h-full">
       <ProjectSprints projectId={projectId} sprints={sprints} />
       <Outlet />
-    </>
+    </div>
   );
 }

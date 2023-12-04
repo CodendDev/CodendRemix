@@ -12,11 +12,12 @@ import type { OptionsDropdownItem } from "~/components/utils/dropdown/OptionsDro
 import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
+import { Draggable, Droppable } from "react-beautiful-dnd";
+import { DroppableType } from "~/components/board/ProjectBoard";
 
 type BoardStatusContainerProps = {
   name: string;
   statusId: string;
-  position?: string;
   tasks: BoardTask[];
   editable: boolean;
 };
@@ -24,7 +25,6 @@ type BoardStatusContainerProps = {
 export function ProjectTaskStatusContainer({
   name,
   statusId,
-  position,
   tasks,
   editable,
 }: BoardStatusContainerProps) {
@@ -38,7 +38,7 @@ export function ProjectTaskStatusContainer({
 
   return (
     <>
-      <div className="flex w-[100em] min-w-[20em] flex-col px-2">
+      <div className="flex w-[20em] flex-shrink-0 flex-col px-2">
         <StatusContainerHeader
           statusId={statusId}
           name={name}
@@ -46,13 +46,51 @@ export function ProjectTaskStatusContainer({
           onDelete={deleteStatusModal.onOpen}
           editable={editable}
         />
-        <Card className="flex h-full flex-col gap-4 overflow-y-auto bg-gray-100 p-3">
-          {tasks
-            .sort((a, b) => a.position.localeCompare(b.position))
-            .map((task) => (
-              <ProjectBoardTask {...task} key={task.id} />
-            ))}
-        </Card>
+        <Droppable
+          droppableId={statusId}
+          type={DroppableType.statusContainer}
+          isDropDisabled={!editable}
+        >
+          {(droppableProvided, droppableSnapshot) => (
+            <Card
+              className={`
+                flex h-[calc(100vh-8.5rem)] flex-col overflow-y-auto bg-gray-100 ${
+                  droppableSnapshot.draggingOverWith
+                    ? "outline-2 -outline-offset-1 outline-emerald-500"
+                    : droppableSnapshot.draggingFromThisWith
+                    ? "outline-dashed outline-2 -outline-offset-1 outline-emerald-500"
+                    : ""
+                } p-3
+              `}
+              ref={droppableProvided.innerRef}
+              {...droppableProvided.droppableProps}
+            >
+              {tasks.map((task, index) => (
+                <Draggable
+                  draggableId={task.id}
+                  key={task.id}
+                  index={index}
+                  isDragDisabled={!editable}
+                >
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <ProjectBoardTask
+                        {...task}
+                        key={task.id}
+                        isDragged={snapshot.isDragging}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {droppableProvided.placeholder}
+            </Card>
+          )}
+        </Droppable>
       </div>
       {editable && (
         <>
@@ -86,7 +124,7 @@ export function ProjectTaskStatusContainerLoading({
   isLoaded?: boolean;
 }) {
   return (
-    <div className="flex h-full w-full min-w-[15rem] grow flex-col">
+    <div className="flex w-[20em] flex-shrink-0 flex-col px-2">
       {name ? (
         <StatusContainerHeader
           name={name}
@@ -101,7 +139,7 @@ export function ProjectTaskStatusContainerLoading({
           </div>
         </Skeleton>
       )}
-      <Card className="flex h-full flex-col gap-4 bg-gray-100 px-4 py-6 shadow-none">
+      <Card className="flex h-full flex-col gap-4 overflow-y-auto bg-gray-100 p-3">
         <ProjectBoardTaskLoading isLoaded={isLoaded} />
         <ProjectBoardTaskLoading isLoaded={isLoaded} />
         <ProjectBoardTaskLoading isLoaded={isLoaded} />

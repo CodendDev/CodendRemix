@@ -1,10 +1,17 @@
 import type { Project } from "~/api/types/baseEntitiesTypes";
-import { Accordion, AccordionItem, Skeleton } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  ScrollShadow,
+  Skeleton,
+} from "@nextui-org/react";
 import React, { useContext, useState } from "react";
-import { useLocation, useNavigate, useSubmit } from "@remix-run/react";
+import { Link, useLocation, useNavigate, useSubmit } from "@remix-run/react";
 import { AiOutlineFileSearch } from "react-icons/ai/index.js";
 import { ProjectNavigationBarContext } from "~/components/projectNavigation/ProjectNavigationBar";
 import { FaStar, FaRegStar } from "react-icons/fa/index.js";
+import { AiOutlinePlus } from "react-icons/ai/index.js";
 
 type ProjectNavigationListProps = {
   projects: Project[];
@@ -16,21 +23,46 @@ export function ProjectNavigationList({
   selectedProjectId,
 }: ProjectNavigationListProps) {
   return (
-    <Accordion defaultExpandedKeys={["Projects"]} className="text-center">
-      <AccordionItem
-        key="Projects"
-        aria-label="Projects"
-        className="min-w-[200px]"
-        title={<ProjectNavigationListTitle />}
+    <>
+      <Accordion
+        variant="bordered"
+        defaultExpandedKeys={projects.length > 0 ? ["Projects"] : []}
+        className="rounded-none border-none text-center"
       >
-        <ProjectList
-          projects={projects.sort(
-            (a, b) => Number(b.isFavourite) - Number(a.isFavourite)
+        <AccordionItem
+          key="Projects"
+          aria-label="Projects"
+          title={<ProjectNavigationListTitle />}
+        >
+          {projects.length > 0 ? (
+            <ProjectList
+              projects={projects.sort(
+                (a, b) => Number(b.isFavourite) - Number(a.isFavourite)
+              )}
+              selectedProjectId={selectedProjectId}
+            />
+          ) : (
+            <div className="flex justify-center text-lg text-gray-600">
+              You don't have any projects.
+            </div>
           )}
-          selectedProjectId={selectedProjectId}
-        />
-      </AccordionItem>
-    </Accordion>
+        </AccordionItem>
+      </Accordion>
+      <div className="flex flex-row px-4">
+        <Button
+          size="sm"
+          variant="light"
+          color="primary"
+          fullWidth
+          startContent={<AiOutlinePlus />}
+          className="text-lg"
+          as={Link}
+          to="/project/create"
+        >
+          New project
+        </Button>
+      </div>
+    </>
   );
 }
 
@@ -58,8 +90,8 @@ export function LoadingProjectNavigationList({ error }: { error?: boolean }) {
 
 function ProjectNavigationListTitle() {
   return (
-    <div className="flex flex-row">
-      <div className="flex items-center justify-center">
+    <div className="flex flex-row text-xl">
+      <div className="mx-2 flex items-center justify-center">
         <AiOutlineFileSearch />
       </div>
       Projects
@@ -76,7 +108,10 @@ function ProjectList({
   );
 
   return (
-    <div className="flex min-w-full flex-col">
+    <ScrollShadow
+      hideScrollBar
+      className="-mt-2 flex flex-col rounded-lg border-1 border-gray-200"
+    >
       {projects.map((project) => (
         <ProjectListItem
           key={project.id}
@@ -85,7 +120,7 @@ function ProjectList({
           setSelect={() => setSelected(project.id)}
         />
       ))}
-    </div>
+    </ScrollShadow>
   );
 }
 
@@ -109,15 +144,17 @@ function ProjectListItem({
         setSelect();
         nameContext.setProjectName(name);
       }}
-      className={`flex cursor-pointer  p-2 text-center hover:bg-gray-100
+      className={`flex cursor-pointer flex-row p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 not-first:border-t-1 not-first:border-gray-200
       ${
         selected
-          ? "border-r-5 border-gray-400 bg-gray-100 hover:bg-gray-200"
-          : "border-r-5"
+          ? "outline outline-1 -outline-offset-1 outline-emerald-500"
+          : ""
       }`}
     >
       <ProjectStar isFavourite={isFavourite} projectId={id} />
-      <div className="w-full grow">{name}</div>
+      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-start">
+        {name}
+      </span>
     </div>
   );
 }
@@ -130,17 +167,13 @@ const ProjectStar = ({
   projectId: string;
 }) => {
   const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
-  const [hover, setHover] = useState(false);
-  const hoverIcon = isFavouriteState ? <FaRegStar /> : <FaStar />;
   const icon = isFavouriteState ? <FaStar /> : <FaRegStar />;
   const location = useLocation().pathname;
 
   const submit = useSubmit();
   return (
     <div
-      className="mx-2 flex items-center justify-center text-yellow-300"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      className="mx-2 flex items-center justify-center text-primary-500 hover:text-primary-700"
       onClick={(e) => {
         submit(
           { isFavourite: !isFavourite, projectId, location },
@@ -150,7 +183,7 @@ const ProjectStar = ({
         e.stopPropagation();
       }}
     >
-      {hover ? hoverIcon : icon}
+      {icon}
     </div>
   );
 };
