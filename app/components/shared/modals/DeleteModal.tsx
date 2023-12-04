@@ -16,6 +16,7 @@ interface DeleteModalProps {
   deleteHeader?: string;
   isOpen: boolean;
   onOpenChange: () => void;
+  children?: React.ReactElement[];
 }
 
 export function DeleteModal({
@@ -25,6 +26,7 @@ export function DeleteModal({
   deleteHeader,
   isOpen,
   onOpenChange,
+  children,
 }: DeleteModalProps) {
   const fetcher = useFetcher();
 
@@ -70,10 +72,12 @@ export function DeleteModal({
       {useFetcherForm ? (
         <fetcher.Form method="delete" action={actionRoute}>
           {modalContent}
+          {children}
         </fetcher.Form>
       ) : (
         <Form method="delete" action={actionRoute}>
           {modalContent}
+          {children}
         </Form>
       )}
     </Modal>
