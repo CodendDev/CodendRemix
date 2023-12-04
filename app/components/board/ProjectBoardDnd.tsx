@@ -1,6 +1,12 @@
 import { BoardTask, ProjectTaskStatus } from "~/api/types/baseEntitiesTypes";
 import ProjectTaskStatusContainer from "~/components/board/ProjectTaskStatusContainer";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { BoardQueryContext } from "~/components/board/ProjectBoardFilter";
 import { StatusesContext } from "~/routes/project.$projectId/route";
 
@@ -36,29 +42,27 @@ export function ProjectBoardDnd({
   const fetcher = useFetcher();
 
   const statuses = useContext(StatusesContext);
+
   const queryContext = useContext(BoardQueryContext);
-  const queriedTasks = useCallback(
-    () => queryContext.filter(queryContext, boardTasks),
-    [queryContext.query, boardTasks]
+  const queriedTasks = useMemo(() => {
+    return queryContext.filter(queryContext, boardTasks);
+  }, [queryContext.query, boardTasks]);
+
+  const getSortedTasksForStatus = useCallback(
+    (statusId: string): BoardTask[] => {
+      return queriedTasks
+        .filter((task) => task.statusId === statusId)
+        .sort((a, b) => a.position!.localeCompare(b.position!));
+    },
+    [queriedTasks]
   );
 
-  const getTasksForStatus = (statusId: string): BoardTask[] => {
-    return queriedTasks().filter((task) => task.statusId === statusId);
-  };
-
-  const getSortedTasksForStatus = (statusId: string): BoardTask[] => {
-    return getTasksForStatus(statusId).sort((a, b) =>
-      a.position!.localeCompare(b.position!)
-    );
-  };
-
-  const getFreshStatusesWithTasks = () =>
-    statuses
-      .sort((a, b) => a.position!.localeCompare(b.position!))
-      .map((status) => ({
-        status: status,
-        tasks: getSortedTasksForStatus(status.id),
-      }));
+  const getFreshStatusesWithTasks = useMemo(() => {
+    return statuses.map((status) => ({
+      status: status,
+      tasks: getSortedTasksForStatus(status.id),
+    }));
+  }, [statuses, getSortedTasksForStatus]);
 
   const [statusesWithTasks, setStatusesWithTasks] = useState<StatusTasks[]>(
     getFreshStatusesWithTasks
@@ -67,7 +71,7 @@ export function ProjectBoardDnd({
   // refresh when query applied or sprint changed
   useEffect(() => {
     setStatusesWithTasks(getFreshStatusesWithTasks);
-  }, [queryContext.query, boardTasks]);
+  }, [queryContext.query, boardTasks, getFreshStatusesWithTasks]);
 
   const updateStatusesWithTasks = (statusId: string, newTasks: BoardTask[]) => {
     setStatusesWithTasks((prevStatuses) =>
@@ -154,12 +158,79 @@ export function ProjectBoardDnd({
     });
   };
 
+  const updateStatusesWithTasksOrder = (statusesOrder: ProjectTaskStatus[]) => {
+    setStatusesWithTasks((prevStatuses) => {
+      // Create a map for quick lookup of status positions
+      const statusPositionMap = new Map(
+        statusesOrder.map((status, index) => [status.id, index])
+      );
+
+      // Sort the statuses based on the new order
+      return [...prevStatuses].sort(
+        (a, b) =>
+          statusPositionMap.get(a.status.id)! -
+          statusPositionMap.get(b.status.id)!
+      );
+    });
+  };
+
+  const submitStatusMove = ({
+    destination,
+    oldStatuses,
+    draggableId,
+  }: {
+    destination: DraggableLocation;
+    oldStatuses: ProjectTaskStatus[];
+    draggableId: string;
+  }) => {
+    const prev =
+      destination.index - 1 < 0
+        ? ""
+        : oldStatuses[destination.index - 1].position;
+    const next =
+      destination.index > oldStatuses.length - 1
+        ? ""
+        : oldStatuses[destination.index].position;
+    fetcher.submit(
+      { prev, next },
+      {
+        method: "POST",
+        action: `/api/project/${projectId}/task-statuses/${draggableId}/move`,
+      }
+    );
+  };
+
+  const handleStatusDragDrop = (result: DropResult) => {
+    const source = result.source;
+    const destination = result.destination!;
+
+    // optimistic ui
+    const newStatuses = [
+      ...statusesWithTasks.map((statusTask) => statusTask.status),
+    ];
+    const oldStatuses = [...newStatuses];
+    const [removedElement] = newStatuses.splice(source.index, 1);
+    newStatuses.splice(destination.index, 0, removedElement);
+
+    updateStatusesWithTasksOrder(newStatuses);
+
+    // remove reordered element for correct position calculations
+    oldStatuses.splice(source.index, 1);
+    submitStatusMove({
+      destination,
+      oldStatuses,
+      draggableId: result.draggableId,
+    });
+  };
+
   const handleDragDrop: OnDragEndResponder = (result) => {
     // quit early when dropped in same place or outside droppable
     if (!result.destination || isSameDroppable(result)) return;
 
     if (result.type === DroppableType.statusContainer) {
       handleBoardTaskDragDrop(result);
+    } else if (result.type === DroppableType.boardContainer) {
+      handleStatusDragDrop(result);
     }
   };
 
