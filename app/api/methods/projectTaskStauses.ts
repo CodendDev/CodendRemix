@@ -4,7 +4,10 @@ import type {
   DeleteProjectTaskStatusRequest,
   ProjectTaskStatusesRequest,
 } from "~/api/types/projectTaskStatusesTypes";
-import { UpdateProjectTaskStatusRequest } from "~/api/types/projectTaskStatusesTypes";
+import {
+  MoveProjectTaskStatusRequest,
+  UpdateProjectTaskStatusRequest,
+} from "~/api/types/projectTaskStatusesTypes";
 import { ProjectTaskStatus } from "~/api/types/baseEntitiesTypes";
 
 export async function getProjectTaskStatuses({
@@ -69,5 +72,30 @@ export async function updateProjectTaskStatus({
     return;
   } catch (err) {
     return getApiErrorsFromError(err);
+  }
+}
+
+export async function moveProjectTaskStatus({
+  projectId,
+  token,
+  statusId,
+  prev,
+  next,
+}: MoveProjectTaskStatusRequest) {
+  const axios = getAxiosInstance(token);
+
+  const requestData = {
+    prev: prev.length === 0 ? undefined : prev.trim(),
+    next: next.length === 0 ? undefined : next.trim(),
+  };
+
+  try {
+    const response = await axios.post(
+      `/api/projects/${projectId}/task-statuses/${statusId}/move`,
+      requestData
+    );
+    return response.data;
+  } catch (err) {
+    return undefined;
   }
 }
