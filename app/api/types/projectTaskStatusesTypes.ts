@@ -19,3 +19,9 @@ export interface UpdateProjectTaskStatusRequest extends WithTokenRequest {
   statusId: string;
   request: { name: string };
 }
+
+export interface MoveProjectTaskStatusRequest
+  extends DeleteProjectTaskStatusRequest {
+  prev: string;
+  next: string;
+}
