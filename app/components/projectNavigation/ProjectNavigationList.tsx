@@ -140,7 +140,7 @@ function ProjectListItem({
   return (
     <div
       onClick={() => {
-        navigate(`/project/${id}`);
+        navigate(`/project/${id}/board`);
         setSelect();
         nameContext.setProjectName(name);
       }}
