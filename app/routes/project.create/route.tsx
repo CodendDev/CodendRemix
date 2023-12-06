@@ -17,7 +17,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   });
 
   if (id) {
-    return redirect(`/project/${id}`);
+    return redirect(`/project/${id}/board`);
   }
 
   return undefined;

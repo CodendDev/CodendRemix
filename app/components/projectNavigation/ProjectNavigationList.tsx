@@ -12,6 +12,8 @@ import { AiOutlineFileSearch } from "react-icons/ai/index.js";
 import { ProjectNavigationBarContext } from "~/components/projectNavigation/ProjectNavigationBar";
 import { FaStar, FaRegStar } from "react-icons/fa/index.js";
 import { AiOutlinePlus } from "react-icons/ai/index.js";
+import { FaRegEdit } from "react-icons/fa/index.js";
+import ClickableDiv from "~/components/utils/ClickableDiv";
 
 type ProjectNavigationListProps = {
   projects: Project[];
@@ -138,13 +140,13 @@ function ProjectListItem({
   const nameContext = useContext(ProjectNavigationBarContext);
 
   return (
-    <div
+    <ClickableDiv
       onClick={() => {
-        navigate(`/project/${id}`);
+        navigate(`/project/${id}/board`);
         setSelect();
         nameContext.setProjectName(name);
       }}
-      className={`flex cursor-pointer flex-row p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 not-first:border-t-1 not-first:border-gray-200
+      className={`flex cursor-pointer flex-row items-center p-2 text-center first:rounded-t-lg last:rounded-b-lg hover:bg-gray-100 not-first:border-t-1 not-first:border-gray-200
       ${
         selected
           ? "outline outline-1 -outline-offset-1 outline-emerald-500"
@@ -152,10 +154,11 @@ function ProjectListItem({
       }`}
     >
       <ProjectStar isFavourite={isFavourite} projectId={id} />
-      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-start">
+      <span className="w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-start">
         {name}
       </span>
-    </div>
+      <ProjectEdit projectId={id} setSelect={setSelect} />
+    </ClickableDiv>
   );
 }
 
@@ -171,9 +174,10 @@ const ProjectStar = ({
   const location = useLocation().pathname;
 
   const submit = useSubmit();
+
   return (
-    <div
-      className="mx-2 flex items-center justify-center text-primary-500 hover:text-primary-700"
+    <ClickableDiv
+      className="mr-1 flex items-center justify-center p-1 text-primary-500 hover:text-primary-700"
       onClick={(e) => {
         submit(
           { isFavourite: !isFavourite, projectId, location },
@@ -184,7 +188,30 @@ const ProjectStar = ({
       }}
     >
       {icon}
-    </div>
+    </ClickableDiv>
+  );
+};
+
+const ProjectEdit = ({
+  projectId,
+  setSelect,
+}: {
+  projectId: string;
+  setSelect: () => void;
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <ClickableDiv
+      onClick={(e) => {
+        navigate(`/project/${projectId}/update`);
+        setSelect();
+        e.stopPropagation();
+      }}
+      className="rounded-lg p-1 hover:bg-gray-300"
+    >
+      <FaRegEdit />
+    </ClickableDiv>
   );
 };
 

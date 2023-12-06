@@ -1,5 +1,10 @@
-import React from "react";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import React, {
+  createContext,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import ProjectNavigationBar from "~/components/projectNavigation/ProjectNavigationBar";
 import getToken from "~/actions/getToken";
 import type { LoaderFunctionArgs } from "@remix-run/node";
@@ -11,6 +16,8 @@ import {
 } from "~/components/navigation/NavigationBar";
 import handleLogout from "~/actions/handleLogout";
 import { getUserDetails } from "~/api/methods/user";
+import { UserDetails } from "~/api/types/baseEntitiesTypes";
+import { ProjectIndexComponent } from "~/components/ProjectIndexComponent";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -42,18 +49,37 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return redirect("/user/login");
   }
 
-  const userDetails = await getUserDetails({ token });
+  const userDetailsResponse = await getUserDetails({ token });
   const projects = getPagedProjects({ pageIndex: 1, pageSize: 100, token });
 
-  return defer({ projects, userDetails });
+  return defer({ projects, userDetailsResponse });
 };
+
+export interface UserDetailsContextProps {
+  userDetails: UserDetails;
+  setUserDetails: React.Dispatch<SetStateAction<UserDetails>>;
+}
+
+export const UserDetailsContext = createContext<UserDetailsContextProps>({
+  userDetails: { firstName: "", lastName: "", email: "", imageUrl: "", id: "" },
+  setUserDetails: () => {},
+});
 
 export default function ProjectPage() {
   const loaderData = useLoaderData<typeof loader>();
+  const location = useLocation();
   // @ts-ignore
-  const { projects, userDetails } = loaderData;
+  const { projects, userDetailsResponse } = loaderData;
 
-  const [isMenuOpen, setIsMenuOpen] = React.useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [userDetails, setUserDetails] = useState(userDetailsResponse);
+
+  // 💀
+  const isIndexRoute = location.pathname.toLowerCase() === "/project";
+
+  useEffect(() => {
+    setUserDetails(userDetailsResponse);
+  }, [userDetailsResponse]);
 
   return (
     <div className="flex h-screen">
@@ -75,7 +101,10 @@ export default function ProjectPage() {
         </div>
       </div>
       <div className="grow overflow-y-auto">
-        <Outlet context={{ userDetails }} />
+        <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>
+          <Outlet />
+          {isIndexRoute && <ProjectIndexComponent projectsPromise={projects} />}
+        </UserDetailsContext.Provider>
       </div>
     </div>
   );

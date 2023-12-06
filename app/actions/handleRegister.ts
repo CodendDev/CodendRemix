@@ -27,7 +27,7 @@ export const handleRegister = async ({
 
   const tokenCookie = createUserTokenCookie(false);
 
-  return redirect("/", {
+  return redirect("/project", {
     headers: {
       "Set-Cookie": await tokenCookie.serialize(accessToken),
     },

@@ -23,7 +23,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     description: data.description.toString(),
   });
 
-  return response ? redirect(`/project/${params.projectId!}`) : undefined;
+  return response ? redirect(`/project/${params.projectId!}/board`) : undefined;
 };
 
 export default function UpdateProjectPage() {
