@@ -6,8 +6,8 @@ import {
   enableAllUserNotifications,
   UpdateUserDetails,
 } from "~/api/methods/user";
-import { UserDetails } from "~/api/types/baseEntitiesTypes";
-import { useOutletContext } from "react-router";
+import { useContext } from "react";
+import { UserDetailsContext } from "~/routes/project/route";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -46,7 +46,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function UserAccountDetailsPage() {
-  const { userDetails }: { userDetails: UserDetails } = useOutletContext();
+  const { userDetails } = useContext(UserDetailsContext);
 
   return (
     <div className="flex grow justify-center">
