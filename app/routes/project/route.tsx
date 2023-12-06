@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import React from "react";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import ProjectNavigationBar from "~/components/projectNavigation/ProjectNavigationBar";
 import getToken from "~/actions/getToken";
@@ -16,7 +11,6 @@ import {
 } from "~/components/navigation/NavigationBar";
 import handleLogout from "~/actions/handleLogout";
 import { getUserDetails } from "~/api/methods/user";
-import { UserDetails } from "~/api/types/baseEntitiesTypes";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -48,33 +42,18 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return redirect("/user/login");
   }
 
-  const userDetailsResponse = await getUserDetails({ token });
+  const userDetails = await getUserDetails({ token });
   const projects = getPagedProjects({ pageIndex: 1, pageSize: 100, token });
 
-  return defer({ projects, userDetailsResponse });
+  return defer({ projects, userDetails });
 };
-
-export interface UserDetailsContextProps {
-  userDetails: UserDetails;
-  setUserDetails: React.Dispatch<SetStateAction<UserDetails>>;
-}
-
-export const UserDetailsContext = createContext<UserDetailsContextProps>({
-  userDetails: { firstName: "", lastName: "", email: "", imageUrl: "", id: "" },
-  setUserDetails: () => {},
-});
 
 export default function ProjectPage() {
   const loaderData = useLoaderData<typeof loader>();
   // @ts-ignore
-  const { projects, userDetailsResponse } = loaderData;
+  const { projects, userDetails } = loaderData;
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(true);
-  const [userDetails, setUserDetails] = useState(userDetailsResponse);
-
-  useEffect(() => {
-    setUserDetails(userDetailsResponse);
-  }, [userDetailsResponse]);
 
   return (
     <div className="flex h-screen">
@@ -96,9 +75,7 @@ export default function ProjectPage() {
         </div>
       </div>
       <div className="grow overflow-y-auto">
-        <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>
-          <Outlet />
-        </UserDetailsContext.Provider>
+        <Outlet context={{ userDetails }} />
       </div>
     </div>
   );
