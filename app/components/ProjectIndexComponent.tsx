@@ -92,9 +92,11 @@ function ProjectItem(project: Project) {
     >
       <Card className="flex flex-row gap-2 px-3 py-1 hover:bg-gray-200">
         <div className="whitespace-nowrap text-lg">{project.name}</div>
-        <div className="text-md hidden min-w-[2em] max-w-[12em] flex-shrink self-center overflow-hidden text-ellipsis whitespace-nowrap text-gray-700 lg:block">
-          ({project.description})
-        </div>
+        {project.description && (
+          <div className="text-md hidden min-w-[2em] max-w-[12em] flex-shrink self-center overflow-hidden text-ellipsis whitespace-nowrap text-gray-700 lg:block">
+            ({project.description})
+          </div>
+        )}
       </Card>
     </ClickableDiv>
   );
