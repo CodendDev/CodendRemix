@@ -102,9 +102,14 @@ function AwaitedProjectNavigationBar({
           <User
             name={`${userDetails.firstName} ${userDetails.lastName}`}
             description={userDetails.email}
-            avatarProps={{ src: userDetails.imageUrl }}
+            avatarProps={{
+              src: userDetails.imageUrl,
+            }}
             className="cursor-pointer p-1 hover:bg-gray-300"
-            classNames={{ description: "overflow-hidden text-ellipsis w-36" }}
+            classNames={{
+              description: "overflow-hidden text-ellipsis w-36",
+              name: "w-36 line-clamp-2",
+            }}
             onClick={() => {
               navigate("/user/account/details");
             }}
