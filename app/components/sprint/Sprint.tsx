@@ -9,6 +9,7 @@ import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions
 import { useNavigate } from "@remix-run/react";
 import type { SprintStatus } from "~/api/types/sprintTypes";
 import { sprintStatusToColorClass } from "~/components/utils/TypeToColor";
+import ClickableDiv from "~/components/utils/ClickableDiv";
 
 interface SprintProps extends Omit<APISprintProps, "sprintTasks"> {
   projectId: string;
@@ -49,7 +50,7 @@ export function Sprint(sprint: SprintProps) {
   })();
 
   return (
-    <div
+    <ClickableDiv
       onClick={() => {
         sprintStatus !== "Archived" &&
           navigation(`/project/${sprint.projectId}/sprints/${sprint.id}`);
@@ -74,7 +75,7 @@ export function Sprint(sprint: SprintProps) {
       ) : (
         <OptionsDropdown options={dropdownOptionsArchived} />
       )}
-    </div>
+    </ClickableDiv>
   );
 }
 
