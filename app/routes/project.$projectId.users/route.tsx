@@ -5,6 +5,7 @@ import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import getToken from "~/actions/getToken";
 import { addMember, removeMember } from "~/api/methods/project";
 import { ProjectMembers } from "~/components/members/ProjectMembers";
+import { jwtDecode } from "jwt-decode";
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   const token = await getToken(request);
@@ -15,7 +16,10 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   if (request.method === "DELETE") {
     const projectId = params.projectId!;
     const memberId = Object.fromEntries(await request.formData()).id.toString();
-    return removeMember({ token, projectId, memberId });
+    const assigneeId = jwtDecode(token).sub;
+
+    const response = await removeMember({ token, projectId, memberId });
+    return memberId === assigneeId ? redirect("/project") : response;
   }
 
   if (request.method === "POST") {
