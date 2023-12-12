@@ -18,7 +18,8 @@ export const queryFilterBoardTasks = (
     (t) =>
       query.length === 0 ||
       t.taskType.toLowerCase() === query.toLowerCase() ||
-      t.name.toLowerCase().includes(query.toLowerCase())
+      t.name.toLowerCase().includes(query.toLowerCase()) ||
+      t.priority?.toLowerCase().includes(query.toLowerCase())
   );
 export const BoardQueryContext = createContext<BoardQueryContextProps>({
   query: "",
@@ -41,7 +42,7 @@ export const ProjectBoardFilter = () => {
   );
 };
 
-const ToolTipHint = `You can also filter sprint tasks by their type. eg. "Story", "Epic", "Task", "Bugfix", etc.`;
+const ToolTipHint = `You can also filter sprint tasks by their type (eg. "Story") and priority (eg. "High")`;
 const SearchToolTip = () => (
   <Tooltip content={ToolTipHint} placement="bottom-start">
     <div className="cursor-pointer text-xl">

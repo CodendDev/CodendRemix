@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import ProjectNavigationBar from "~/components/projectNavigation/ProjectNavigationBar";
 import getToken from "~/actions/getToken";
 import type { LoaderFunctionArgs } from "@remix-run/node";
@@ -17,6 +17,7 @@ import {
 import handleLogout from "~/actions/handleLogout";
 import { getUserDetails } from "~/api/methods/user";
 import { UserDetails } from "~/api/types/baseEntitiesTypes";
+import { ProjectIndexComponent } from "~/components/ProjectIndexComponent";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -66,11 +67,15 @@ export const UserDetailsContext = createContext<UserDetailsContextProps>({
 
 export default function ProjectPage() {
   const loaderData = useLoaderData<typeof loader>();
+  const location = useLocation();
   // @ts-ignore
   const { projects, userDetailsResponse } = loaderData;
 
-  const [isMenuOpen, setIsMenuOpen] = React.useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [userDetails, setUserDetails] = useState(userDetailsResponse);
+
+  // 💀
+  const isIndexRoute = location.pathname.toLowerCase() === "/project";
 
   useEffect(() => {
     setUserDetails(userDetailsResponse);
@@ -98,6 +103,7 @@ export default function ProjectPage() {
       <div className="grow overflow-y-auto">
         <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>
           <Outlet />
+          {isIndexRoute && <ProjectIndexComponent projectsPromise={projects} />}
         </UserDetailsContext.Provider>
       </div>
     </div>

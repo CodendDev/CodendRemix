@@ -46,35 +46,46 @@ function AwaitedProjectBoardHeader({
   route,
   filterable = false,
 }: AwaitedProjectBoardHeaderProps) {
+  const params = useParams();
   const [selectedValues, setSelectedValues] = useState<Selection>(
     sprints.length > 0 ? new Set([sprints[0].id]) : new Set([])
   );
+  const [currProjectId, setCurrProjectId] = useState(params.projectId);
+
   const navigate = useNavigate();
-  const routeSprintId = useParams().sprintId;
+  const routeProjectId = params.projectId;
+  const routeSprintId = params.sprintId;
   const selectedSprintId = (() => {
     const arr = Array.from(selectedValues);
     return arr.length > 0 ? arr[0].toString() : null;
   })();
 
-  const getSprintDatesString = ({
-    startDate,
-    endDate,
-  }: {
-    startDate: string;
-    endDate: string;
-  }) => {
-    return `${new Date(startDate).toLocaleDateString()} ${new Date(
-      endDate
+  const getSprintDatesString = (sprint: Sprint) => {
+    if (!sprint || !sprint.startDate || !sprint.endDate) {
+      return "";
+    }
+    return `${new Date(sprint.startDate).toLocaleDateString()} ${new Date(
+      sprint.endDate
     ).toLocaleDateString()}`;
   };
 
   useEffect(() => {
+    if (currProjectId !== routeProjectId) {
+      setCurrProjectId(routeProjectId);
+      const newSelectedValues =
+        sprints.length > 0 ? new Set([sprints[0].id]) : new Set([]);
+      setSelectedValues(newSelectedValues);
+      if (sprints.length > 0) {
+        navigate(`${route}/${sprints[0].id}`);
+      }
+      return;
+    }
     if (!routeSprintId) {
       if (selectedSprintId) {
         navigate(`${route}/${selectedSprintId}`);
       }
     }
-  }, [selectedValues, routeSprintId]);
+  }, [selectedValues, routeSprintId, routeProjectId]);
 
   const handleSelectionChange = (keys: Selection) => {
     setSelectedValues(keys);

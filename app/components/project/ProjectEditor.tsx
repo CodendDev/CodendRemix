@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Project } from "~/api/types/baseEntitiesTypes";
 import { Await, useFetcher } from "@remix-run/react";
 import { Button, CardBody, Input, Textarea } from "@nextui-org/react";
@@ -21,15 +21,24 @@ interface AwaitedProjectEditorProps extends ProjectEditorProps {
   project?: Project;
 }
 function AwaitedProjectEditor({ project }: AwaitedProjectEditorProps) {
+  const [editedProject, setEditedProject] = useState({ ...project });
   const fetcher = useFetcher();
   const action = project ? `/project/${project.id}/update` : `/project/create`;
+
+  useEffect(() => {
+    setEditedProject({ ...project });
+  }, [project]);
+
   const inputs = [
     <Input
       name="name"
       type="text"
       label="Name"
       variant="bordered"
-      defaultValue={project?.name}
+      value={editedProject?.name}
+      onChange={(e) =>
+        setEditedProject((prev) => ({ ...prev, ["name"]: e.target.value }))
+      }
       labelPlacement="outside"
       placeholder=" "
       size="lg"
@@ -44,7 +53,13 @@ function AwaitedProjectEditor({ project }: AwaitedProjectEditorProps) {
       variant="bordered"
       name="description"
       labelPlacement="outside"
-      defaultValue={project?.description}
+      value={editedProject?.description}
+      onChange={(e) =>
+        setEditedProject((prev) => ({
+          ...prev,
+          ["description"]: e.target.value,
+        }))
+      }
       size="lg"
       rows={10}
       classNames={{

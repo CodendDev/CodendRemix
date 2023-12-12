@@ -25,7 +25,7 @@ export const handleLogin = async ({
 
   const tokenCookie = createUserTokenCookie(remember);
 
-  return redirect("/", {
+  return redirect("/project", {
     headers: {
       "Set-Cookie": await tokenCookie.serialize(accessToken),
     },

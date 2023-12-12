@@ -1,4 +1,5 @@
 import type {
+  BacklogTaskType,
   Sprint,
   SprintAssignableTask,
 } from "~/api/types/baseEntitiesTypes";
@@ -30,7 +31,7 @@ export type SprintTask = SprintAssignableTask & {
   state: SprintTaskState;
 };
 export const toSprintTasks = (
-  tasks: SprintAssignableTask[],
+  tasks: BacklogTaskType[] | SprintAssignableTask[],
   state: SprintTaskState
 ): SprintTask[] =>
   tasks.map(

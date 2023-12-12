@@ -10,7 +10,6 @@ import {
   sprintRemoveTasks,
   updateSprint,
 } from "~/api/methods/sprint";
-import { getBacklog } from "~/api/methods/project";
 
 import getToken from "~/actions/getToken";
 
@@ -103,7 +102,7 @@ export default function SprintPage() {
   const { projectId, sprint, assignableTasks } = loaderData;
 
   return (
-    <div className="grow overflow-y-auto border-l-1 border-emerald-700">
+    <div className="flex min-w-[20em] flex-col overflow-y-auto border-l-1 border-emerald-700 md:min-w-[25em] xl:min-w-[40em] 2xl:min-w-[50em]">
       <SideSprint
         sprintPromise={sprint}
         projectId={projectId}

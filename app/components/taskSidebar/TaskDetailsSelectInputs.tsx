@@ -45,7 +45,7 @@ export function TaskTypeInput({
         selectedKeys={value ? [value] : []}
         {...propPack}
         size="lg"
-        className={`w-[7rem] ${
+        className={`w-[8rem] ${
           value ? taskTypeToColorClass[value as unknown as TaskType] : ""
         }`}
         classNames={{ value: "text-lg font-bold" }}

@@ -13,13 +13,14 @@ import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
 import { Draggable, Droppable } from "react-beautiful-dnd";
-import { DroppableType } from "~/components/board/ProjectBoard";
+import { DroppableType } from "~/components/board/ProjectBoardDnd";
 
 type BoardStatusContainerProps = {
   name: string;
   statusId: string;
   tasks: BoardTask[];
   editable: boolean;
+  index: number;
 };
 
 export function ProjectTaskStatusContainer({
@@ -27,6 +28,7 @@ export function ProjectTaskStatusContainer({
   statusId,
   tasks,
   editable,
+  index,
 }: BoardStatusContainerProps) {
   const editStatusModal = useDisclosure();
   const deleteStatusModal = useDisclosure();
@@ -37,23 +39,33 @@ export function ProjectTaskStatusContainer({
     .slice(0, 36);
 
   return (
-    <>
-      <div className="flex w-[20em] flex-shrink-0 flex-col px-2">
-        <StatusContainerHeader
-          statusId={statusId}
-          name={name}
-          onEdit={editStatusModal.onOpen}
-          onDelete={deleteStatusModal.onOpen}
-          editable={editable}
-        />
-        <Droppable
-          droppableId={statusId}
-          type={DroppableType.statusContainer}
-          isDropDisabled={!editable}
+    <Draggable draggableId={statusId} index={index} isDragDisabled={!editable}>
+      {(draggableStatusProvided, draggableStatusSnapshot) => (
+        <div
+          ref={draggableStatusProvided.innerRef}
+          {...draggableStatusProvided.draggableProps}
+          {...draggableStatusProvided.dragHandleProps}
+          className={`flex w-[20em] flex-shrink-0 flex-col px-2 ${
+            draggableStatusSnapshot.isDragging
+              ? "rounded-lg outline-dashed outline-2 -outline-offset-4 outline-emerald-500 drop-shadow-xl"
+              : ""
+          }`}
         >
-          {(droppableProvided, droppableSnapshot) => (
-            <Card
-              className={`
+          <StatusContainerHeader
+            statusId={statusId}
+            name={name}
+            onEdit={editStatusModal.onOpen}
+            onDelete={deleteStatusModal.onOpen}
+            editable={editable}
+          />
+          <Droppable
+            droppableId={statusId}
+            type={DroppableType.statusContainer}
+            isDropDisabled={!editable}
+          >
+            {(droppableProvided, droppableSnapshot) => (
+              <Card
+                className={`
                 flex h-[calc(100vh-8.5rem)] flex-col overflow-y-auto bg-gray-100 ${
                   droppableSnapshot.draggingOverWith
                     ? "outline-2 -outline-offset-1 outline-emerald-500"
@@ -62,55 +74,56 @@ export function ProjectTaskStatusContainer({
                     : ""
                 } p-3
               `}
-              ref={droppableProvided.innerRef}
-              {...droppableProvided.droppableProps}
-            >
-              {tasks.map((task, index) => (
-                <Draggable
-                  draggableId={task.id}
-                  key={task.id}
-                  index={index}
-                  isDragDisabled={!editable}
-                >
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      <ProjectBoardTask
-                        {...task}
-                        key={task.id}
-                        isDragged={snapshot.isDragging}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {droppableProvided.placeholder}
-            </Card>
+                ref={droppableProvided.innerRef}
+                {...droppableProvided.droppableProps}
+              >
+                {tasks.map((task, index) => (
+                  <Draggable
+                    draggableId={task.id}
+                    key={task.id}
+                    index={index}
+                    isDragDisabled={!editable}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <ProjectBoardTask
+                          {...task}
+                          key={task.id}
+                          isDragged={snapshot.isDragging}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {droppableProvided.placeholder}
+              </Card>
+            )}
+          </Droppable>
+          {editable && (
+            <>
+              <EditStatusModal
+                projectId={projectId}
+                statusId={statusId}
+                statusName={name}
+                isOpen={editStatusModal.isOpen}
+                onOpenChange={editStatusModal.onOpenChange}
+              />
+              <DeleteModal
+                actionRoute={`/api/project/${projectId}/projectTaskStatus/${statusId}`}
+                deleteName={name}
+                deleteHeader="Delete status"
+                isOpen={deleteStatusModal.isOpen}
+                onOpenChange={deleteStatusModal.onOpenChange}
+              />
+            </>
           )}
-        </Droppable>
-      </div>
-      {editable && (
-        <>
-          <EditStatusModal
-            projectId={projectId}
-            statusId={statusId}
-            statusName={name}
-            isOpen={editStatusModal.isOpen}
-            onOpenChange={editStatusModal.onOpenChange}
-          />
-          <DeleteModal
-            actionRoute={`/api/project/${projectId}/projectTaskStatus/${statusId}`}
-            deleteName={name}
-            deleteHeader="Delete status"
-            isOpen={deleteStatusModal.isOpen}
-            onOpenChange={deleteStatusModal.onOpenChange}
-          />
-        </>
+        </div>
       )}
-    </>
+    </Draggable>
   );
 }
 
