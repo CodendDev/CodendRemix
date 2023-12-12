@@ -27,8 +27,8 @@ export default function SideSprint(props: SideSprintProps) {
 }
 
 const AwaitedSideSprint = (props: SideSprintProps & { sprint: Sprint }) => (
-  <>
+  <div className="p-4">
     <SprintDetails {...props} />
     <SprintBacklog {...props} />
-  </>
+  </div>
 );

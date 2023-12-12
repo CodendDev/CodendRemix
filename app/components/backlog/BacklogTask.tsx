@@ -10,6 +10,7 @@ import { OptionsDropdown } from "~/components/utils/dropdown/OptionsDropdown";
 import { deleteOption } from "~/components/utils/dropdown/DropdownDefaultOptions";
 import { useNavigate, useParams, useSubmit } from "@remix-run/react";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
+import ClickableDiv from "~/components/utils/ClickableDiv";
 
 type backlogTaskProps = Omit<BacklogTaskType, "createdOn"> & {
   selectedBacklogTaskId: string | undefined;
@@ -60,7 +61,7 @@ export function BacklogTask({
 
   return (
     <>
-      <div
+      <ClickableDiv
         className={`flex justify-between bg-gray-100 p-1 first:rounded-t-lg last:rounded-b-lg hover:cursor-pointer hover:bg-gray-200 ${backlogTaskSelected}`}
         onClick={handleClick}
       >
@@ -93,7 +94,7 @@ export function BacklogTask({
             />
           </div>
         </div>
-      </div>
+      </ClickableDiv>
       <DeleteModal
         deleteHeader={`Delete ${typeName}`}
         deleteName={name}
