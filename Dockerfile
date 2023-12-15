@@ -15,11 +15,12 @@ COPY . ./
 EXPOSE 3000
 ENTRYPOINT [ "npm", "run", "dev" ]
 
-FROM development AS build
+FROM dependencies AS production
 
-ENTRYPOINT [ "npm", "run", "build" ]
-
-FROM build AS production
+WORKDIR /app
+RUN npm install
+COPY . ./
+RUN npm run build
 
 EXPOSE 3000
 ENTRYPOINT ["npm", "start"]
