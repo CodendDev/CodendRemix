@@ -1,5 +1,24 @@
 version: "3.8"
 services:
+  codendui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: "production"
+    depends_on:
+      nginx:
+        condition: "service_healthy"
+    environment:
+      API_SERVER: http://nginx
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/app/app:ro
+      - /app/node_modules
+    networks:
+      - codend_ui_backend
+
+  # DEPENDENCIES
   nginx:
     container_name: codend_ui_nginx
     image: nginx:1.25.3
@@ -17,8 +36,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    ports:
-      - "8080:80"
     volumes:
       - "./nginx:/etc/nginx:ro"
     networks:
