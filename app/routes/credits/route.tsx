@@ -7,8 +7,16 @@ export default function CreditsPage() {
         <CodendLogo className="h-52 w-52 self-center" />
         <div className="text-4xl font-bold">Credits:</div>
         <ul className="list-inside list-disc text-2xl">
-          <li>Background - SVGBackgrounds.com (CC BY 4.0.)</li>
-          <li>Avatars - github.com/alohe/avatars (MIT)</li>
+          <li>
+            <span>User avatars - </span>
+            <a
+              href="https://github.com/alohe/avatars"
+              className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+            >
+              github.com/alohe/avatars
+            </a>
+            <span> (MIT)</span>
+          </li>
         </ul>
       </div>
     </div>
