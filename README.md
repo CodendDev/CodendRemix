@@ -1,8 +1,29 @@
 # CodendRemix
 
-## Develop application
+## Run application
 
-There are two(?) possible ways to start the application:
+### Docker Compose
+
+**Clone repository**
+
+```bash
+git clone https://github.com/CodendDev/CodendRemix codendui
+cd codendui
+```
+
+**Start the application**
+
+```bash
+docker compose --env-file .env.docker up
+```
+
+**Access the application**
+
+Visit http://127.0.0.1:3000 in your browser.
+
+## Development 
+
+There are two possible ways to start the application:
 
 * [run whole application with docker compose](#run-whole-application-inside-docker-containers)
 * [run only dependencies inside docker and start application on local environment](#run-only-dependencies-inside-docker-and-start-application-on-local-environment)
