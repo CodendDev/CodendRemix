@@ -5,9 +5,18 @@ import * as https from "https";
 import * as process from "process";
 
 export function getAxiosInstance(token?: string): AxiosInstance {
+  const DEVELOPMENT = process.env.SETTINGS === "DEVELOPMENT";
   const url = process.env.API_SERVER;
-  if (url === undefined) {
+  if (!url) {
     throw new Error("API server address is undefined.");
+  }
+
+  const httpSecureRegex = new RegExp(/^https:\/\//);
+  if (!DEVELOPMENT && !httpSecureRegex.test(url)) {
+    throw new Error(
+      "API server address must use SSL protocol. " +
+        "If you want to use http set environmental variable SETTINGS=DEVELOPMENT"
+    );
   }
 
   const authorizationHeaders = token
@@ -16,10 +25,9 @@ export function getAxiosInstance(token?: string): AxiosInstance {
       }
     : {};
 
-  const httpsAgent =
-    process.env.SETTINGS === "DEVELOPMENT"
-      ? new https.Agent({ rejectUnauthorized: false })
-      : undefined;
+  const httpsAgent = DEVELOPMENT
+    ? new https.Agent({ rejectUnauthorized: false })
+    : undefined;
 
   return axios.create({
     baseURL: url,
@@ -46,12 +54,12 @@ export function getApiErrorsFromError(
     return undefined;
   }
 
-  if (err.response === undefined) {
+  if (!err.response) {
     return undefined;
   }
 
   const apiErrors = err.response.data.errors;
-  if (apiErrors === undefined) {
+  if (!apiErrors) {
     return undefined;
   }
 
