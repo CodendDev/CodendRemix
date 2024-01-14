@@ -3,7 +3,7 @@ import getToken from "~/actions/getToken";
 import { getBacklog, getBoard } from "~/api/methods/project";
 import { defer, redirect } from "@remix-run/node";
 import { jwtDecode } from "jwt-decode";
-import SelectedSprintBoardPage from "~/routes/project.$projectId.board.$sprintId/route";
+import SelectedSprintBoardPage from "~/routes/project.$projectId.board.$sprintId";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const token = await getToken(request);

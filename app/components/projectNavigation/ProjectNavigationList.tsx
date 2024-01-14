@@ -8,11 +8,9 @@ import {
 } from "@nextui-org/react";
 import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate, useSubmit } from "@remix-run/react";
-import { AiOutlineFileSearch } from "react-icons/ai/index.js";
+import { AiOutlineFileSearch, AiOutlinePlus } from "react-icons/ai/index.js";
 import { ProjectNavigationBarContext } from "~/components/projectNavigation/ProjectNavigationBar";
-import { FaStar, FaRegStar } from "react-icons/fa/index.js";
-import { AiOutlinePlus } from "react-icons/ai/index.js";
-import { FaRegEdit } from "react-icons/fa/index.js";
+import { FaStar, FaRegStar, FaRegEdit } from "react-icons/fa/index.js";
 import ClickableDiv from "~/components/utils/ClickableDiv";
 
 type ProjectNavigationListProps = {

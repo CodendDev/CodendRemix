@@ -7,7 +7,7 @@ import {
   UpdateUserDetails,
 } from "~/api/methods/user";
 import { useContext } from "react";
-import { UserDetailsContext } from "~/routes/project/route";
+import { UserDetailsContext } from "~/routes/project";
 
 export const action = async ({ request }: LoaderFunctionArgs) => {
   const token = await getToken(request);
@@ -34,9 +34,9 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
     const returnUrl = formData.returnUrl.toString();
 
     if (notifications) {
-      enableAllUserNotifications({ token });
+      await enableAllUserNotifications({ token });
     } else {
-      disableAllUserNotifications({ token });
+      await disableAllUserNotifications({ token });
     }
 
     return redirect(returnUrl);
