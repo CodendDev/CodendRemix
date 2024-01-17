@@ -29,12 +29,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Login() {
-  const navigate = useNavigate();
-  const handleForget = (e: React.MouseEvent) => {
-    e.preventDefault();
-    navigate("/user/forget");
-  };
-
   const actionData = useActionData<typeof action>() as unknown as {
     errors?: ApiErrorResponse[];
   };
@@ -74,9 +68,6 @@ export default function Login() {
           Remember me
         </Checkbox>
         <input type="hidden" name="remember" value={checked.toString()} />
-        <Link size="lg" href="/user/forget" onClick={handleForget}>
-          Forgot password
-        </Link>
       </div>
       <Button size="lg" color="primary" type="submit">
         Login
