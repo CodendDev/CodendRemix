@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Button, Checkbox, Input, Link, Spacer } from "@nextui-org/react";
-import { useActionData, useNavigate } from "@remix-run/react";
+import React, { useEffect, useState } from "react";
+import { Button, Checkbox, Input, Spacer } from "@nextui-org/react";
+import { useFetcher } from "@remix-run/react";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import type { handleLoginRequest } from "~/actions/handleLogin";
 import handleLogin from "~/actions/handleLogin";
@@ -14,7 +14,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
 
   const data = Object.fromEntries(formData);
-  if (data.email === undefined || data.password === undefined) {
+  if (!data.email || !data.password) {
     return errorHandler([]);
   }
 
@@ -28,35 +28,38 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return handleLogin(loginRequest);
 };
 
+interface LoginErrors {
+  errors?: ApiErrorResponse[];
+}
+
 export default function Login() {
-  const actionData = useActionData<typeof action>() as unknown as {
-    errors?: ApiErrorResponse[];
-  };
-  const error = actionData?.errors?.hasError(
-    ApiErrors.LoginErrors.InvalidEmailOrPassword
-  );
+  const fetcher = useFetcher();
+  const data = fetcher.data as LoginErrors | undefined;
+  const error =
+    data?.errors?.hasError(ApiErrors.LoginErrors.InvalidEmailOrPassword) ??
+    false;
 
   const [checked, setChecked] = useState<boolean>(false);
   return (
-    <form className="max-w-lg grow px-5" method="post">
+    <fetcher.Form className="max-w-lg grow px-5" method="post">
       <Input
-        color={error ? "danger" : "default"}
         variant="faded"
         size="lg"
         type="email"
         label="Email"
         name="email"
         isRequired={true}
+        isInvalid={error}
       />
       <Spacer y={5} />
       <Input
-        color={error ? "danger" : "default"}
         variant="faded"
         size="lg"
         type="password"
         label="Password"
         name="password"
         isRequired={true}
+        isInvalid={error}
         errorMessage={error && "Invalid email or password"}
       />
       <div className="my-5 flex justify-between align-middle">
@@ -69,9 +72,14 @@ export default function Login() {
         </Checkbox>
         <input type="hidden" name="remember" value={checked.toString()} />
       </div>
-      <Button size="lg" color="primary" type="submit">
+      <Button
+        size="lg"
+        color="primary"
+        type="submit"
+        isLoading={fetcher.state !== "idle"}
+      >
         Login
       </Button>
-    </form>
+    </fetcher.Form>
   );
 }
