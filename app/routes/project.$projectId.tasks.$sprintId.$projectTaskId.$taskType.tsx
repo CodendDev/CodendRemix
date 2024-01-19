@@ -4,7 +4,7 @@ import {
 } from "~/routes/api/projectTask/projectTaskGetDeletePutAction";
 import React from "react";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import BoardTaskSidebar from "~/routes/project.$projectId.board.$sprintId.$projectTaskId.$taskType/route";
+import BoardTaskSidebar from "~/routes/project.$projectId.board.$sprintId.$projectTaskId.$taskType";
 
 export const action = async (args: ActionFunctionArgs) => {
   const response = await ProjectTaskAction(args);

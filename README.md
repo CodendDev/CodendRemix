@@ -50,3 +50,7 @@ npm run dev
 Visit http://127.0.0.1:3000 in your browser.
 
 You have also the access to api server at http://127.0.0.1:8080
+
+**Credits**
+* avatars - https://github.com/alohe/avatars
+* background - https://www.svgbackgrounds.com/

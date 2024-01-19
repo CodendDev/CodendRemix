@@ -1,6 +1,6 @@
 import { AccountDetails } from "~/components/accountDetails/AccountDetails";
 import { useContext } from "react";
-import { UserDetailsContext } from "~/routes/project/route";
+import { UserDetailsContext } from "~/routes/project";
 
 export default function UserAccountDetailsPage() {
   const { userDetails } = useContext(UserDetailsContext);

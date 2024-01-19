@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
-import { UserDetails, UserRole } from "~/api/types/baseEntitiesTypes";
+import type { UserDetails, UserRole } from "~/api/types/baseEntitiesTypes";
 import { Button, Input, useDisclosure, User } from "@nextui-org/react";
-import { IoMdRemoveCircleOutline } from "react-icons/io/index.js";
+import { IoMdRemoveCircleOutline, IoMdAdd } from "react-icons/io/index.js";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
 import { useFetcher } from "@remix-run/react";
-import { IoMdAdd } from "react-icons/io/index.js";
 
 interface ProjectMembersListProps {
   members: UserDetails[];

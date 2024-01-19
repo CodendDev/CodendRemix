@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { MembersContext } from "~/routes/project.$projectId/route";
+import { MembersContext } from "~/routes/project.$projectId";
 import { useOutletContext } from "react-router";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import getToken from "~/actions/getToken";
