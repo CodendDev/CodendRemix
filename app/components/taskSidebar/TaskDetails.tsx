@@ -21,10 +21,7 @@ import {
 } from "~/components/taskSidebar/TaskDetailsSelectInputs";
 import DeleteModal from "~/components/shared/modals/DeleteModal";
 import { emptyTask } from "~/api/types/projectTaskTypes";
-import {
-  MembersContext,
-  StatusesContext,
-} from "~/routes/project.$projectId/route";
+import { MembersContext, StatusesContext } from "~/routes/project.$projectId";
 import { IoIosCloseCircle } from "react-icons/io/index.js";
 
 interface TaskDetailsProps {

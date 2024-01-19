@@ -1,7 +1,7 @@
 import ProjectPage, {
   action as BarAction,
   loader as BarLoader,
-} from "~/routes/project/route";
+} from "~/routes/project";
 
 export const action = BarAction;
 

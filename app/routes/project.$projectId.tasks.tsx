@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loader as BoardLoader } from "~/routes/project.$projectId.board/route";
+import { loader as BoardLoader } from "~/routes/project.$projectId.board";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import {
   BoardQueryContext,

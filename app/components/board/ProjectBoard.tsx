@@ -6,7 +6,7 @@ import { ProjectTaskStatusContainerLoading } from "~/components/board/ProjectTas
 import { Button, Tooltip, useDisclosure } from "@nextui-org/react";
 import { AiOutlinePlus } from "react-icons/ai/index.js";
 import { EditStatusModal } from "~/components/projectTaskStatus/EditStatusModal";
-import { StatusesContext } from "~/routes/project.$projectId/route";
+import { StatusesContext } from "~/routes/project.$projectId";
 import { ProjectBoardDnd } from "~/components/board/ProjectBoardDnd";
 
 interface SelectedProjectBoardTaskContextType {

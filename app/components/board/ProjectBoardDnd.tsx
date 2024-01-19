@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { BoardQueryContext } from "~/components/board/ProjectBoardFilter";
-import { StatusesContext } from "~/routes/project.$projectId/route";
+import { StatusesContext } from "~/routes/project.$projectId";
 
 import {
   DragDropContext,

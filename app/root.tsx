@@ -6,7 +6,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useRouteError,
 } from "@remix-run/react";
 import styles from "./tailwind.css";
 import { NextUIProvider } from "@nextui-org/react";
@@ -15,7 +14,6 @@ import CustomError from "~/components/errors/CustomError";
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
 export function ErrorBoundary() {
-  const error = useRouteError();
   return (
     <html className="m-0 h-full w-full">
       <head>
