@@ -46,6 +46,7 @@ export default function CreditsPage() {
             </a>
           </li>
         </ul>
+        System powstał na Wydziale Informatyki Politechniki Białostockiej
       </div>
     </div>
   );
