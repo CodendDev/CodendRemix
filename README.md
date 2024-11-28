@@ -1,5 +1,7 @@
 # CodendRemix
 
+This repository is a submodule of the main application. You can find the main application at https://github.com/CodendDev/Codendapp.
+
 ## Run application
 
 ### Docker Compose
